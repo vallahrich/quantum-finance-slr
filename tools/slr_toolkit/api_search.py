@@ -19,6 +19,7 @@ from typing import Any
 
 from . import config
 from .ingest import _detect_preprint
+from .query_builder import build_arxiv_query, build_openalex_query
 from .search_run import create_search_run
 from .utils import ensure_dir, generate_paper_id
 
@@ -43,6 +44,34 @@ def _rate_limited_get(url: str, *, delay: float = 1.0, timeout: int = 30) -> byt
 # ═══════════════════════════════════════════════════════════════════════════
 
 _OPENALEX_WORKS = "https://api.openalex.org/works"
+_OPENALEX_CONCEPTS = "https://api.openalex.org/concepts"
+
+
+def resolve_openalex_concepts(term: str) -> list[dict]:
+    """Look up OpenAlex concept IDs matching *term*.
+
+    Calls ``https://api.openalex.org/concepts?search={term}`` and returns
+    the top 3 matches, each as ``{"id": "C...", "display_name": "..."}``
+    """
+    params = urllib.parse.urlencode({"search": term})
+    url = f"{_OPENALEX_CONCEPTS}?{params}"
+    try:
+        data = json.loads(_rate_limited_get(url, delay=0.2))
+    except Exception as exc:
+        log.error("OpenAlex concept lookup failed for %r: %s", term, exc)
+        return []
+
+    results = data.get("results", [])
+    out: list[dict] = []
+    for r in results[:3]:
+        oa_id = r.get("id", "")
+        # Extract the short ID (e.g. "C41008148") from the full URL
+        short_id = oa_id.rsplit("/", 1)[-1] if "/" in oa_id else oa_id
+        out.append({
+            "id": short_id,
+            "display_name": r.get("display_name", ""),
+        })
+    return out
 
 
 def _openalex_parse_work(w: dict) -> dict[str, Any]:
@@ -99,6 +128,8 @@ def search_openalex(
     max_results: int = 500,
     per_page: int = 100,
     email: str | None = None,
+    concept_ids: list[str] | None = None,
+    use_exact: bool = False,
 ) -> list[dict[str, Any]]:
     """Search OpenAlex works API.
 
@@ -112,13 +143,24 @@ def search_openalex(
         Maximum records to retrieve (across pages).
     email : str | None
         Optional contact email for polite pool (faster rate limits).
+    concept_ids : list[str] | None
+        OpenAlex concept IDs to add as a filter (OR-combined).
+    use_exact : bool
+        Use ``search.exact`` for unstemmed matching (default: stemmed).
     """
     if to_year is None:
         to_year = date.today().year
 
+    oa_q = build_openalex_query(query, concept_ids=concept_ids, use_exact=use_exact)
+    search_key = oa_q["search_key"]
+
+    filter_parts = [f"publication_year:{from_year}-{to_year}"]
+    if "extra_filter" in oa_q:
+        filter_parts.append(oa_q["extra_filter"])
+
     params: dict[str, str] = {
-        "search": query,
-        "filter": f"publication_year:{from_year}-{to_year}",
+        search_key: oa_q["search_value"],
+        "filter": ",".join(filter_parts),
         "per_page": str(min(per_page, 200)),
         "sort": "relevance_score:desc",
     }
@@ -204,6 +246,7 @@ def search_arxiv(
     *,
     max_results: int = 500,
     batch_size: int = 100,
+    categories: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Search arXiv API.
 
@@ -213,14 +256,19 @@ def search_arxiv(
         arXiv search query (supports AND/OR/ANDNOT, field prefixes like ti:, au:, abs:).
     max_results : int
         Maximum records to retrieve.
+    categories : list[str] | None
+        arXiv category filters (e.g. ``["q-fin*", "quant-ph"]``).
     """
+    # Apply field-prefix wrapping and category filtering via the query builder
+    search_query = build_arxiv_query(query, categories=categories)
+
     all_records: list[dict[str, Any]] = []
     start = 0
 
     while start < max_results:
         n = min(batch_size, max_results - start)
         params = urllib.parse.urlencode({
-            "search_query": query,
+            "search_query": search_query,
             "start": str(start),
             "max_results": str(n),
             "sortBy": "relevance",
@@ -259,12 +307,32 @@ def search_arxiv(
 _S2_SEARCH = "https://api.semanticscholar.org/graph/v1/paper/search"
 
 
+def _s2_fetch_with_backoff(url: str, *, max_retries: int = 5) -> dict:
+    """Fetch from Semantic Scholar with exponential backoff on 429."""
+    for attempt in range(max_retries):
+        try:
+            return json.loads(_rate_limited_get(url, delay=3.5, timeout=30))
+        except urllib.error.HTTPError as exc:
+            if exc.code == 429:
+                wait = min(60 * (2 ** attempt), 600)  # 60s, 120s, 240s, 480s, 600s
+                log.warning(
+                    "Semantic Scholar rate limit (429) — attempt %d/%d, "
+                    "waiting %ds before retry",
+                    attempt + 1, max_retries, wait,
+                )
+                time.sleep(wait)
+            else:
+                raise
+    raise RuntimeError(f"Semantic Scholar: still rate-limited after {max_retries} retries")
+
+
 def search_semantic_scholar(
     query: str,
     *,
     from_year: int = 2016,
     to_year: int | None = None,
     max_results: int = 500,
+    api_key: str | None = None,
 ) -> list[dict[str, Any]]:
     """Search Semantic Scholar paper search API.
 
@@ -276,6 +344,9 @@ def search_semantic_scholar(
         Publication year range filter.
     max_results : int
         Maximum records to retrieve.
+    api_key : str | None
+        Optional S2 API key for higher rate limits.
+        Get one free at https://www.semanticscholar.org/product/api#api-key
     """
     if to_year is None:
         to_year = date.today().year
@@ -284,6 +355,10 @@ def search_semantic_scholar(
     all_records: list[dict[str, Any]] = []
     offset = 0
     batch_size = 100
+
+    # If user has an S2 API key, patch the request headers
+    import os
+    s2_key = api_key or os.environ.get("S2_API_KEY", "")
 
     while offset < max_results:
         n = min(batch_size, max_results - offset)
@@ -298,20 +373,17 @@ def search_semantic_scholar(
         log.info("Semantic Scholar offset=%d — fetching", offset)
 
         try:
-            data = json.loads(_rate_limited_get(url, delay=3.5, timeout=30))
-        except urllib.error.HTTPError as exc:
-            if exc.code == 429:
-                wait = 300  # 5 minutes — S2 rate window
-                log.warning("Semantic Scholar rate limit hit — waiting %ds", wait)
-                time.sleep(wait)
-                try:
-                    data = json.loads(_rate_limited_get(url, delay=1.0, timeout=30))
-                except Exception as exc2:
-                    log.error("Semantic Scholar retry failed: %s", exc2)
-                    break
+            if s2_key:
+                # Direct request with API key header
+                req = urllib.request.Request(url, headers={
+                    "x-api-key": s2_key,
+                    "Accept": "application/json",
+                })
+                time.sleep(1.0)  # lighter delay with API key
+                with urllib.request.urlopen(req, timeout=30) as resp:
+                    data = json.loads(resp.read())
             else:
-                log.error("Semantic Scholar request failed: %s", exc)
-                break
+                data = _s2_fetch_with_backoff(url)
         except Exception as exc:
             log.error("Semantic Scholar request failed: %s", exc)
             break
@@ -340,6 +412,7 @@ def search_semantic_scholar(
 
         total = data.get("total", 0)
         offset += n
+        log.info("Semantic Scholar: %d / %d (total available: %d)", len(all_records), max_results, total)
         if offset >= total:
             break
 
@@ -547,6 +620,9 @@ def auto_search(
     run_date: str | None = None,
     email: str | None = None,
     api_key: str | None = None,
+    concept_ids: list[str] | None = None,
+    use_exact: bool = False,
+    arxiv_categories: list[str] | None = None,
 ) -> dict[str, Path]:
     """Run automated search across selected APIs and auto-ingest results.
 
@@ -566,6 +642,12 @@ def auto_search(
         Contact email for polite rate limits (OpenAlex).
     api_key : str
         API key for Scopus/WoS (if needed).
+    concept_ids : list[str] | None
+        OpenAlex concept IDs to filter by.
+    use_exact : bool
+        Use OpenAlex ``search.exact`` for unstemmed matching.
+    arxiv_categories : list[str] | None
+        arXiv category filters (e.g. ``["q-fin*", "quant-ph"]``).
 
     Returns
     -------
@@ -597,6 +679,12 @@ def auto_search(
             kwargs["from_year"] = from_year
         if source == "openalex" and email:
             kwargs["email"] = email
+        if source == "openalex" and concept_ids:
+            kwargs["concept_ids"] = concept_ids
+        if source == "openalex" and use_exact:
+            kwargs["use_exact"] = True
+        if source == "arxiv" and arxiv_categories:
+            kwargs["categories"] = arxiv_categories
         if source in ("scopus", "wos") and api_key:
             kwargs["api_key"] = api_key
 
