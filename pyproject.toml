@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "quantum-finance-slr"
+version = "0.1.0"
+description = "Two-stage systematic literature review toolkit for gate-based quantum computing in finance"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = [
+    "pandas>=2.1",
+    "openpyxl>=3.1",
+    "rispy>=0.9",
+    "bibtexparser>=1.4",
+]
+
+[project.optional-dependencies]
+fuzzy = ["rapidfuzz>=3.0"]
+dev = ["pytest>=7.0", "rapidfuzz>=3.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["tools*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tools/tests"]
