@@ -726,7 +726,7 @@ def auto_search(
     """
 
     if sources is None:
-        sources = ["openalex", "arxiv", "semantic_scholar"]
+        sources = ["openalex", "arxiv", "scopus"]
 
     if run_date is None:
         run_date = date.today().isoformat()

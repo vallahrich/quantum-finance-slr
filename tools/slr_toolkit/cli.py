@@ -246,9 +246,9 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_as.add_argument(
         "--sources", "-s",
-        default="openalex,arxiv,semantic_scholar",
-        help="Comma-separated API sources: openalex, arxiv, semantic_scholar, "
-             "scopus, wos. Default: openalex,arxiv,semantic_scholar.",
+        default="openalex,arxiv,scopus",
+        help="Comma-separated API sources: openalex, arxiv, scopus, "
+             "semantic_scholar, wos. Default: openalex,arxiv,scopus.",
     )
     p_as.add_argument(
         "--from-year",
