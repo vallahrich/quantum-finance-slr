@@ -100,6 +100,21 @@ def generate_prisma_counts() -> dict[str, str | int]:
     counts["IncludedStageA"] = included_a
     counts["IncludedStageB"] = included_b
 
+    # --- Snowballing --------------------------------------------------------
+    snowball_path = config.SEARCH_LOGS_DIR / "snowball_log.csv"
+    snowball_identified = 0
+    snowball_included = 0
+    if snowball_path.exists():
+        sb_df = _read_csv_safe(snowball_path)
+        if sb_df is not None and len(sb_df) > 0:
+            snowball_identified = len(sb_df)
+            if "screened_decision" in sb_df.columns:
+                snowball_included = (
+                    sb_df["screened_decision"].str.strip().str.lower() == "include"
+                ).sum()
+    counts["SnowballIdentified"] = snowball_identified
+    counts["SnowballIncluded"] = snowball_included
+
     # --- Full-text exclusion reason breakdown (PRISMA 2020 §13b) ------------
     reason_counts: dict[str, int] = {}
     if ft_df is not None and "exclusion_reason" in ft_df.columns:
@@ -123,14 +138,17 @@ def generate_prisma_counts() -> dict[str, str | int]:
     calibration_metrics: dict[str, str | float | int] | None = None
     cal_df = _read_csv_safe(config.CALIBRATION_DECISIONS_CSV)
     if cal_df is not None and len(cal_df) > 0:
-        if "decision_A" in cal_df.columns and "decision_B" in cal_df.columns:
+        # Support both legacy (decision_A/B) and new (decision_reviewer/supervisor) headers
+        col_a = "decision_reviewer" if "decision_reviewer" in cal_df.columns else "decision_A"
+        col_b = "decision_supervisor" if "decision_supervisor" in cal_df.columns else "decision_B"
+        if col_a in cal_df.columns and col_b in cal_df.columns:
             valid = cal_df[
-                (cal_df["decision_A"].str.strip() != "")
-                & (cal_df["decision_B"].str.strip() != "")
+                (cal_df[col_a].str.strip() != "")
+                & (cal_df[col_b].str.strip() != "")
             ]
             if len(valid) > 0:
-                dec_a = valid["decision_A"].str.strip().str.lower().tolist()
-                dec_b = valid["decision_B"].str.strip().str.lower().tolist()
+                dec_a = valid[col_a].str.strip().str.lower().tolist()
+                dec_b = valid[col_b].str.strip().str.lower().tolist()
                 kappa = cohens_kappa(dec_a, dec_b)
                 pct = percent_agreement(dec_a, dec_b)
                 calibration_metrics = {

@@ -10,10 +10,11 @@ A reproducible, local-first toolkit for running a **two-stage systematic literat
 | Dimension | Value |
 |-----------|-------|
 | Domain | Gate-based quantum computing in finance |
-| Databases | Scopus, Web of Science, IEEE Xplore, ACM DL, arXiv, SSRN, Semantic Scholar (7 sources) |
+| Databases | Scopus, OpenAlex, arXiv, Semantic Scholar (4 sources) |
 | Includes | Preprints (arXiv, SSRN), NISQ + fault-tolerant |
 | Time window | 2016-01-01 → present |
 | Advantage framework | Tier-1 crossover target (≤2 weeks) + Tier-2 finance SLA reality check |
+| Protocol registration | OSF <https://osf.io/XXXXX> |
 
 ---
 
@@ -119,9 +120,17 @@ This automatically:
 |--------|------|-----------|-------|
 | `openalex` | None (free) | ~10 req/s with email | Best single source, ~250M works |
 | `arxiv` | None (free) | 1 req/3s | Preprints only |
-| `semantic_scholar` | None (free) | 100 req/5min | Good for citations |
+| `semantic_scholar` | None (free) | 100 req/5min | Good for citations & forward snowballing |
 | `scopus` | API key | Per key | `pip install pybliometrics` |
-| `wos` | API key | Per key | WoS Starter API |
+
+> **Note:** Web of Science, IEEE Xplore, and ACM DL are not searched
+> directly. Scopus indexes the majority of IEEE and ACM content; OpenAlex
+> captures nearly all WoS-indexed publications via Crossref metadata.
+> See protocol §6 for full justification.
+
+> **PRISMA-S compliance:** All search queries are logged per PRISMA-S
+> (Rethlefsen et al. 2021) requirements in
+> `02_search_logs/search_log.xlsx` with exact API query strings.
 
 ### 6. Generate PRISMA counts
 
@@ -271,3 +280,46 @@ Tests cover:
 - **Fuzzy dedup** gracefully degrades to DOI-only if `rapidfuzz` is not installed.
 - All CLI commands are idempotent where applicable.
 - No network calls — everything is local file-based.
+
+---
+
+## Methodological Frameworks
+
+This review is guided by the following methodological frameworks:
+
+- **PRISMA 2020** (Page et al. 2021) — reporting structure for systematic
+  reviews.
+- **PRISMA-S** (Rethlefsen et al. 2021) — search documentation extension.
+- **Kitchenham & Charters (2007)** — guidelines for performing systematic
+  literature reviews in software engineering.
+- **Okoli (2015)** — guide to conducting a standalone systematic literature
+  review in information systems research.
+- **vom Brocke et al. (2015)** — standing on the shoulders of giants:
+  challenges and recommendations for rigour in literature searches.
+- **Hoefler et al. (2023)** — disentangling hype from practicality: a
+  framework for assessing practical quantum advantage.
+- **Wohlin (2014)** — guidelines for snowballing in systematic literature
+  studies.
+
+---
+
+## Citing This Work
+
+```bibtex
+@mastersthesis{wallerich2026quantum,
+  author  = {Wallerich, [First Name]},
+  title   = {Gate-Based Quantum Computing in Finance: A Two-Stage
+             Systematic Literature Review and Practical Advantage
+             Assessment},
+  school  = {[University Name]},
+  year    = {2026},
+}
+```
+
+---
+
+## Acknowledgements
+
+- Thesis supervisor: [Name]
+- [Any additional acknowledgements]
+

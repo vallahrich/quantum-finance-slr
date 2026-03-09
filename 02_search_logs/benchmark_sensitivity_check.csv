@@ -1,0 +1,11 @@
+paper_id,title,authors,year,doi,found_in_scopus,found_in_openalex,found_in_arxiv,found_in_semantic_scholar,found_in_snowball,notes
+,A Survey of Quantum Computing for Finance,Dylan Herman; Cody Googin; Xiaoyuan Liu; Yue Sun; Alexey Galda; Ilya Safro; Marco Pistoia; Yuri Alexeev,2023,10.1038/s42254-023-00603-1,,,,,,
+,Quantum Computing for Finance: State-of-the-Art and Future Prospects,Dylan Herman; Cody Googin; Xiaoyuan Liu; Alexey Galda; Ilya Safro; Yue Sun; Marco Pistoia; Yuri Alexeev,2022,10.1109/TQE.2022.3220738,,,,,,
+,Quantum computational finance: Monte Carlo pricing of financial derivatives,Patrick Rebentrost; Brajesh Gupt; Thomas R. Bromley,2018,10.1103/PhysRevA.98.022321,,,,,,
+,Quantum Risk Analysis,Stefan Woerner; Daniel J. Egger,2019,10.1038/s41534-019-0130-6,,,,,,
+,Option Pricing using Quantum Computers,Nikitas Stamatopoulos; Daniel J. Egger; Yue Sun; Christa Zoufal; Raban Iten; Ning Shen; Stefan Woerner,2020,10.22331/q-2020-07-06-291,,,,,,
+,Quantum computing for finance: Overview and prospects,Daniel J. Egger; Claudio Gambella; Jakub Marecek; Scott McFaddin; Martin Mevissen; Rudy Raymond; Andrea Simonetto; Stefan Woerner; Elena Yndurain,2020,10.1109/TQE.2021.3030823,,,,,,
+,Improving portfolio optimization with VQE,Sebastian Brandhofer; Daniel Braun; Vanessa Dehn; Gerhard Hellstern; Matthias Hüls; Yanjun Ji; Ilia Polian; Anika Rüfenacht; Huan-Hsin Tseng; Jianjun Shi,2022,10.1109/TQE.2022.3213639,,,,,,
+,Quantum computing for finance: state of the art and future prospects,Román Orús; Samuel Mugel; Enrique Lizaso,2019,10.1103/RevModPhys.91.045001,,,,,,
+,Quantum Monte Carlo Integration: The Full Advantage in Minimal Circuit Depth,Rajiv Chakrabarti; Donny Cheung; Dmitri Maslov; Michele Mosca; Nishant Sinha,2021,10.22331/q-2021-06-24-481,,,,,,
+,Improving Variational Quantum Optimization using CVaR,Panagiotis Kl. Barkoutsos; Giacomo Nannicini; Anton Robert; Ivano Tavernelli; Stefan Woerner,2020,10.22331/q-2020-04-20-256,,,,,,

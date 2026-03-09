@@ -5,10 +5,11 @@
 **Title:** Gate-Based Quantum Computing in Finance: A Two-Stage Systematic
 Literature Review and Practical Advantage Assessment
 
-**Registration:** Not pre-registered. Protocol versioned in this repository
-with amendments tracked in `amendments_log.csv`.
+**Registration:** OSF <https://osf.io/XXXXX>. Registered YYYY-MM-DD.
+Protocol versioned in this repository with amendments tracked in
+`amendments_log.csv`.
 
-**Protocol version:** 1.0 (updated v1.2, 2026-03-09)
+**Protocol version:** 2.0 (2026-03-09)
 
 ---
 
@@ -22,6 +23,31 @@ Two-stage systematic literature review:
 - **Stage B — Focused SLR:** Deep assessment of practical quantum advantage
   claims, applying the Hoefler et al. (2023) framework to evaluate crossover
   viability, end-to-end overhead accounting, and classical baseline quality.
+
+---
+
+## 1b) Positioning against prior reviews
+
+Several prior reviews cover quantum computing in finance. This review
+addresses gaps left by each:
+
+- **Bunescu & Vârtei (2024)** — The only prior formal SLR; searched WoS +
+  Scopus only; focused on bibliometric mapping without practical-advantage
+  assessment; found 89% of papers focus on algorithm creation but only
+  21/94 test on real financial data.
+- **Herman et al. (2022/2023)** — Comprehensive expert survey (~300
+  references); no formal search methodology (not a systematic review); no
+  crossover feasibility analysis.
+- **Orús et al. (2019)** — Heavily annealing-focused; published before the
+  NISQ era matured; limited gate-based coverage.
+- **Egger et al. (2020)** — IBM-centric industry perspective; not systematic;
+  selective reference coverage.
+
+This review is the first to (1) apply the Hoefler et al. (2023)
+practical-advantage framework systematically to quantum finance literature,
+(2) assess crossover viability and speedup sufficiency for each problem
+family, and (3) combine a mapping review with a focused advantage analysis
+in a two-stage design.
 
 ---
 
@@ -85,15 +111,25 @@ Included:
   provide quantitative evaluation.
 
 Excluded:
-- Theses and dissertations (risk of duplicating published work; captured
-  via snowballing if the published version exists).
+- Theses and dissertations (risk of duplicating published work; PhD
+  theses are excluded because thesis-derived published papers are captured
+  via snowballing).
 - Blog posts, news articles, slide decks without accompanying papers.
 - Patents (different evidence standard; not peer-reviewed or preprint-equivalent).
 
 When a preprint and a peer-reviewed version of the same work both appear,
 the peer-reviewed version is the canonical record. The preprint is linked
-via version_group_id and retained for provenance but excluded from synthesis
-counts to avoid double-counting.
+via `version_group_id` and retained for provenance but excluded from
+synthesis counts to avoid double-counting.
+
+Sensitivity analysis: synthesis findings will be re-computed excluding
+preprint-only records to test robustness.
+
+**Conference papers:** In computer science, conference proceedings
+constitute primary publication venues (unlike health sciences where they
+are considered grey literature). Conference papers indexed in Scopus,
+IEEE Xplore, or ACM DL are treated as formal peer-reviewed literature
+in this review.
 
 ### Excluded
 
@@ -133,26 +169,43 @@ We adopt the practical quantum advantage framework of Hoefler et al. (2023):
 
 ## 6) Information sources
 
-### Core databases (7 sources)
+### Core databases (4 sources)
 
-1. **Scopus** — multidisciplinary, strong CS and engineering coverage
-2. **Web of Science (WoS)** — multidisciplinary, strong journal coverage
-3. **IEEE Xplore** — primary venue for quantum computing conference papers
-4. **ACM Digital Library** — computer science, algorithms, and systems
-5. **arXiv** — physics and CS preprints (primary channel for quantum computing)
-6. **SSRN** — finance and economics preprints
-7. **Semantic Scholar** (supplementary coverage extension — cross-disciplinary
-   grey literature and workshop papers)
+1. **Scopus** — multidisciplinary, strong CS and engineering coverage;
+   indexes the majority of IEEE and ACM content.
+2. **OpenAlex** — open scholarly graph (~250M works); captures nearly all
+   WoS-indexed publications via Crossref metadata (Culbert et al. 2025).
+3. **arXiv** — physics and CS preprints (primary channel for quantum
+   computing research).
+4. **Semantic Scholar** — cross-disciplinary discovery, citation graph for
+   forward snowballing.
 
-Seven sources were selected to maximise coverage across the publication venues
-where quantum finance research appears: physics (arXiv), computer science
-(IEEE, ACM), multidisciplinary (Scopus, WoS), finance preprints (SSRN), and
-cross-disciplinary discovery (Semantic Scholar).
+Four sources were selected to maximise coverage while using databases with
+confirmed programmatic access. Scopus indexes the majority of IEEE and ACM
+content; OpenAlex captures nearly all WoS-indexed publications via Crossref
+metadata (Culbert et al. 2025). Direct searching of IEEE Xplore, ACM DL,
+and Web of Science was therefore omitted without expected recall loss,
+supported by the benchmark sensitivity check (§7b) and mandatory
+snowballing (§7c).
+
+**Coverage justification citations:**
+- Alperin et al. (2024) — OpenAlex as superset of Scopus
+- Culbert et al. (2025) — OpenAlex reference coverage vs WoS/Scopus
+- Stansfield et al. (2025) — 98% recall in OpenAlex for evidence synthesis
+- Bramer et al. (2017) — 4 databases achieving 98.3% recall in systematic
+  reviews
+
+**OpenAlex limitations:** Missing abstracts for some Springer Nature
+content (since Nov 2022) and Elsevier content (since Nov 2024); imperfect
+author disambiguation; no predatory journal filtering. These limitations
+are partially mitigated by Scopus coverage (which includes Elsevier
+abstracts) and arXiv (which provides full-text access for preprints).
 
 ### Supplementary methods
 
-- **Backward snowballing:** Reference lists of included studies.
-- **Forward snowballing:** Citing articles via Semantic Scholar / Google Scholar.
+- **Backward snowballing:** Reference lists of all included studies (see §7c).
+- **Forward snowballing:** Papers citing included studies via Semantic
+  Scholar / OpenAlex citation data (see §7c).
 - **Expert consultation:** Domain experts may suggest additional relevant papers.
 
 ---
@@ -165,21 +218,24 @@ Two-block Boolean strategy: **Quantum** AND **Finance**.
 
 **Block 1 — Quantum (technology):**
 ```
-"quantum computing" OR "quantum algorithm" OR "quantum circuit"
-OR "quantum gate" OR "variational quantum" OR QAOA OR VQE OR "quantum
-amplitude estimation" OR QAE OR "Grover" OR HHL OR "quantum walk"
-OR "quantum machine learning" OR "quantum annealing" OR "quantum
-error correction" OR "fault-tolerant quantum" OR "quantum speedup"
-OR "quantum advantage"
+"quantum comput*" OR "quantum algorithm*" OR "quantum circuit*"
+OR qubit* OR "quantum gate*" OR "variational quantum" OR QAOA
+OR VQE OR QAE OR "quantum amplitude estimation" OR Grover*
+OR HHL OR "quantum walk*" OR "quantum machine learning" OR QML
+OR "quantum annealing" OR "quantum error correction"
+OR "fault-tolerant quantum" OR NISQ OR "quantum speedup"
+OR "quantum advantage" OR "quantum Monte Carlo"
 ```
 
 **Block 2 — Finance (domain):**
 ```
-"finance" OR "financial" OR "portfolio optimization" OR "option pricing"
-OR "risk analysis" OR "credit scoring" OR "fraud detection" OR "Monte
-Carlo" OR "derivative" OR "asset allocation" OR "quantitative finance"
-OR "Black-Scholes" OR "value at risk" OR VaR OR "market risk" OR
-"credit risk" OR "algorithmic trading"
+financ* OR banking OR portfolio* OR "risk management"
+OR "option pricing" OR derivative* OR "credit risk"
+OR "market risk" OR "stock market" OR trading
+OR "asset allocation" OR "Monte Carlo" OR "Black-Scholes"
+OR VaR OR "value at risk" OR "quantitative finance"
+OR "credit scoring" OR "fraud detection" OR CVA OR xVA
+OR "algorithmic trading" OR hedging
 ```
 
 ### Combined template
@@ -201,9 +257,10 @@ stage and precision at the screening stage.
 ### Adaptation per database
 
 Each database requires syntax adaptation (e.g., Scopus uses TITLE-ABS-KEY,
-IEEE uses metadata fields, arXiv uses ti/abs prefixes). Exact search strings
-executed per database are logged in `02_search_logs/search_log.xlsx` per
-PRISMA-S requirements.
+arXiv uses ti/abs prefixes, OpenAlex uses full-text search + concept
+filters). Exact search strings executed per database are logged in
+`02_search_logs/search_log.xlsx` per PRISMA-S requirements (Rethlefsen
+et al. 2021).
 
 ### Date and language limits
 
@@ -212,11 +269,83 @@ PRISMA-S requirements.
 
 ---
 
+## 7b) Benchmark sensitivity check
+
+Before committing to full screening, we verify that the 4-database search
+retrieves a set of known-relevant papers. A benchmark set of 15–20
+known-relevant papers is compiled from prior surveys and the authors' own
+reading (see `02_search_logs/benchmark_sensitivity_check.csv`).
+
+**Target:** ≥ 95% recall on the benchmark set.
+
+**Procedure:**
+1. Compile the benchmark set from established references including:
+   Herman et al. (2022/2023), Egger et al. (2020), Stamatopoulos et al.
+   (2020), Woerner & Egger (2019), Brandhofer et al. (2022), Orús et al.
+   (2019), Chakrabarti et al. (2021), Barkoutsos et al. (2020), Rebentrost
+   et al. (2018), and others.
+2. Run all search queries against each database.
+3. Check retrieval of each benchmark paper across all databases.
+4. For any missed paper, determine whether snowballing (§7c) would catch it.
+5. If recall < 95% and snowballing would not compensate, add targeted
+   search terms or an additional database.
+6. Report benchmark sensitivity results in the thesis methods chapter.
+
+---
+
+## 7c) Snowballing procedure
+
+Snowballing follows the guidelines of Wohlin (2014).
+
+**Start set:** All Stage A–included papers after full-text screening.
+
+**Backward snowballing:** Examine reference lists of all included papers.
+For each reference, apply eligibility criteria (§9) at title/abstract
+level, then full-text level for candidates.
+
+**Forward snowballing:** Identify papers citing each included paper using
+Semantic Scholar and/or OpenAlex citation data. Apply the same eligibility
+criteria.
+
+**Iteration stopping rule:** Continue snowball iterations until an
+iteration yields 0 new included papers. Wohlin (2014) reports convergence
+typically within 2–3 iterations.
+
+**Screening criteria:** Snowballed candidates are screened using the same
+inclusion/exclusion criteria as database-identified records (§9).
+
+**PRISMA reporting:** Snowballed papers are reported separately in the
+flow diagram under "Records identified from other methods" per PRISMA 2020
+Figure 1. Tracking is documented in
+`02_search_logs/snowball_log.csv`.
+
+---
+
 ## 8) Screening and selection
 
 ### Process
 
-Two-phase screening by two independent reviewers:
+Screening was conducted by a single reviewer (the thesis author). Four
+mitigations were implemented to control selection bias:
+
+**Mitigation 1 — Supervisor subset validation:** The thesis supervisor
+independently screens a random 15–20% of title/abstract records. We
+report percent agreement and Cohen's κ on that subsample. Target:
+κ ≥ 0.70.
+
+**Mitigation 2 — Calibration round:** The reviewer screens 50 records
+first; discusses borderline cases with the supervisor; documents any
+criteria clarifications in `05_screening/calibration_log.md`.
+
+**Mitigation 3 — Re-screening after time gap:** The reviewer re-screens
+all *excluded* full-text papers after 2–4 weeks. Intra-rater concordance
+rate is reported.
+
+**Mitigation 4 — Borderline-case escalation:** Uncertain cases
+(decision = `maybe`) are flagged for supervisor discussion. Resolutions
+are documented in the decision CSV `notes` column.
+
+### Screening phases
 
 1. **Title/abstract screening:** Each record assessed against inclusion
    criteria (§9). Decisions recorded in
@@ -226,27 +355,24 @@ Two-phase screening by two independent reviewers:
    `05_screening/full_text_decisions.csv`, with mandatory exclusion reason
    codes for excluded records (see `05_screening/exclusion_reason_codes.md`).
 
-### Conflict resolution
-
-Where reviewers disagree, records are discussed and a consensus decision
-reached. If consensus cannot be reached, a third reviewer adjudicates.
-All conflicts and resolutions are documented in the decision files.
-
-### Inter-rater reliability
+### Inter-rater reliability (supervisor validation subset)
 
 We report Cohen's κ (kappa) at two checkpoints:
 
-1. Calibration round: Both reviewers independently screen the same ~50 records.
-   Target: κ ≥ 0.70 before proceeding to main screening.
-   If κ < 0.70, reviewers discuss disagreements, clarify criteria, log any
-   criteria clarifications as minor protocol amendments, and repeat calibration
-   on a fresh 50-record sample.
+1. Calibration round: Reviewer and supervisor independently screen the
+   same ~50 records. Target: κ ≥ 0.70 before proceeding to main screening.
+   If κ < 0.70, disagreements are discussed, criteria clarified, any
+   clarifications logged as minor protocol amendments, and calibration
+   repeated on a fresh 50-record sample.
 
-2. Main screening: Reported on the full title/abstract overlap set.
-   κ < 0.60 triggers a review of screening criteria and partial re-screening.
+2. Supervisor validation: Reported on the 15–20% random subset of
+   title/abstract records screened by the supervisor.
+   κ < 0.60 triggers a review of screening criteria and partial
+   re-screening.
 
 Calibration results (agreement rate, κ value, disagreements resolved,
-criteria clarifications) are documented in 05_screening/calibration_log.md.
+criteria clarifications) are documented in
+`05_screening/calibration_log.md`.
 
 ### Pilot screening documentation
 
@@ -254,16 +380,28 @@ The calibration round serves a dual purpose: reliability testing and
 criteria refinement. All calibration artefacts are retained:
 
 - Calibration screening decisions: stored in
-  05_screening/calibration_decisions.csv (same format as
-  title_abstract_decisions.csv)
-- Calibration log: 05_screening/calibration_log.md (created above)
-  documents agreement metrics, resolved disagreements, and any criteria
-  clarifications
+  `05_screening/calibration_decisions.csv`
+- Calibration log: `05_screening/calibration_log.md` documents agreement
+  metrics, resolved disagreements, and any criteria clarifications
 - Criteria clarifications arising from calibration are logged as minor
-  amendments in 01_protocol/amendments_log.csv with type "calibration_refinement"
+  amendments in `01_protocol/amendments_log.csv` with type
+  `calibration_refinement`
 
 This creates a complete audit trail from initial criteria interpretation
 through to final screening reliability.
+
+---
+
+## 8b) Limitations of single-reviewer design
+
+Single-reviewer screening and extraction introduces a risk of selection
+and extraction errors. Buscemi et al. (2006) found that single data
+extractors had approximately 21% more extraction errors than dual
+extractors. The four mitigations described above (supervisor validation,
+calibration, re-screening, borderline escalation) are designed to
+partially compensate for this risk but cannot fully replicate the
+reliability of independent dual screening. This limitation is reported
+transparently in the thesis discussion chapter.
 
 ---
 
@@ -325,18 +463,21 @@ Extraction fields are defined in the codebook
 ## 11) Quality appraisal
 
 Each included study is assessed on a rubric with the following dimensions
-(scored 0 / 1 / 2):
+(scored 0 / 1 / 2), using risk-of-bias language per SEGRESS (Kitchenham
+et al. 2023):
 
 - **q_methodology:** Methodological rigour (algorithm description,
   mathematical correctness, implementation detail)
 - **q_reproducibility:** Reproducibility (code availability, parameter
   reporting, data accessibility)
-- **q_baseline:** Classical baseline quality (state-of-art = 2,
-  reasonable = 1, weak/none = 0)
+- **q_classical_baseline_risk:** Risk that a weak classical baseline
+  inflates perceived quantum advantage (state-of-art baseline = 0
+  [low risk], reasonable = 1, weak/none = 2 [high risk])
 - **q_scalability:** Scalability analysis (asymptotic + concrete = 2,
   one of these = 1, neither = 0)
-- **q_justification:** Advantage justification (end-to-end with overhead = 2,
-  partial = 1, asymptotic-only or none = 0)
+- **q_advantage_evidence_risk:** Risk that advantage claims lack
+  sufficient evidence (end-to-end with overhead = 0 [low risk],
+  partial = 1, asymptotic-only or none = 2 [high risk])
 - **q_io_bottleneck:** I/O limitations acknowledged and addressed
 - **q_crossover_framing:** Tier-1/Tier-2 crossover analysis present
 - **q_end_to_end:** End-to-end overhead included
@@ -346,7 +487,7 @@ weight findings in synthesis and reported transparently.
 
 ---
 
-## 11b) Certainty of evidence across studies
+## 11b) Domain-specific certainty-of-evidence framework
 
 Per PRISMA 2020 (Item 13d), we assess the certainty of the body of evidence
 for each synthesis finding using the following approach:
@@ -357,27 +498,41 @@ taxonomy, evidence map). Instead, we report the distribution of rubric
 scores across the included set and flag clusters where evidence quality
 is uniformly low.
 
-For Stage B (focused synthesis): We adapt a simplified GRADE-like approach
-for computational benchmarking studies. Each synthesis finding (e.g.,
-"Workload X shows plausible Tier-1 crossover") is rated on a three-level
-certainty scale:
+For Stage B (focused synthesis): Each synthesis finding (e.g., "Workload X
+shows plausible Tier-1 crossover") is rated on a three-level
+certainty scale grounded in computational benchmarking criteria:
 
-- HIGH: ≥3 independent studies with rubric scores averaging ≥1.5/2.0,
-  consistent findings, credible baselines, and end-to-end overhead accounting.
-- MODERATE: 2+ studies with partial agreement, or rubric scores averaging
-  1.0–1.5, or missing one key evaluation dimension.
-- LOW: Single study, conflicting findings, rubric scores averaging <1.0,
-  or fundamental evaluation gaps (no baseline, no overhead accounting).
+- **HIGH:** ≥3 independent studies, consistent findings, credible classical
+  baselines (state-of-the-art), end-to-end overhead accounting, rubric
+  average ≥ 1.5/2.0.
+- **MODERATE:** 2+ studies with partial agreement, or rubric average
+  1.0–1.5, or one key evaluation dimension missing.
+- **LOW:** Single study, conflicting findings, rubric average < 1.0, or
+  fundamental evaluation gaps (no baseline, no overhead).
 
 Certainty ratings are reported alongside each synthesis finding in the
 results tables and discussion. We explicitly state when a finding rests
 on low-certainty evidence and flag it as requiring future work.
 
-Rationale for simplified approach: Standard GRADE was designed for clinical
-intervention studies. Computational benchmarking studies lack randomisation,
-blinding, and clinical outcomes. Our adapted framework preserves the core
-GRADE logic (consistency, directness, precision, risk of bias) while using
-domain-appropriate indicators.
+**Rationale:** Standard GRADE (Guyatt et al., 2008) was designed for
+randomised clinical trials and lacks domain-appropriate indicators for
+computational benchmarking. Our framework preserves GRADE's core logic —
+consistency, directness, precision, risk of bias — while substituting
+domain-relevant criteria following Kitchenham & Charters (2007) and Dybå &
+Dingsøyr (2008).
+
+---
+
+## 11c) Reporting bias assessment
+
+Publication bias is partially mitigated by the inclusion of preprints
+(arXiv, SSRN) which capture negative or null results that may not reach
+peer-reviewed venues. We assess reporting bias qualitatively by examining
+whether included studies selectively report favourable metrics (e.g.,
+reporting only best-case speedups, omitting overhead costs, using weak
+classical baselines). Selective reporting indicators are captured in the
+extraction codebook fields `end_to_end_overhead`,
+`classical_baseline_detail`, and `speedup_constant_reported`.
 
 ---
 

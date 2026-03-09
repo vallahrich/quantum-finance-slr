@@ -17,11 +17,82 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+import pandas as pd
+from openpyxl import load_workbook
+
 from . import config
 from .ingest import _detect_preprint
 from .query_builder import build_arxiv_query, build_openalex_query
 from .search_run import create_search_run
 from .utils import ensure_dir, generate_paper_id
+
+
+# ── PRISMA-S query logger ─────────────────────────────────────────────────
+
+_INTERFACE_MAP: dict[str, str] = {
+    "openalex": "OpenAlex REST API v2",
+    "arxiv": "arXiv Atom API",
+    "semantic_scholar": "Semantic Scholar Graph API v1",
+    "scopus": "Scopus Search API (Elsevier)",
+    "wos": "Web of Science Starter API v1 (Clarivate)",
+}
+
+
+def _log_search_to_xlsx(
+    source: str,
+    query: str,
+    run_date: str,
+    results_n: int,
+    *,
+    fields: str = "",
+    date_limits: str = "",
+    notes: str = "",
+) -> None:
+    """Append a PRISMA-S compliant row to search_log.xlsx."""
+    path = config.SEARCH_LOG_XLSX
+    ensure_dir(path.parent)
+
+    interface = _INTERFACE_MAP.get(source, source)
+
+    row = {
+        "SearchRunID": f"{run_date}_{source}",
+        "Date": run_date,
+        "Database": source,
+        "Interface": interface,
+        "FullSearchString": query,
+        "Fields": fields or _default_fields(source),
+        "DateLimits": date_limits or "2016-01-01 to present",
+        "LanguageLimits": "None (applied at screening via EX-NOTEN)",
+        "OtherLimits": "",
+        "ResultsN": results_n,
+        "ExportFormat": "JSON (auto-normalised to CSV)",
+        "ExportFiles": f"api_search_{source}.json",
+        "Notes": notes,
+    }
+
+    if path.exists():
+        try:
+            existing = pd.read_excel(path, dtype=str).fillna("")
+        except Exception:
+            existing = pd.DataFrame(columns=config.SEARCH_LOG_COLUMNS)
+    else:
+        existing = pd.DataFrame(columns=config.SEARCH_LOG_COLUMNS)
+
+    new_row = pd.DataFrame([row])
+    updated = pd.concat([existing, new_row], ignore_index=True)
+    updated.to_excel(path, index=False, engine="openpyxl")
+    log.info("Logged search to %s", path)
+
+
+def _default_fields(source: str) -> str:
+    """Return default field description per source."""
+    return {
+        "openalex": "search (full-text) + concept.id filter",
+        "arxiv": "ti: + abs: + cat:",
+        "semantic_scholar": "query (title + abstract)",
+        "scopus": "TITLE-ABS-KEY",
+        "wos": "TS (Topic Search)",
+    }.get(source, "")
 
 log = logging.getLogger("slr_toolkit.api_search")
 
@@ -653,7 +724,6 @@ def auto_search(
     -------
     dict mapping source name → run folder path
     """
-    import pandas as pd
 
     if sources is None:
         sources = ["openalex", "arxiv", "semantic_scholar"]
@@ -742,6 +812,16 @@ def auto_search(
             "%s: %d records → %s", source, len(df), out_path,
         )
         print(f"  ✓ {source}: {len(df)} records ingested")
+
+        # Auto-log exact query to search_log.xlsx (PRISMA-S compliance)
+        _log_search_to_xlsx(
+            source=source,
+            query=query,
+            run_date=run_date,
+            results_n=len(df),
+            notes=f"API version: {_INTERFACE_MAP.get(source, source)}; "
+                  f"max_results={max_results}",
+        )
 
         created_folders[source] = run_folder
 

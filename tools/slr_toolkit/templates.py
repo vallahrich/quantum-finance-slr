@@ -16,8 +16,8 @@ log = logging.getLogger("slr_toolkit.templates")
 
 # ── Screening templates ────────────────────────────────────────────────────
 
-_TA_HEADER = "paper_id,decision_A,decision_B,conflict,final_decision,reason_code,notes\n"
-_FT_HEADER = "paper_id,decision_A,decision_B,conflict,final_decision,exclusion_reason,stage,notes\n"
+_TA_HEADER = "paper_id,decision,supervisor_check,conflict,final_decision,reason_code,notes\n"
+_FT_HEADER = "paper_id,decision,supervisor_check,conflict,final_decision,exclusion_reason,stage,notes\n"
 
 
 def create_ta_decisions_template(*, force: bool = False) -> None:
@@ -108,12 +108,12 @@ _RUBRIC_COLUMNS: list[str] = [
     "paper_id",
     "q_methodology",
     "q_reproducibility",
-    "q_baseline",
+    "q_classical_baseline_risk",  # risk that a weak baseline inflates perceived advantage
     "q_scalability",
-    "q_justification",
-    "q_io_bottleneck",       # I/O limitations acknowledged and addressed
-    "q_crossover_framing",   # Tier-1/Tier-2 crossover analysis present
-    "q_end_to_end",          # End-to-end overhead included
+    "q_advantage_evidence_risk",  # risk that advantage claims lack sufficient evidence
+    "q_io_bottleneck",            # I/O limitations acknowledged and addressed
+    "q_crossover_framing",        # Tier-1/Tier-2 crossover analysis present
+    "q_end_to_end",               # End-to-end overhead included
 ]
 
 _HEADER_FONT = Font(bold=True, color="FFFFFF")

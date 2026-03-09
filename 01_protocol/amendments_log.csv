@@ -1,2 +1,14 @@
 date,version,section,change_description,author
 2026-03-09,v1.2,§4 §6 §7 §8 §9 §11,"Assessment-driven revisions: (1) Added Semantic Scholar as 7th source, removed AIS eLibrary; (2) Added Cohen's κ inter-rater reliability metric with κ≥0.70 threshold; (3) Justified two-block search design; (4) Added explicit grey literature policy; (5) Added English-only language restriction; (6) Extended extraction codebook with 20 Hoefler-framework fields for Stage B; (7) Added GRADE-adapted certainty-of-evidence assessment; (8) Added pilot screening documentation plan and calibration log template",TVW
+2026-03-09,v2.0,§0,"Added OSF protocol registration placeholder",TVW
+2026-03-09,v2.0,§1b,"Added positioning against prior reviews section (Bunescu & Vârtei 2024; Herman et al. 2022/2023; Orús et al. 2019; Egger et al. 2020)",TVW
+2026-03-09,v2.0,§4,"Added CS conference paper clarification; added preprint sensitivity analysis note; clarified PhD thesis exclusion rationale",TVW
+2026-03-09,v2.0,§6,"Reduced from 7 to 4 core databases (Scopus OpenAlex arXiv Semantic Scholar); added coverage justification citations (Alperin 2024; Culbert 2025; Stansfield 2025; Bramer 2017); added OpenAlex limitations note",TVW
+2026-03-09,v2.0,§7,"Expanded Block 1 synonyms (added wildcards qubit* quantum comput* QML NISQ quantum Monte Carlo); expanded Block 2 synonyms (added banking hedging CVA xVA derivative* portfolio* trading stock market etc.)",TVW
+2026-03-09,v2.0,§7b,"Added benchmark sensitivity check procedure (15-20 known-relevant papers; ≥95% recall target)",TVW
+2026-03-09,v2.0,§7c,"Added formalised snowballing procedure per Wohlin (2014): backward + forward snowballing with iteration stopping rule",TVW
+2026-03-09,v2.0,§8,"Rewrote for single-reviewer design with 4 mitigations: supervisor subset validation (15-20%); calibration round; re-screening after time gap; borderline-case escalation",TVW
+2026-03-09,v2.0,§8b,"Added limitations subsection acknowledging single-reviewer risk (Buscemi et al. 2006: ~21% more extraction errors)",TVW
+2026-03-09,v2.0,§11,"Renamed rubric columns: q_baseline → q_classical_baseline_risk; q_justification → q_advantage_evidence_risk; adopted SEGRESS risk-of-bias language (Kitchenham et al. 2023)",TVW
+2026-03-09,v2.0,§11b,"Reframed from GRADE-adapted to domain-specific certainty-of-evidence framework; added explicit rationale citing Kitchenham & Charters (2007) and Dybå & Dingsøyr (2008)",TVW
+2026-03-09,v2.0,§11c,"Added reporting bias assessment section per PRISMA 2020 Items 13a/19",TVW
