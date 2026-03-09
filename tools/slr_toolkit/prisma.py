@@ -10,7 +10,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, PatternFill
 
 from . import config
-from .utils import ensure_dir
+from .utils import cohens_kappa, ensure_dir, percent_agreement
 
 log = logging.getLogger("slr_toolkit.prisma")
 
@@ -119,8 +119,33 @@ def generate_prisma_counts() -> dict[str, str | int]:
         if missing_reason > 0:
             reason_counts["(MISSING REASON)"] = int(missing_reason)
 
+    # --- Calibration metrics ------------------------------------------------
+    calibration_metrics: dict[str, str | float | int] | None = None
+    cal_df = _read_csv_safe(config.CALIBRATION_DECISIONS_CSV)
+    if cal_df is not None and len(cal_df) > 0:
+        if "decision_A" in cal_df.columns and "decision_B" in cal_df.columns:
+            valid = cal_df[
+                (cal_df["decision_A"].str.strip() != "")
+                & (cal_df["decision_B"].str.strip() != "")
+            ]
+            if len(valid) > 0:
+                dec_a = valid["decision_A"].str.strip().str.lower().tolist()
+                dec_b = valid["decision_B"].str.strip().str.lower().tolist()
+                kappa = cohens_kappa(dec_a, dec_b)
+                pct = percent_agreement(dec_a, dec_b)
+                calibration_metrics = {
+                    "Sample size": len(valid),
+                    "Percent agreement": round(pct, 1),
+                    "Cohen's kappa": round(kappa, 3),
+                    "Target met (kappa >= 0.70)": "Yes" if kappa >= 0.70 else "No",
+                }
+                log.info(
+                    "Calibration: n=%d, agreement=%.1f%%, kappa=%.3f",
+                    len(valid), pct, kappa,
+                )
+
     # --- Write XLSX ---------------------------------------------------------
-    _write_prisma_xlsx(counts, reason_counts)
+    _write_prisma_xlsx(counts, reason_counts, calibration_metrics)
 
     # Print summary
     print("\nPRISMA Counts:")
@@ -130,6 +155,10 @@ def generate_prisma_counts() -> dict[str, str | int]:
         print("\nFull-Text Exclusion Reasons:")
         for reason, n in sorted(reason_counts.items()):
             print(f"  {reason:30s} : {n}")
+    if calibration_metrics:
+        print("\nCalibration Metrics:")
+        for k, v in calibration_metrics.items():
+            print(f"  {k:30s} : {v}")
     print()
 
     return counts
@@ -138,6 +167,7 @@ def generate_prisma_counts() -> dict[str, str | int]:
 def _write_prisma_xlsx(
     counts: dict[str, str | int],
     reason_counts: dict[str, int] | None = None,
+    calibration_metrics: dict[str, str | float | int] | None = None,
 ) -> None:
     """Write counts to a neatly formatted Excel file."""
     path = config.PRISMA_COUNTS_XLSX
@@ -173,6 +203,21 @@ def _write_prisma_xlsx(
             ws_reasons.append([reason, n])
         ws_reasons.column_dimensions["A"].width = 35
         ws_reasons.column_dimensions["B"].width = 12
+
+    # Calibration metrics sheet
+    if calibration_metrics:
+        ws_cal = wb.create_sheet("Calibration")
+        ws_cal.append(["Metric", "Value"])
+        for col in range(1, 3):
+            cell = ws_cal.cell(row=1, column=col)
+            cell.font = _HEADER_FONT
+            cell.fill = _HEADER_FILL
+            cell.alignment = Alignment(wrap_text=True, vertical="top")
+        ws_cal.freeze_panes = "A2"
+        for metric, value in calibration_metrics.items():
+            ws_cal.append([metric, value])
+        ws_cal.column_dimensions["A"].width = 35
+        ws_cal.column_dimensions["B"].width = 18
 
     ws.column_dimensions["A"].width = 35
     ws.column_dimensions["B"].width = 18

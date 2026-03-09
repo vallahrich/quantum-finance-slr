@@ -42,6 +42,9 @@ FT_DECISIONS_TEMPLATE = SCREENING_DIR / "full_text_decisions_template.csv"
 TA_DECISIONS_FILE     = SCREENING_DIR / "title_abstract_decisions.csv"
 FT_DECISIONS_FILE     = SCREENING_DIR / "full_text_decisions.csv"
 
+CALIBRATION_DECISIONS_CSV = SCREENING_DIR / "calibration_decisions.csv"
+CALIBRATION_LOG_MD       = SCREENING_DIR / "calibration_log.md"
+
 EXTRACTION_TEMPLATE   = EXTRACTION_DIR / "extraction_template.xlsx"
 CODEBOOK_MD           = EXTRACTION_DIR / "codebook.md"
 PROTOCOL_MD           = PROTOCOL_DIR / "protocol_v1.0.md"

@@ -10,6 +10,7 @@ A reproducible, local-first toolkit for running a **two-stage systematic literat
 | Dimension | Value |
 |-----------|-------|
 | Domain | Gate-based quantum computing in finance |
+| Databases | Scopus, Web of Science, IEEE Xplore, ACM DL, arXiv, SSRN, Semantic Scholar (7 sources) |
 | Includes | Preprints (arXiv, SSRN), NISQ + fault-tolerant |
 | Time window | 2016-01-01 → present |
 | Advantage framework | Tier-1 crossover target (≤2 weeks) + Tier-2 finance SLA reality check |
@@ -131,6 +132,7 @@ python -m tools.slr_toolkit.cli prisma
 Reads screening decision files and master records to compute PRISMA flow-diagram counts. Outputs `02_search_logs/prisma_counts.xlsx` with:
 - Main PRISMA flow counts (Identified → Included)
 - Full-text exclusion reason breakdown (per PRISMA 2020 §13b)
+- Calibration metrics (Cohen's κ, percent agreement) if `calibration_decisions.csv` is populated
 
 ---
 
@@ -156,6 +158,8 @@ quantum-finance-slr/
 │   ├── title_abstract_decisions_template.csv
 │   ├── full_text_decisions_template.csv
 │   ├── exclusion_reason_codes.md    # Exclusion reason code definitions
+│   ├── calibration_log.md           # Inter-rater reliability log (§8)
+│   ├── calibration_decisions.csv    # Calibration round decisions
 │   ├── title_abstract_decisions.csv  # ← copy from template, fill in
 │   └── full_text_decisions.csv       # ← copy from template, fill in
 ├── 06_extraction/               # Data extraction
@@ -196,6 +200,7 @@ quantum-finance-slr/
 
 ## Screening Workflow
 
+0. Run calibration round (see §8 of protocol) — target Cohen's κ ≥ 0.70 before main screening.
 1. Run `build-master` to get `04_deduped_library/master_records.csv`.
 2. Copy `05_screening/title_abstract_decisions_template.csv` → `title_abstract_decisions.csv`.
 3. Fill in screening decisions (`include` / `exclude` / `maybe`) for each `paper_id`.

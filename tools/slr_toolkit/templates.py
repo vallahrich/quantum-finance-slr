@@ -59,6 +59,47 @@ _CODEBOOK_ROWS: list[tuple[str, str, str]] = [
     ("hardware_or_sim", "Execution environment",
      "ibm | google | ionq | simulator_statevector | simulator_noisy | other | N/A"),
     ("dataset_description", "Data used for evaluation", "free text"),
+    # --- Hoefler framework fields (Stage B) ---
+    ("input_data_size", "Size/dimensionality of input data to the quantum algorithm",
+     "integer or description (e.g., '4 assets', '2^10 grid points') or N/A"),
+    ("output_type", "Nature of the quantum algorithm's output",
+     "scalar | vector | distribution_sample | expectation_value | other | N/A"),
+    ("io_bottleneck_discussed", "Does the paper discuss I/O bandwidth limitations?",
+     "yes | no"),
+    ("big_compute_small_data", "Does the workload fit the 'big compute on small data' pattern?",
+     "yes | no | unclear | N/A"),
+    ("speedup_type_detailed", "Speedup characterisation beyond asymptotic class",
+     "exponential | quartic | cubic | quadratic | sub-quadratic | none_claimed | unclear"),
+    ("speedup_constant_reported", "Are concrete constant factors or prefactors reported (not just big-O)?",
+     "yes | no"),
+    ("oracle_stateprep_cost_included", "Does the evaluation account for oracle construction and state preparation overhead?",
+     "yes | partial | no"),
+    ("end_to_end_overhead", "Does the evaluation include full end-to-end overhead (not just query complexity)?",
+     "yes | partial | no"),
+    ("crossover_time_estimated", "Is a crossover time explicitly estimated?",
+     "yes | no"),
+    ("crossover_time_value", "Reported crossover time (if estimated)",
+     "free text (e.g., '3.2 years', '< 2 weeks', 'not computed') or N/A"),
+    ("crossover_size_estimated", "Is a crossover problem size explicitly estimated?",
+     "yes | no"),
+    ("crossover_size_value", "Reported crossover problem size",
+     "free text (e.g., 'N > 10^6 assets', '2^50 grid points') or N/A"),
+    ("tier1_achievable", "Could the workload plausibly achieve Tier-1 crossover (≤ 2 weeks)?",
+     "yes | no | insufficient_data"),
+    ("tier2_finance_sla", "Does the paper assess against a finance-specific operational window?",
+     "yes_overnight | yes_intraday | yes_other | no"),
+    ("classical_baseline_detail", "Description of classical baseline used for comparison",
+     "free text (e.g., 'Monte Carlo on single CPU', 'GPU-accelerated QMC', 'analytical Black-Scholes') or N/A"),
+    ("classical_baseline_hardware", "Hardware specification of classical baseline",
+     "free text (e.g., 'NVIDIA A100', 'Intel Xeon 48-core', 'unspecified') or N/A"),
+    ("qubit_type", "Physical qubit technology assumed or used",
+     "superconducting | trapped_ion | photonic | neutral_atom | unspecified | N/A"),
+    ("error_correction_model", "Error correction assumptions",
+     "surface_code | other_code | error_mitigated_only | noiseless_simulation | unspecified"),
+    ("t_count_or_gate_cost", "T-count or dominant gate cost reported",
+     "free text with value or N/A"),
+    ("shots_or_samples", "Number of measurement shots or samples reported",
+     "integer or N/A"),
 ]
 
 _EXTRACTION_COLUMNS: list[str] = [row[0] for row in _CODEBOOK_ROWS]
@@ -70,6 +111,9 @@ _RUBRIC_COLUMNS: list[str] = [
     "q_baseline",
     "q_scalability",
     "q_justification",
+    "q_io_bottleneck",       # I/O limitations acknowledged and addressed
+    "q_crossover_framing",   # Tier-1/Tier-2 crossover analysis present
+    "q_end_to_end",          # End-to-end overhead included
 ]
 
 _HEADER_FONT = Font(bold=True, color="FFFFFF")

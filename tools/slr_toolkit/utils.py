@@ -59,6 +59,55 @@ def safe_write_text(path: Path, content: str, *, force: bool = False) -> bool:
     return True
 
 
+def cohens_kappa(decisions_a: list[str], decisions_b: list[str]) -> float:
+    """Compute Cohen's kappa for two lists of categorical decisions.
+
+    κ = (p_o - p_e) / (1 - p_e)
+    where p_o = observed agreement, p_e = expected agreement by chance.
+    Returns 1.0 for perfect agreement, 0.0 for chance-level, negative for
+    worse-than-chance. Returns 1.0 if both lists are empty.
+    """
+    n = len(decisions_a)
+    if n == 0:
+        return 1.0
+    if n != len(decisions_b):
+        raise ValueError(
+            f"Decision lists must have equal length (got {n} vs {len(decisions_b)})"
+        )
+
+    # Collect all unique categories
+    categories = sorted(set(decisions_a) | set(decisions_b))
+
+    # Observed agreement
+    agree = sum(1 for a, b in zip(decisions_a, decisions_b) if a == b)
+    p_o = agree / n
+
+    # Expected agreement by chance
+    p_e = 0.0
+    for cat in categories:
+        count_a = sum(1 for d in decisions_a if d == cat)
+        count_b = sum(1 for d in decisions_b if d == cat)
+        p_e += (count_a / n) * (count_b / n)
+
+    if p_e == 1.0:
+        return 1.0
+
+    return (p_o - p_e) / (1 - p_e)
+
+
+def percent_agreement(decisions_a: list[str], decisions_b: list[str]) -> float:
+    """Compute percent agreement between two lists of decisions."""
+    n = len(decisions_a)
+    if n == 0:
+        return 100.0
+    if n != len(decisions_b):
+        raise ValueError(
+            f"Decision lists must have equal length (got {n} vs {len(decisions_b)})"
+        )
+    agree = sum(1 for a, b in zip(decisions_a, decisions_b) if a == b)
+    return 100.0 * agree / n
+
+
 def safe_write_bytes(path: Path, data: bytes, *, force: bool = False) -> bool:
     """Binary variant of :func:`safe_write_text`."""
     log = logging.getLogger("slr_toolkit")
