@@ -218,24 +218,27 @@ Two-block Boolean strategy: **Quantum** AND **Finance**.
 
 **Block 1 — Quantum (technology):**
 ```
-"quantum comput*" OR "quantum algorithm*" OR "quantum circuit*"
-OR qubit* OR "quantum gate*" OR "variational quantum" OR QAOA
-OR VQE OR QAE OR "quantum amplitude estimation" OR Grover*
-OR HHL OR "quantum walk*" OR "quantum machine learning" OR QML
-OR "quantum annealing" OR "quantum error correction"
-OR "fault-tolerant quantum" OR NISQ OR "quantum speedup"
-OR "quantum advantage" OR "quantum Monte Carlo"
+"quantum computing" OR "quantum algorithm*" OR "quantum circuit*"
+OR "variational quantum" OR QAOA OR VQE OR QAE
+OR "quantum amplitude estimation" OR Grover OR HHL
+OR "quantum walk*" OR "quantum machine learning"
+OR "quantum error correction" OR "fault-tolerant quantum"
+OR "quantum speedup" OR "quantum advantage"
+OR "quantum annealing"
 ```
 
 **Block 2 — Finance (domain):**
 ```
-financ* OR banking OR portfolio* OR "risk management"
-OR "option pricing" OR derivative* OR "credit risk"
-OR "market risk" OR "stock market" OR trading
-OR "asset allocation" OR "Monte Carlo" OR "Black-Scholes"
-OR VaR OR "value at risk" OR "quantitative finance"
-OR "credit scoring" OR "fraud detection" OR CVA OR xVA
-OR "algorithmic trading" OR hedging
+finance OR financial OR "quantitative finance"
+OR "portfolio optim*" OR "portfolio selection"
+OR "portfolio management" OR "portfolio risk"
+OR "option pricing" OR "derivative pricing" OR "financial derivative*"
+OR "risk analysis" OR "credit risk" OR "market risk"
+OR "value at risk" OR VaR OR "Black-Scholes" OR CVA OR xVA
+OR "Monte Carlo" OR "credit scoring" OR "fraud detection"
+OR "algorithmic trading" OR "asset allocation"
+OR "stock market" OR "stock price*"
+OR "hedge fund" OR "financial hedging" OR "financial engineering"
 ```
 
 ### Combined template
@@ -325,25 +328,27 @@ Figure 1. Tracking is documented in
 
 ### Process
 
-Screening was conducted by a single reviewer (the thesis author). Four
-mitigations were implemented to control selection bias:
+Screening is conducted by two independent reviewers (Reviewer A and
+Reviewer B) using a calibration-then-split design.
 
-**Mitigation 1 — Supervisor subset validation:** The thesis supervisor
-independently screens a random 15–20% of title/abstract records. We
-report percent agreement and Cohen's κ on that subsample. Target:
-κ ≥ 0.70.
+**Step 1 — Calibration round:** Both reviewers independently screen the
+same random sample of 50 records. Cohen's κ is computed. Target:
+κ ≥ 0.70 before proceeding. Disagreements are discussed, borderline
+cases resolved, and criteria clarifications documented in
+`05_screening/calibration_log.md`. If κ < 0.70, criteria are refined and
+calibration is repeated on a fresh 50-record sample.
 
-**Mitigation 2 — Calibration round:** The reviewer screens 50 records
-first; discusses borderline cases with the supervisor; documents any
-criteria clarifications in `05_screening/calibration_log.md`.
+**Step 2 — Split screening:** Once calibrated (κ ≥ 0.70), the remaining
+records are split equally between the two reviewers. Each reviewer
+screens their assigned half independently.
 
-**Mitigation 3 — Re-screening after time gap:** The reviewer re-screens
-all *excluded* full-text papers after 2–4 weeks. Intra-rater concordance
-rate is reported.
+**Step 3 — Borderline escalation:** Uncertain cases (decision = `maybe`)
+are flagged and resolved jointly by both reviewers. Resolutions are
+documented in the decision CSV `notes` column.
 
-**Mitigation 4 — Borderline-case escalation:** Uncertain cases
-(decision = `maybe`) are flagged for supervisor discussion. Resolutions
-are documented in the decision CSV `notes` column.
+**Step 4 — Re-screening after time gap:** Each reviewer re-screens all
+their *excluded* full-text papers after 2–4 weeks. Intra-rater
+concordance rate is reported.
 
 ### Screening phases
 
@@ -355,20 +360,15 @@ are documented in the decision CSV `notes` column.
    `05_screening/full_text_decisions.csv`, with mandatory exclusion reason
    codes for excluded records (see `05_screening/exclusion_reason_codes.md`).
 
-### Inter-rater reliability (supervisor validation subset)
+### Inter-rater reliability
 
-We report Cohen's κ (kappa) at two checkpoints:
+We report Cohen's κ (kappa) at the calibration checkpoint:
 
-1. Calibration round: Reviewer and supervisor independently screen the
-   same ~50 records. Target: κ ≥ 0.70 before proceeding to main screening.
+1. **Calibration round:** Both reviewers independently screen the same
+   ~50 records. Target: κ ≥ 0.70 before proceeding to split screening.
    If κ < 0.70, disagreements are discussed, criteria clarified, any
    clarifications logged as minor protocol amendments, and calibration
    repeated on a fresh 50-record sample.
-
-2. Supervisor validation: Reported on the 15–20% random subset of
-   title/abstract records screened by the supervisor.
-   κ < 0.60 triggers a review of screening criteria and partial
-   re-screening.
 
 Calibration results (agreement rate, κ value, disagreements resolved,
 criteria clarifications) are documented in
@@ -392,16 +392,17 @@ through to final screening reliability.
 
 ---
 
-## 8b) Limitations of single-reviewer design
+## 8b) Limitations of split-screening design
 
-Single-reviewer screening and extraction introduces a risk of selection
-and extraction errors. Buscemi et al. (2006) found that single data
-extractors had approximately 21% more extraction errors than dual
-extractors. The four mitigations described above (supervisor validation,
-calibration, re-screening, borderline escalation) are designed to
-partially compensate for this risk but cannot fully replicate the
-reliability of independent dual screening. This limitation is reported
-transparently in the thesis discussion chapter.
+Split screening after calibration is more efficient than full dual
+screening but means that each record (outside the calibration set) is
+assessed by only one reviewer. This is mitigated by: (1) the calibration
+round establishing high inter-rater agreement (κ ≥ 0.70) before
+splitting; (2) borderline escalation ensuring uncertain cases are
+resolved jointly; (3) re-screening after a time gap catching
+inconsistencies. This design trades some reliability for feasibility
+while maintaining a stronger evidence base than single-reviewer designs.
+The limitation is reported transparently in the thesis discussion chapter.
 
 ---
 
@@ -577,7 +578,7 @@ The PRISMA flow diagram is generated programmatically via
 | Phase | Target |
 |-------|--------|
 | Protocol finalisation | Complete |
-| Database searches | In progress |
+| Database searches | Complete (8,464 raw → 4,750 unique) |
 | Screening (title/abstract) | — |
 | Screening (full-text) | — |
 | Data extraction | — |

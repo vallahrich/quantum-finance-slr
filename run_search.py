@@ -9,36 +9,19 @@ logging.basicConfig(
 )
 
 from tools.slr_toolkit.api_search import auto_search  # noqa: E402
+from tools.slr_toolkit.config import SLR_QUERY  # noqa: E402
 
-QUERY = (
-    '("quantum computing" OR "quantum algorithm" OR "quantum circuit" '
-    'OR qubit OR "variational quantum" OR QAOA OR VQE OR QAE '
-    'OR "quantum amplitude estimation" OR Grover OR HHL '
-    'OR "quantum walk" OR "quantum machine learning" OR QML '
-    'OR "quantum annealing" OR "quantum error correction" '
-    'OR "fault-tolerant quantum" OR NISQ OR "quantum speedup" '
-    'OR "quantum advantage" OR "quantum Monte Carlo") '
-    "AND "
-    '(finance OR financial OR portfolio OR "risk management" '
-    'OR "option pricing" OR derivative OR "credit risk" '
-    'OR "market risk" OR "stock market" OR trading '
-    'OR "asset allocation" OR "Monte Carlo" OR "Black-Scholes" '
-    'OR VaR OR "value at risk" OR "quantitative finance" '
-    'OR "credit scoring" OR "fraud detection" OR CVA OR xVA '
-    'OR "algorithmic trading" OR hedging OR banking)'
-)
-
-print(f"Query: {QUERY}", flush=True)
-print("Sources: openalex, arxiv, scopus", flush=True)
-print("Max results: 10000 per source", flush=True)
+print(f"Query: {SLR_QUERY}", flush=True)
+print("Sources: openalex, arxiv, semantic_scholar, scopus", flush=True)
+print("Max results: no limit (fetch all)", flush=True)
 print("Starting...\n", flush=True)
 
 folders = auto_search(
-    QUERY,
-    sources=["openalex", "arxiv", "scopus"],
+    SLR_QUERY,
+    sources=["openalex", "arxiv", "semantic_scholar", "scopus"],
     from_year=2016,
-    max_results=10000,
-    run_date="2026-03-09",
+    max_results=None,
+    run_date="2026-03-10-v2",
 )
 
 print(f"\n=== Done. {len(folders)} source(s) ingested ===", flush=True)

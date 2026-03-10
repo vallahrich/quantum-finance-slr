@@ -23,7 +23,7 @@ def _cmd_init(args: argparse.Namespace) -> None:
         log.info("Ensured directory: %s", d)
 
     create_all_templates(force=force)
-    print("✓ Repository structure initialised.")
+    print("[ok] Repository structure initialised.")
 
 
 def _cmd_new_search_run(args: argparse.Namespace) -> None:
@@ -31,7 +31,7 @@ def _cmd_new_search_run(args: argparse.Namespace) -> None:
     from .search_run import create_search_run
 
     run_folder = create_search_run(source=args.source, run_date=args.date)
-    print(f"✓ Created search run: {run_folder}")
+    print(f"[ok] Created search run: {run_folder}")
 
 
 def _cmd_ingest(args: argparse.Namespace) -> None:
@@ -40,7 +40,7 @@ def _cmd_ingest(args: argparse.Namespace) -> None:
 
     run_folder = Path(args.run_folder).resolve()
     df = ingest_run(run_folder)
-    print(f"✓ Ingested {len(df)} records from {run_folder.name}")
+    print(f"[ok] Ingested {len(df)} records from {run_folder.name}")
 
 
 def _cmd_build_master(args: argparse.Namespace) -> None:
@@ -48,7 +48,7 @@ def _cmd_build_master(args: argparse.Namespace) -> None:
     from .dedup import build_master
 
     build_master()
-    print("✓ Master library built.")
+    print("[ok] Master library built.")
 
 
 def _cmd_prisma(args: argparse.Namespace) -> None:
@@ -56,7 +56,7 @@ def _cmd_prisma(args: argparse.Namespace) -> None:
     from .prisma import generate_prisma_counts
 
     generate_prisma_counts()
-    print("✓ PRISMA counts generated.")
+    print("[ok] PRISMA counts generated.")
 
 
 def _cmd_auto_search(args: argparse.Namespace) -> None:
@@ -67,7 +67,8 @@ def _cmd_auto_search(args: argparse.Namespace) -> None:
     print(f"Searching: {', '.join(sources)}")
     print(f"Query: {args.query}")
     print(f"Year range: {args.from_year}--present")
-    print(f"Max results per source: {args.max_results}")
+    cap_str = str(args.max_results) if args.max_results is not None else "all (no limit)"
+    print(f"Max results per source: {cap_str}")
 
     # Resolve concept filters to OpenAlex IDs
     concept_ids: list[str] | None = None
@@ -105,17 +106,70 @@ def _cmd_auto_search(args: argparse.Namespace) -> None:
         run_date=args.date,
         email=args.email,
         api_key=args.api_key,
+        openalex_api_key=args.openalex_api_key,
         concept_ids=concept_ids if concept_ids else None,
         use_exact=args.exact,
         arxiv_categories=arxiv_categories,
     )
 
     if folders:
-        print(f"\n✓ Auto-search complete. {len(folders)} source(s) ingested.")
+        print(f"\n[ok] Auto-search complete. {len(folders)} source(s) ingested.")
         for source, folder in folders.items():
             print(f"  {source} -> {folder.name}")
     else:
-        print("\n✗ No results retrieved from any source.")
+        print("\n[FAIL] No results retrieved from any source.")
+
+
+def _cmd_generate_screening(args: argparse.Namespace) -> None:
+    """Generate screening Excel workbooks."""
+    from .screening import generate_screening_excels
+
+    paths = generate_screening_excels(seed=args.seed)
+    print("[ok] Screening workbooks generated:")
+    for label, path in paths.items():
+        print(f"  {label}: {path.name}")
+
+
+def _cmd_compute_kappa(args: argparse.Namespace) -> None:
+    """Compute Cohen's kappa from calibration workbook."""
+    from pathlib import Path
+    from .screening import compute_kappa
+
+    cal_path = Path(args.file) if args.file else None
+    result = compute_kappa(cal_path)
+
+    if result.get("error"):
+        print(f"[FAIL] {result['error']}")
+        return
+
+    print(f"Calibration Results:")
+    print(f"  Records screened by both: {result['n']}")
+    print(f"  Agreed:                   {result['agreed']}")
+    print(f"  Disagreed:                {result['disagreed']}")
+    print(f"  Agreement rate:           {result['agreement']:.1%}")
+    print(f"  Cohen's kappa:            {result['kappa']:.3f}")
+    print()
+
+    if result["pass"]:
+        print(f"  [ok] kappa = {result['kappa']:.3f} >= 0.70 -- PASS")
+        print("  You can proceed to split screening.")
+    else:
+        print(f"  [FAIL] kappa = {result['kappa']:.3f} < 0.70 -- BELOW THRESHOLD")
+        print("  Discuss disagreements, clarify criteria, and recalibrate.")
+
+    if result.get("confusion"):
+        print("\n  Confusion matrix:")
+        for (a, b), count in sorted(result["confusion"].items()):
+            if a != b:
+                print(f"    Reviewer A={a}, Reviewer B={b}: {count}")
+
+
+def _cmd_merge_screening(args: argparse.Namespace) -> None:
+    """Merge screening results into decisions CSV."""
+    from .screening import merge_screening_results
+
+    output = merge_screening_results()
+    print(f"[ok] Merged screening decisions -> {output.name}")
 
 
 def _cmd_rerun_clean(args: argparse.Namespace) -> None:
@@ -173,7 +227,7 @@ def _cmd_rerun_clean(args: argparse.Namespace) -> None:
             writer.writerow(["date", "version", "section", "change_description", "author"])
         writer.writerow([today, "", "03_raw_exports", f"{description}. Rationale: {rationale}", "slr_toolkit"])
 
-    print(f"✓ Amendment logged to {amendments_path.name}")
+    print(f"[ok] Amendment logged to {amendments_path.name}")
 
 
 # ---------------------------------------------------------------------------
@@ -242,7 +296,8 @@ def build_parser() -> argparse.ArgumentParser:
     p_as.add_argument(
         "--query", "-q",
         required=True,
-        help='Search query, e.g. \'"quantum computing" AND "finance"\'.'
+        help='Search query, e.g. \'"quantum computing" AND "finance"\'. '
+             "For Scopus, see config.SCOPUS_QUERY_TEMPLATE for the recommended query.",
     )
     p_as.add_argument(
         "--sources", "-s",
@@ -259,8 +314,9 @@ def build_parser() -> argparse.ArgumentParser:
     p_as.add_argument(
         "--max-results",
         type=int,
-        default=500,
-        help="Max results per source (default: 500).",
+        default=None,
+        help="Max results per source. Default: all (no limit). "
+             "Pass a number to cap results.",
     )
     p_as.add_argument(
         "--date",
@@ -278,6 +334,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="API key for Scopus or WoS (if using those sources).",
     )
     p_as.add_argument(
+        "--openalex-api-key",
+        default=None,
+        help="OpenAlex API key (free, required since Feb 2026). "
+             "Also checks OPENALEX_API_KEY env var. "
+             "Get a key at https://openalex.org/settings/api",
+    )
+    p_as.add_argument(
         "--concept-filter",
         default=None,
         help="Comma-separated concept search terms for OpenAlex filtering "
@@ -286,12 +349,14 @@ def build_parser() -> argparse.ArgumentParser:
     p_as.add_argument(
         "--arxiv-categories",
         default=None,
-        help='Comma-separated arXiv category filters (e.g. "q-fin,quant-ph,cs.CE").',
+        help="Comma-separated arXiv category filters. NOT applied by default. "
+             "Recommended if arXiv results are unmanageably large: "
+             "q-fin.*,quant-ph,cs.CE,cs.AI,cs.LG",
     )
     p_as.add_argument(
         "--exact",
         action="store_true",
-        help="Use OpenAlex search.exact for unstemmed matching.",
+        help="Use OpenAlex exact matching for unstemmed results.",
     )
     p_as.set_defaults(func=_cmd_auto_search)
 
@@ -311,6 +376,35 @@ def build_parser() -> argparse.ArgumentParser:
         help="Reason for deprecating these runs (logged to amendments_log.csv).",
     )
     p_rc.set_defaults(func=_cmd_rerun_clean)
+
+    # -- generate-screening --------------------------------------------------
+    p_gs = sub.add_parser(
+        "generate-screening",
+        help="Generate calibration + split screening Excel workbooks.",
+    )
+    p_gs.add_argument(
+        "--seed", type=int, default=42,
+        help="Random seed for reproducible sampling/splitting (default: 42).",
+    )
+    p_gs.set_defaults(func=_cmd_generate_screening)
+
+    # -- compute-kappa -------------------------------------------------------
+    p_ck = sub.add_parser(
+        "compute-kappa",
+        help="Compute Cohen's kappa from the calibration screening workbook.",
+    )
+    p_ck.add_argument(
+        "--file", default=None,
+        help="Path to calibration Excel (default: 05_screening/calibration_screening.xlsx).",
+    )
+    p_ck.set_defaults(func=_cmd_compute_kappa)
+
+    # -- merge-screening -----------------------------------------------------
+    p_ms = sub.add_parser(
+        "merge-screening",
+        help="Merge calibration + reviewer A/B screening into one decisions CSV.",
+    )
+    p_ms.set_defaults(func=_cmd_merge_screening)
 
     return parser
 

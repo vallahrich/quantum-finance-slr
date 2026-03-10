@@ -95,3 +95,50 @@ PREPRINT_VENUES: list[str] = [
 # ---------------------------------------------------------------------------
 FUZZY_TITLE_THRESHOLD: int = 90   # rapidfuzz token_sort_ratio threshold
 YEAR_TOLERANCE: int = 1           # ±years for fuzzy matching
+
+# ---------------------------------------------------------------------------
+# OpenAlex API
+# ---------------------------------------------------------------------------
+OPENALEX_API_URL: str = "https://api.openalex.org/works"
+
+# ---------------------------------------------------------------------------
+# Recommended arXiv categories for quantum finance SLR.
+# Apply via --arxiv-categories if arXiv results are unmanageably large.
+# NOT applied by default — SLR methodology requires erring toward recall.
+# ---------------------------------------------------------------------------
+RECOMMENDED_ARXIV_CATEGORIES: list[str] = [
+    "q-fin.*", "quant-ph", "cs.CE", "cs.AI", "cs.LG", "cs.CC", "cs.DS",
+]
+
+# ---------------------------------------------------------------------------
+# Canonical SLR query — API-neutral, used by run_search.py and auto-search.
+# Each query builder adapts this per-source (wildcard expansion, field
+# prefixes, TITLE-ABS-KEY wrapping, etc.).
+# ---------------------------------------------------------------------------
+SLR_QUERY: str = (
+    '("quantum computing" OR "quantum algorithm*" OR "quantum circuit*"'
+    ' OR "variational quantum" OR QAOA OR VQE OR QAE'
+    ' OR "quantum amplitude estimation" OR Grover OR HHL'
+    ' OR "quantum walk*" OR "quantum machine learning"'
+    ' OR "quantum error correction" OR "fault-tolerant quantum"'
+    ' OR "quantum speedup" OR "quantum advantage"'
+    ' OR "quantum annealing")'
+    ' AND '
+    '(finance OR financial OR "quantitative finance"'
+    ' OR "portfolio optim*" OR "portfolio selection"'
+    ' OR "portfolio management" OR "portfolio risk"'
+    ' OR "option pricing" OR "derivative pricing" OR "financial derivative*"'
+    ' OR "risk analysis" OR "credit risk" OR "market risk" OR "value at risk"'
+    ' OR VaR OR "Black-Scholes" OR CVA OR xVA'
+    ' OR "Monte Carlo"'
+    ' OR "credit scoring" OR "fraud detection"'
+    ' OR "algorithmic trading" OR "asset allocation"'
+    ' OR "stock market" OR "stock price*"'
+    ' OR "hedge fund" OR "financial hedging"'
+    ' OR "financial engineering")'
+)
+
+# Scopus-formatted version of SLR_QUERY (for manual Scopus advanced search).
+SCOPUS_QUERY_TEMPLATE: str = (
+    f"TITLE-ABS-KEY({SLR_QUERY}) AND PUBYEAR > 2015"
+)

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import time
 import urllib.error
 import urllib.parse
@@ -22,7 +23,7 @@ from openpyxl import load_workbook
 
 from . import config
 from .ingest import _detect_preprint
-from .query_builder import build_arxiv_query, build_openalex_query
+from .query_builder import build_arxiv_query, build_openalex_query, build_scopus_query
 from .search_run import create_search_run
 from .utils import ensure_dir, generate_paper_id
 
@@ -87,12 +88,15 @@ def _log_search_to_xlsx(
 def _default_fields(source: str) -> str:
     """Return default field description per source."""
     return {
-        "openalex": "search (full-text) + concept.id filter",
+        "openalex": "title_and_abstract.search filter + concept.id filter",
         "arxiv": "ti: + abs: + cat:",
         "semantic_scholar": "query (title + abstract)",
         "scopus": "TITLE-ABS-KEY",
         "wos": "TS (Topic Search)",
     }.get(source, "")
+
+
+_SAFETY_LIMIT = 50_000  # warn (but don't stop) if a single source exceeds this
 
 log = logging.getLogger("slr_toolkit.api_search")
 
@@ -110,7 +114,7 @@ def _rate_limited_get(url: str, *, delay: float = 1.0, timeout: int = 30) -> byt
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# OpenAlex  (fully free, no auth)
+# OpenAlex  (free API key required since Feb 2026)
 # Docs: https://docs.openalex.org
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -196,11 +200,12 @@ def search_openalex(
     *,
     from_year: int = 2016,
     to_year: int | None = None,
-    max_results: int = 500,
+    max_results: int | None = None,
     per_page: int = 100,
     email: str | None = None,
     concept_ids: list[str] | None = None,
     use_exact: bool = False,
+    api_key: str | None = None,
 ) -> list[dict[str, Any]]:
     """Search OpenAlex works API.
 
@@ -210,39 +215,59 @@ def search_openalex(
         Free-text search query.
     from_year, to_year : int
         Publication year range.
-    max_results : int
-        Maximum records to retrieve (across pages).
+    max_results : int | None
+        Maximum records to retrieve. ``None`` means fetch all (no limit).
     email : str | None
         Optional contact email for polite pool (faster rate limits).
     concept_ids : list[str] | None
         OpenAlex concept IDs to add as a filter (OR-combined).
     use_exact : bool
-        Use ``search.exact`` for unstemmed matching (default: stemmed).
+        Use exact matching for unstemmed results (default: stemmed).
+    api_key : str | None
+        OpenAlex API key. Required since Feb 2026 for meaningful usage.
+        Get a free key at https://openalex.org/settings/api
     """
+    import os
+
     if to_year is None:
         to_year = date.today().year
 
-    oa_q = build_openalex_query(query, concept_ids=concept_ids, use_exact=use_exact)
-    search_key = oa_q["search_key"]
+    oa_key = api_key or os.environ.get("OPENALEX_API_KEY", "")
+    if not oa_key:
+        log.warning(
+            "No OpenAlex API key found. Rate limits will be very restrictive "
+            "(100 credits/day). Get a free key at https://openalex.org/settings/api"
+        )
 
-    filter_parts = [f"publication_year:{from_year}-{to_year}"]
+    oa_q = build_openalex_query(query, concept_ids=concept_ids, use_exact=use_exact)
+
+    # Build filter string: title_and_abstract search + year + optional concepts
+    filter_parts = [
+        f"{oa_q['filter_key']}:{oa_q['filter_value']}",
+        f"publication_year:{from_year}-{to_year}",
+    ]
     if "extra_filter" in oa_q:
         filter_parts.append(oa_q["extra_filter"])
 
     params: dict[str, str] = {
-        search_key: oa_q["search_value"],
         "filter": ",".join(filter_parts),
         "per_page": str(min(per_page, 200)),
         "sort": "relevance_score:desc",
     }
     if email:
         params["mailto"] = email
+    if oa_key:
+        params["api_key"] = oa_key
 
     all_records: list[dict[str, Any]] = []
     cursor = "*"
     pages = 0
+    warned_safety = False
 
-    while len(all_records) < max_results:
+    while True:
+        if max_results is not None and len(all_records) >= max_results:
+            break
+
         params["cursor"] = cursor
         url = f"{_OPENALEX_WORKS}?{urllib.parse.urlencode(params)}"
         log.info("OpenAlex page %d — fetching %s", pages + 1, url[:120] + "...")
@@ -259,8 +284,20 @@ def search_openalex(
 
         for w in results:
             all_records.append(_openalex_parse_work(w))
-            if len(all_records) >= max_results:
+            if max_results is not None and len(all_records) >= max_results:
                 break
+
+        # Progress counter
+        if len(all_records) % 100 < len(results):
+            print(f"  openalex: fetched {len(all_records)} records so far...")
+
+        # Safety warning
+        if not warned_safety and len(all_records) > _SAFETY_LIMIT:
+            log.warning(
+                "OpenAlex: %d records fetched — query may be too broad. "
+                "Continuing to fetch all results.", len(all_records),
+            )
+            warned_safety = True
 
         cursor = data.get("meta", {}).get("next_cursor")
         if not cursor:
@@ -315,7 +352,7 @@ def _arxiv_parse_entry(entry: ET.Element) -> dict[str, Any]:
 def search_arxiv(
     query: str,
     *,
-    max_results: int = 500,
+    max_results: int | None = None,
     batch_size: int = 100,
     categories: list[str] | None = None,
 ) -> list[dict[str, Any]]:
@@ -325,8 +362,8 @@ def search_arxiv(
     ----------
     query : str
         arXiv search query (supports AND/OR/ANDNOT, field prefixes like ti:, au:, abs:).
-    max_results : int
-        Maximum records to retrieve.
+    max_results : int | None
+        Maximum records to retrieve. ``None`` means fetch all (no limit).
     categories : list[str] | None
         arXiv category filters (e.g. ``["q-fin*", "quant-ph"]``).
     """
@@ -335,9 +372,16 @@ def search_arxiv(
 
     all_records: list[dict[str, Any]] = []
     start = 0
+    warned_safety = False
 
-    while start < max_results:
-        n = min(batch_size, max_results - start)
+    while True:
+        if max_results is not None and start >= max_results:
+            break
+
+        n = batch_size
+        if max_results is not None:
+            n = min(batch_size, max_results - start)
+
         params = urllib.parse.urlencode({
             "search_query": search_query,
             "start": str(start),
@@ -362,9 +406,30 @@ def search_arxiv(
         for entry in entries:
             all_records.append(_arxiv_parse_entry(entry))
 
+        # Progress counter
+        if len(all_records) % 100 < len(entries):
+            print(f"  arxiv: fetched {len(all_records)} records so far...")
+
+        # Safety warning
+        if not warned_safety and len(all_records) > _SAFETY_LIMIT:
+            log.warning(
+                "arXiv: %d records fetched — query may be too broad. "
+                "Continuing to fetch all results.", len(all_records),
+            )
+            warned_safety = True
+
         if len(entries) < n:
             break  # no more results
         start += n
+
+    if len(all_records) >= 50000:
+        msg = (
+            "arXiv: hit the ~50,000 record hard limit. Results may be incomplete. "
+            "Consider splitting by date range using submittedDate, or adding "
+            "category restrictions via --arxiv-categories to narrow results."
+        )
+        log.warning(msg)
+        print(f"  WARNING: {msg}")
 
     log.info("arXiv: retrieved %d records", len(all_records))
     return all_records
@@ -376,6 +441,20 @@ def search_arxiv(
 # ═══════════════════════════════════════════════════════════════════════════
 
 _S2_SEARCH = "https://api.semanticscholar.org/graph/v1/paper/search"
+_S2_BULK_SEARCH = "https://api.semanticscholar.org/graph/v1/paper/search/bulk"
+
+
+def _convert_to_s2_bulk_syntax(query: str) -> str:
+    """Convert standard Boolean query to S2 bulk search syntax.
+
+    The bulk endpoint uses ``+`` for AND, ``|`` for OR, ``-`` for NOT,
+    instead of the English words.
+    """
+    result = query
+    result = re.sub(r'\bAND\b', '+', result)
+    result = re.sub(r'\bOR\b', '|', result)
+    result = re.sub(r'\bNOT\b', '-', result)
+    return result
 
 
 def _s2_fetch_with_backoff(url: str, *, max_retries: int = 5) -> dict:
@@ -397,39 +476,39 @@ def _s2_fetch_with_backoff(url: str, *, max_retries: int = 5) -> dict:
     raise RuntimeError(f"Semantic Scholar: still rate-limited after {max_retries} retries")
 
 
-def search_semantic_scholar(
+def _s2_parse_paper(p: dict) -> dict[str, Any]:
+    """Convert a Semantic Scholar paper object to a normalised record dict."""
+    ext_ids = p.get("externalIds") or {}
+    doi = ext_ids.get("DOI", "") or ""
+    authors_list = p.get("authors") or []
+    authors = "; ".join(a.get("name", "") for a in authors_list)
+    fos = p.get("s2FieldsOfStudy") or []
+    keywords = "; ".join(f.get("category", "") for f in fos)
+
+    return {
+        "title": p.get("title", "") or "",
+        "authors": authors,
+        "year": str(p.get("year", "") or ""),
+        "venue": p.get("venue", "") or "",
+        "doi": doi,
+        "abstract": p.get("abstract", "") or "",
+        "keywords": keywords,
+    }
+
+
+def _s2_search_relevance(
     query: str,
     *,
-    from_year: int = 2016,
-    to_year: int | None = None,
-    max_results: int = 500,
-    api_key: str | None = None,
+    from_year: int,
+    to_year: int,
+    max_results: int,
+    s2_key: str,
 ) -> list[dict[str, Any]]:
-    """Search Semantic Scholar paper search API.
-
-    Parameters
-    ----------
-    query : str
-        Free-text search query.
-    from_year, to_year : int
-        Publication year range filter.
-    max_results : int
-        Maximum records to retrieve.
-    api_key : str | None
-        Optional S2 API key for higher rate limits.
-        Get one free at https://www.semanticscholar.org/product/api#api-key
-    """
-    if to_year is None:
-        to_year = date.today().year
-
+    """Fetch from S2 relevance endpoint (capped at 1,000 results)."""
     fields = "title,authors,year,venue,externalIds,abstract,s2FieldsOfStudy"
     all_records: list[dict[str, Any]] = []
     offset = 0
     batch_size = 100
-
-    # If user has an S2 API key, patch the request headers
-    import os
-    s2_key = api_key or os.environ.get("S2_API_KEY", "")
 
     while offset < max_results:
         n = min(batch_size, max_results - offset)
@@ -441,16 +520,15 @@ def search_semantic_scholar(
             "year": f"{from_year}-{to_year}",
         })
         url = f"{_S2_SEARCH}?{params}"
-        log.info("Semantic Scholar offset=%d — fetching", offset)
+        log.info("Semantic Scholar (relevance) offset=%d — fetching", offset)
 
         try:
             if s2_key:
-                # Direct request with API key header
                 req = urllib.request.Request(url, headers={
                     "x-api-key": s2_key,
                     "Accept": "application/json",
                 })
-                time.sleep(1.0)  # lighter delay with API key
+                time.sleep(1.0)
                 with urllib.request.urlopen(req, timeout=30) as resp:
                     data = json.loads(resp.read())
             else:
@@ -464,28 +542,143 @@ def search_semantic_scholar(
             break
 
         for p in papers:
-            ext_ids = p.get("externalIds") or {}
-            doi = ext_ids.get("DOI", "") or ""
-            authors_list = p.get("authors") or []
-            authors = "; ".join(a.get("name", "") for a in authors_list)
-            fos = p.get("s2FieldsOfStudy") or []
-            keywords = "; ".join(f.get("category", "") for f in fos)
+            all_records.append(_s2_parse_paper(p))
 
-            all_records.append({
-                "title": p.get("title", "") or "",
-                "authors": authors,
-                "year": str(p.get("year", "") or ""),
-                "venue": p.get("venue", "") or "",
-                "doi": doi,
-                "abstract": p.get("abstract", "") or "",
-                "keywords": keywords,
-            })
+        if len(all_records) % 100 < len(papers):
+            print(f"  semantic_scholar: fetched {len(all_records)} records so far...")
 
         total = data.get("total", 0)
         offset += n
         log.info("Semantic Scholar: %d / %d (total available: %d)", len(all_records), max_results, total)
         if offset >= total:
             break
+
+    return all_records
+
+
+def _s2_search_bulk(
+    query: str,
+    *,
+    from_year: int,
+    to_year: int,
+    max_results: int | None,
+    s2_key: str,
+) -> list[dict[str, Any]]:
+    """Fetch from S2 bulk endpoint (supports >1,000 results via token pagination)."""
+    fields = "title,authors,year,venue,externalIds,abstract,s2FieldsOfStudy"
+    bulk_query = _convert_to_s2_bulk_syntax(query)
+    all_records: list[dict[str, Any]] = []
+    warned_safety = False
+
+    base_params = urllib.parse.urlencode({
+        "query": bulk_query,
+        "fields": fields,
+        "year": f"{from_year}-{to_year}",
+    })
+    token: str | None = None
+
+    while True:
+        if max_results is not None and len(all_records) >= max_results:
+            break
+
+        url = f"{_S2_BULK_SEARCH}?{base_params}"
+        if token:
+            url += f"&token={urllib.parse.quote(token, safe='')}"
+        log.info("Semantic Scholar (bulk) fetching — %d records so far", len(all_records))
+
+        try:
+            if s2_key:
+                req = urllib.request.Request(url, headers={
+                    "x-api-key": s2_key,
+                    "Accept": "application/json",
+                })
+                time.sleep(1.0)
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    data = json.loads(resp.read())
+            else:
+                data = _s2_fetch_with_backoff(url)
+        except Exception as exc:
+            log.error("Semantic Scholar bulk request failed: %s", exc)
+            break
+
+        papers = data.get("data", [])
+        if not papers:
+            break
+
+        for p in papers:
+            all_records.append(_s2_parse_paper(p))
+            if max_results is not None and len(all_records) >= max_results:
+                break
+
+        if len(all_records) % 100 < len(papers):
+            print(f"  semantic_scholar: fetched {len(all_records)} records so far...")
+
+        if not warned_safety and len(all_records) > _SAFETY_LIMIT:
+            log.warning(
+                "Semantic Scholar: %d records fetched — query may be too broad. "
+                "Continuing to fetch all results.", len(all_records),
+            )
+            warned_safety = True
+
+        token = data.get("token")
+        if not token:
+            break
+
+    return all_records
+
+
+def search_semantic_scholar(
+    query: str,
+    *,
+    from_year: int = 2016,
+    to_year: int | None = None,
+    max_results: int | None = None,
+    api_key: str | None = None,
+) -> list[dict[str, Any]]:
+    """Search Semantic Scholar paper search API.
+
+    Uses the relevance endpoint for small result sets (max_results <= 1000)
+    and the bulk endpoint for larger or uncapped fetches, since the relevance
+    endpoint has a hard cap of 1,000 results.
+
+    Parameters
+    ----------
+    query : str
+        Free-text search query.
+    from_year, to_year : int
+        Publication year range filter.
+    max_results : int | None
+        Maximum records to retrieve. ``None`` means fetch all (no limit).
+    api_key : str | None
+        Optional S2 API key for higher rate limits.
+        Get one free at https://www.semanticscholar.org/product/api#api-key
+    """
+    if to_year is None:
+        to_year = date.today().year
+
+    import os
+    s2_key = api_key or os.environ.get("S2_API_KEY", "")
+
+    # Relevance endpoint caps at 1,000 total results.
+    # Use it only when max_results is explicitly set and <= 1000.
+    use_relevance = max_results is not None and max_results <= 1000
+
+    if use_relevance:
+        all_records = _s2_search_relevance(
+            query,
+            from_year=from_year,
+            to_year=to_year,
+            max_results=max_results,
+            s2_key=s2_key,
+        )
+    else:
+        all_records = _s2_search_bulk(
+            query,
+            from_year=from_year,
+            to_year=to_year,
+            max_results=max_results,
+            s2_key=s2_key,
+        )
 
     log.info("Semantic Scholar: retrieved %d records", len(all_records))
     return all_records
@@ -499,14 +692,20 @@ def search_scopus(
     query: str,
     *,
     api_key: str | None = None,
-    max_results: int = 500,
+    max_results: int | None = None,
+    from_year: int = 2016,
 ) -> list[dict[str, Any]]:
     """Search Scopus via Elsevier REST API.
 
     Uses the raw REST API for maximum compatibility with free-tier keys.
     Set api_key or configure ~/.config/pybliometrics/pybliometrics.cfg.
+
+    The query is auto-wrapped in ``TITLE-ABS-KEY()`` with a ``PUBYEAR``
+    filter unless it already contains Scopus field syntax.
     """
     import os
+
+    query = build_scopus_query(query, from_year=from_year)
 
     # Resolve API key: explicit > env > pybliometrics config
     key = api_key or os.environ.get("SCOPUS_API_KEY", "")
@@ -532,12 +731,21 @@ def search_scopus(
     all_records: list[dict[str, Any]] = []
     start = 0
     count = 25  # Scopus max per page
+    total = 0
+    warned_safety = False
 
-    while start < max_results:
+    while True:
+        if max_results is not None and start >= max_results:
+            break
+
+        page_count = count
+        if max_results is not None:
+            page_count = min(count, max_results - start)
+
         params = urllib.parse.urlencode({
             "query": query,
             "start": str(start),
-            "count": str(min(count, max_results - start)),
+            "count": str(page_count),
         })
         url = f"{base_url}?{params}"
         req = urllib.request.Request(url, headers={
@@ -576,14 +784,36 @@ def search_scopus(
                 "keywords": e.get("authkeywords", "") or "",
             })
 
-            if len(all_records) >= max_results:
+            if max_results is not None and len(all_records) >= max_results:
                 break
 
-        log.info("Scopus: fetched %d / %d (total available: %d)", len(all_records), max_results, total)
+        # Progress counter
+        if len(all_records) % 100 < len(entries):
+            print(f"  scopus: fetched {len(all_records)} records so far...")
+
+        # Safety warning
+        if not warned_safety and len(all_records) > _SAFETY_LIMIT:
+            log.warning(
+                "Scopus: %d records fetched — query may be too broad. "
+                "Continuing to fetch all results.", len(all_records),
+            )
+            warned_safety = True
+
+        cap_str = str(max_results) if max_results is not None else "all"
+        log.info("Scopus: fetched %d / %s (total available: %d)", len(all_records), cap_str, total)
 
         if start + count >= total:
             break
         start += count
+
+    # Scopus web export caps at 20,000 records; API pagination handles more,
+    # but warn so the user can cross-check against the web interface.
+    if total > 20000:
+        log.info(
+            "Scopus: %d total results. Note: Scopus web export is limited to "
+            "20,000 records. API pagination handles this, but verify completeness "
+            "against the web interface count.", total,
+        )
 
     log.info("Scopus: retrieved %d records", len(all_records))
     return all_records
@@ -597,7 +827,7 @@ def search_wos(
     query: str,
     *,
     api_key: str | None = None,
-    max_results: int = 500,
+    max_results: int | None = None,
 ) -> list[dict[str, Any]]:
     """Search Web of Science Starter API (requires API key).
 
@@ -616,9 +846,15 @@ def search_wos(
     url = "https://api.clarivate.com/apis/wos-starter/v1/documents"
     all_records: list[dict[str, Any]] = []
     page = 1
-    limit = min(50, max_results)
+    limit = 50
+    if max_results is not None:
+        limit = min(50, max_results)
+    warned_safety = False
 
-    while len(all_records) < max_results:
+    while True:
+        if max_results is not None and len(all_records) >= max_results:
+            break
+
         params = urllib.parse.urlencode({
             "q": query,
             "db": "WOS",
@@ -661,6 +897,18 @@ def search_wos(
                 "keywords": "; ".join(h.get("keywords", {}).get("authorKeywords", []) or []),
             })
 
+        # Progress counter
+        if len(all_records) % 100 < len(hits):
+            print(f"  wos: fetched {len(all_records)} records so far...")
+
+        # Safety warning
+        if not warned_safety and len(all_records) > _SAFETY_LIMIT:
+            log.warning(
+                "WoS: %d records fetched — query may be too broad. "
+                "Continuing to fetch all results.", len(all_records),
+            )
+            warned_safety = True
+
         if len(hits) < limit:
             break
         page += 1
@@ -687,10 +935,11 @@ def auto_search(
     *,
     sources: list[str] | None = None,
     from_year: int = 2016,
-    max_results: int = 500,
+    max_results: int | None = None,
     run_date: str | None = None,
     email: str | None = None,
     api_key: str | None = None,
+    openalex_api_key: str | None = None,
     concept_ids: list[str] | None = None,
     use_exact: bool = False,
     arxiv_categories: list[str] | None = None,
@@ -702,21 +951,23 @@ def auto_search(
     query : str
         Search query (adapted per-source internally).
     sources : list[str]
-        API sources to query. Default: ["openalex", "arxiv", "semantic_scholar"].
+        API sources to query. Default: ["openalex", "arxiv", "scopus"].
     from_year : int
         Start year filter.
-    max_results : int
-        Max results per source.
+    max_results : int | None
+        Max results per source. ``None`` means fetch all (no limit).
     run_date : str
         Date string (YYYY-MM-DD). Default: today.
     email : str
         Contact email for polite rate limits (OpenAlex).
     api_key : str
         API key for Scopus/WoS (if needed).
+    openalex_api_key : str | None
+        OpenAlex API key (free, required since Feb 2026).
     concept_ids : list[str] | None
         OpenAlex concept IDs to filter by.
     use_exact : bool
-        Use OpenAlex ``search.exact`` for unstemmed matching.
+        Use OpenAlex exact matching for unstemmed results.
     arxiv_categories : list[str] | None
         arXiv category filters (e.g. ``["q-fin*", "quant-ph"]``).
 
@@ -745,10 +996,12 @@ def auto_search(
 
         # Build kwargs per searcher
         kwargs: dict[str, Any] = {"max_results": max_results}
-        if source in ("openalex", "semantic_scholar"):
+        if source in ("openalex", "semantic_scholar", "scopus"):
             kwargs["from_year"] = from_year
         if source == "openalex" and email:
             kwargs["email"] = email
+        if source == "openalex" and openalex_api_key:
+            kwargs["api_key"] = openalex_api_key
         if source == "openalex" and concept_ids:
             kwargs["concept_ids"] = concept_ids
         if source == "openalex" and use_exact:
@@ -809,9 +1062,9 @@ def auto_search(
         df.to_csv(out_path, index=False, encoding="utf-8")
 
         log.info(
-            "%s: %d records → %s", source, len(df), out_path,
+            "%s: %d records -> %s", source, len(df), out_path,
         )
-        print(f"  ✓ {source}: {len(df)} records ingested")
+        print(f"  [ok] {source}: {len(df)} records ingested")
 
         # Auto-log exact query to search_log.xlsx (PRISMA-S compliance)
         _log_search_to_xlsx(
@@ -820,7 +1073,7 @@ def auto_search(
             run_date=run_date,
             results_n=len(df),
             notes=f"API version: {_INTERFACE_MAP.get(source, source)}; "
-                  f"max_results={max_results}",
+                  f"max_results={max_results if max_results is not None else 'all'}",
         )
 
         created_folders[source] = run_folder
