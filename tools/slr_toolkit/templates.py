@@ -16,8 +16,8 @@ log = logging.getLogger("slr_toolkit.templates")
 
 # ── Screening templates ────────────────────────────────────────────────────
 
-_TA_HEADER = "paper_id,decision,supervisor_check,conflict,final_decision,reason_code,notes\n"
-_FT_HEADER = "paper_id,decision,supervisor_check,conflict,final_decision,exclusion_reason,stage,notes\n"
+_TA_HEADER = "paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,reason_code,notes\n"
+_FT_HEADER = "paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusion_reason,stage,notes\n"
 
 
 def create_ta_decisions_template(*, force: bool = False) -> None:

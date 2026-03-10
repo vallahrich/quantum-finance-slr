@@ -157,7 +157,7 @@ This is the **core analytical lens** for Stage B:
 ### Next Steps
 - Run benchmark sensitivity check
 - Begin title/abstract screening
-- Calibration round with supervisor (target κ ≥ 0.70)
+- Calibration round (both reviewers screen 50 records, target κ ≥ 0.70)
 
 ---
 

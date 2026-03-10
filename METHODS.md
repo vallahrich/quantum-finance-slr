@@ -21,7 +21,7 @@ framework dimensions.
 | §7b | Benchmark sensitivity check | Ch. 3 §3.6 |
 | §7c | Snowballing procedure | Ch. 3 §3.7 |
 | §8 | Screening and selection | Ch. 3 §3.8 |
-| §8b | Limitations (single-reviewer) | Ch. 6 Discussion §6.3 |
+| §8b | Limitations (split-screening) | Ch. 6 Discussion §6.3 |
 | §9 | Eligibility criteria | Ch. 3 §3.9 |
 | §10 | Data extraction | Ch. 3 §3.10 |
 | §11 | Quality appraisal | Ch. 3 §3.11 |

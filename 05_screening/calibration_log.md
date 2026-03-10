@@ -6,16 +6,16 @@
 |--------|-------|
 | Date | YYYY-MM-DD |
 | Sample size | 50 |
-| Reviewer | [thesis author name] |
-| Supervisor subset check | [supervisor name] |
+| Reviewer A | [name] |
+| Reviewer B | [name] |
 | Percent agreement | —% |
 | Cohen's κ | — |
 | Target met (κ ≥ 0.70)? | Yes / No |
 
 ### Disagreements resolved
 
-| paper_id | Reviewer | Supervisor | Resolution | Criteria clarification |
-|----------|----------|------------|------------|------------------------|
+| paper_id | Reviewer A | Reviewer B | Resolution | Criteria clarification |
+|----------|------------|------------|------------|------------------------|
 | | | | | |
 
 ### Criteria clarifications applied
@@ -26,10 +26,7 @@
 
 ---
 
-## Supervisor Validation (15–20% subset)
+## Notes
 
-| Metric | Value |
-|--------|-------|
-| Subset size | — |
-| Percent agreement | —% |
-| Cohen's κ | — |
+- If κ < 0.70, discuss disagreements, clarify criteria, and run a second calibration round on a fresh 50-record sample.
+- Once κ ≥ 0.70, proceed to split screening (Reviewer A: screening_reviewer_A.xlsx, Reviewer B: screening_reviewer_B.xlsx).

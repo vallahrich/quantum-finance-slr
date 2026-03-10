@@ -17,3 +17,4 @@ date,version,section,change_description,author
 2026-03-10,,03_raw_exports,Deprecated run folders matching '2026-03-08' via rerun-clean. Rationale: Old pre-tightened query runs from March 8,slr_toolkit
 2026-03-10,,03_raw_exports,Deprecated run folders matching '2026-03-09' via rerun-clean. Rationale: Old pre-tightened query runs from March 9,slr_toolkit
 2026-03-10,,03_raw_exports,Deprecated run folders matching '2026-03-10-v2_arxiv' via rerun-clean. Rationale: Incomplete arXiv fetch - 503 error at 500 records,slr_toolkit
+2026-03-10,v2.2,§8 §8b,"Amendment A4: Screening design changed from single-reviewer with 4 mitigations to two-reviewer calibrate-then-split (50-record calibration round with κ ≥ 0.70 target; remaining records split equally; borderline escalation; re-screening after gap). §8b rewritten from single-reviewer limitations to split-screening limitations. Screening Excel workbooks generated.",TVW

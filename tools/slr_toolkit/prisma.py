@@ -138,9 +138,9 @@ def generate_prisma_counts() -> dict[str, str | int]:
     calibration_metrics: dict[str, str | float | int] | None = None
     cal_df = _read_csv_safe(config.CALIBRATION_DECISIONS_CSV)
     if cal_df is not None and len(cal_df) > 0:
-        # Support both legacy (decision_A/B) and new (decision_reviewer/supervisor) headers
-        col_a = "decision_reviewer" if "decision_reviewer" in cal_df.columns else "decision_A"
-        col_b = "decision_supervisor" if "decision_supervisor" in cal_df.columns else "decision_B"
+        # Support both legacy (decision_A/B) and new (decision_reviewer_A/B) headers
+        col_a = "decision_reviewer_A" if "decision_reviewer_A" in cal_df.columns else "decision_A"
+        col_b = "decision_reviewer_B" if "decision_reviewer_B" in cal_df.columns else "decision_B"
         if col_a in cal_df.columns and col_b in cal_df.columns:
             valid = cal_df[
                 (cal_df[col_a].str.strip() != "")
