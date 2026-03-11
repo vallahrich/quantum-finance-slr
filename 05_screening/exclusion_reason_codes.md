@@ -8,7 +8,7 @@ Use these codes in `full_text_decisions.csv` under `exclusion_reason`.
 
 ## Content / evidence
 - **EX-NOMETHOD** — Insufficient method detail (cannot code)
-- **EX-NOEVAL** — No evaluation/claim relevant to performance/advantage (Stage B)
+- **EX-NOEVAL** — No evaluation/claim relevant to performance/advantage
 - **EX-NOWORKLOAD** — No workload definition or finance task specification
 - **EX-TOOSHORT** — Poster/extended abstract/slide deck with insufficient detail
 
@@ -23,5 +23,8 @@ Use these codes in `full_text_decisions.csv` under `exclusion_reason`.
 ---
 
 # Quick rule of thumb
-- Stage A is broad: only exclude for scope/paradigm/non-finance/insufficient to code.
-- Stage B is strict: include only if it supports advantage evaluation (runtime/resources/overhead/baseline).
+- Screening is broad: only exclude for scope/paradigm/non-finance/insufficient to code.
+- Papers without quantitative evaluation are NOT excluded — they are included
+  and coded as `tier2_applicable = no`. They contribute to the evidence map
+  but not to the advantage assessment.
+- The Tier 2 flag is assigned during extraction, not during screening.

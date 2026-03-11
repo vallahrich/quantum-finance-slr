@@ -17,7 +17,7 @@ log = logging.getLogger("slr_toolkit.templates")
 # ── Screening templates ────────────────────────────────────────────────────
 
 _TA_HEADER = "paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,reason_code,notes\n"
-_FT_HEADER = "paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusion_reason,stage,notes\n"
+_FT_HEADER = "paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusion_reason,tier2_applicable,notes\n"
 
 
 def create_ta_decisions_template(*, force: bool = False) -> None:
@@ -59,7 +59,10 @@ _CODEBOOK_ROWS: list[tuple[str, str, str]] = [
     ("hardware_or_sim", "Execution environment",
      "ibm | google | ionq | simulator_statevector | simulator_noisy | other | N/A"),
     ("dataset_description", "Data used for evaluation", "free text"),
-    # --- Hoefler framework fields (Stage B) ---
+    # --- Tier 2 applicability flag ---
+    ("tier2_applicable", "Does this paper contain sufficient quantitative evaluation for Tier 2 (Hoefler framework) extraction?",
+     "yes | no"),
+    # --- Hoefler framework fields (Tier 2) ---
     ("input_data_size", "Size/dimensionality of input data to the quantum algorithm",
      "integer or description (e.g., '4 assets', '2^10 grid points') or N/A"),
     ("output_type", "Nature of the quantum algorithm's output",

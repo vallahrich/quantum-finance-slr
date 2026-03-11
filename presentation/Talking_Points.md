@@ -1,29 +1,30 @@
 # SLR Presentation — Talking Points Cheat Sheet
 
 ## 1-Minute Elevator Pitch
-"I'm doing a systematic literature review on quantum computing applied to finance — specifically gate-based approaches. There are hundreds of papers claiming quantum speedups for portfolio optimisation, option pricing, etc., but nobody has systematically checked whether those claims hold up when you account for the full computational pipeline. I'm using the Hoefler et al. practical-advantage framework to do exactly that: Stage A maps everything out, Stage B deep-dives on which claims are actually credible."
+"I'm doing a mixed-methods study on quantum computing in finance. The first component is a systematic literature review — mapping all gate-based quantum approaches and assessing practical advantage using the Hoefler framework. In parallel, I'm conducting semi-structured interviews with finance practitioners. The synthesis of both identifies the most promising workloads, which feeds into quantum computing experiments. Today I'm presenting the SLR component."
 
 ---
 
 ## Key Numbers to Remember
-- **8,464** raw records from 4 search runs across 4 databases (OpenAlex, arXiv, Semantic Scholar, Scopus)
-- **4,750** unique records after deduplication (3,714 duplicates removed)
+- **5,775** raw records from 4 search runs across 4 databases (OpenAlex, arXiv, Semantic Scholar, Scopus)
+- **2,672** unique records after deduplication (3,103 duplicates removed)
 - **10** benchmark papers for sensitivity checking
 - **2016–present** time window
-- **5 research questions** across 2 stages
+- **6 research questions** (5 SLR + 1 cross-cutting)
 - **2 reviewers** with calibrate-then-split design
 
 ## The "So What?" for Each Slide
 
 | Slide | Key Takeaway |
 |-------|-------------|
-| Motivation | QC-finance is hyped — we need rigorous evidence assessment |
-| Gap | No prior review combines systematic search + advantage framework |
-| Two-stage | Stage A = breadth (what exists?), Stage B = depth (is advantage real?) |
+| Motivation | QC-finance is hyped — we need both theoretical rigour AND practitioner grounding to assess what's real |
+| Gap | No prior review combines systematic search + advantage framework + practitioner triangulation |
+| Mixed-methods | SLR = theory, interviews = practice, synthesis = prioritised experiments |
+| Tiered extraction | Tier 1 = breadth (what exists?), Tier 2 = depth (is advantage real?) |
 | Scope | Gate-based only, excluding annealing — because that's where the open question is |
 | Hoefler | The framework gives us objective criteria: ≤2 weeks crossover, real SLAs, full overhead, SOTA baselines |
 | Sources | 4 databases, coverage-justified, API-automated |
-| Search | Two-block Boolean, maximise recall, filter at screening |
+| Search | Two-block Boolean (refined A5), maximise recall, filter at screening |
 | Numbers | Large initial set reflects broad search — expect heavy reduction at screening |
 | Screening | Two reviewers, calibrated (κ ≥ 0.70), then split — efficient and defensible |
 | Extraction | Codebook directly maps to Hoefler dimensions — every paper assessed on same criteria |
@@ -38,7 +39,7 @@ A: Annealing and gate-based are fundamentally different paradigms with different
 **Q: Why start from 2016?**
 A: Meaningful gate-based QC research in finance begins ~2016. Earlier work is predominantly annealing or purely theoretical. We capture the entire relevant era.
 
-**Q: Is 4,750 records enough? Could you be missing relevant papers?**
+**Q: Is 2,672 records enough? Could you be missing relevant papers?**
 A: We refined the query through multiple iterations (amendments A1–A2) to remove noise while preserving recall. All 4 sources fetched complete result sets with no API-cap truncation. Coverage is validated by a benchmark sensitivity check against known-relevant papers. Mandatory snowballing (§7c) catches anything missed by the database search.
 
 **Q: How do you ensure screening consistency with two reviewers?**
@@ -52,3 +53,9 @@ A: Herman et al. is an excellent survey but explicitly not a systematic review �
 
 **Q: What do you expect to find?**
 A: Based on initial reading: very few studies will meet Tier-1 crossover criteria. Most advantage claims likely rely on asymptotic speedups without full overhead accounting. The gap analysis will be the most impactful output.
+
+**Q: Why not just do the SLR?**
+A: The SLR tells us what researchers have found, but practitioners face operational constraints that rarely appear in papers. The most interesting findings will likely be where theory and practice disagree.
+
+**Q: How do the interviews relate to the SLR?**
+A: They run in parallel. The interview topic guide uses the same problem families but we don't share SLR conclusions with interviewees to avoid anchoring. Synthesis happens afterward.

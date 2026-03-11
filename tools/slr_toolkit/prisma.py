@@ -74,31 +74,24 @@ def generate_prisma_counts() -> dict[str, str | int]:
         excluded_ft = (ft_df["final_decision"].str.strip().str.lower() == "exclude").sum()
         included_total = (ft_df["final_decision"].str.strip().str.lower() == "include").sum()
 
-        # Stage A / B split — look for a 'stage' column or derive from
-        # decision_A / decision_B
-        if "stage" in ft_df.columns:
-            included_a = (
+        # Tier 2 applicability — look for a 'tier2_applicable' column
+        if "tier2_applicable" in ft_df.columns:
+            tier2_applicable = (
                 (ft_df["final_decision"].str.lower() == "include")
-                & (ft_df["stage"].str.upper() == "A")
-            ).sum()
-            included_b = (
-                (ft_df["final_decision"].str.lower() == "include")
-                & (ft_df["stage"].str.upper() == "B")
+                & (ft_df["tier2_applicable"].str.strip().str.lower() == "yes")
             ).sum()
         else:
-            # Default: all included count as Stage A; Stage B = subset
-            included_a = included_total
-            included_b = "N/A (add 'stage' column to full_text_decisions.csv)"
+            tier2_applicable = "N/A (add 'tier2_applicable' column to full_text_decisions.csv)"
     else:
         assessed_ft = _MISSING
         excluded_ft = _MISSING
-        included_a = _MISSING
-        included_b = _MISSING
+        included_total = _MISSING
+        tier2_applicable = _MISSING
 
     counts["FullTextAssessed"] = assessed_ft
     counts["ExcludedFullText"] = excluded_ft
-    counts["IncludedStageA"] = included_a
-    counts["IncludedStageB"] = included_b
+    counts["IncludedTotal"] = included_total
+    counts["Tier2Applicable"] = tier2_applicable
 
     # --- Snowballing --------------------------------------------------------
     snowball_path = config.SEARCH_LOGS_DIR / "snowball_log.csv"

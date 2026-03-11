@@ -23,6 +23,7 @@ OPENALEX_WILDCARD_EXPANSIONS: dict[str, str] = {
     "stock price*": '"stock price" OR "stock prices"',
     "financial derivative*": '"financial derivative" OR "financial derivatives"',
     "derivative*": '"derivative" OR "derivatives"',
+    "quantum neural network*": '"quantum neural network" OR "quantum neural networks"',
 }
 
 

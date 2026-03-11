@@ -24,7 +24,7 @@ style: |
 
 # Gate-Based Quantum Computing in Finance
 
-## A Two-Stage SLR & Practical Advantage Assessment
+## A Systematic Literature Review Within a Mixed-Methods Research Design
 
 **Presenter:** [Your Name]
 **Date:** March 2026
@@ -63,25 +63,42 @@ style: |
 
 1. **Hoefler et al. (2023) practical-advantage framework** applied systematically to QC-finance literature
 
-2. **Mapping review** (Stage A) + **focused advantage analysis** (Stage B)
+2. Comprehensive **evidence mapping** + focused **practical-advantage assessment** via tiered extraction
 
 3. **Crossover viability assessment** per problem family
 
-4. **Reproducible, API-driven** search pipeline (open toolkit)
+4. **Mixed-methods design** triangulating SLR with practitioner interviews
+
+5. **Reproducible, API-driven** search pipeline (open toolkit)
 
 ---
 
-# Two-Stage Design
+# Overarching Research Design
 
-## Stage A — Mapping Review
-- Broad survey: *What's out there?*
+This SLR is **Phase 1a** of a larger mixed-methods study:
+
+| Phase | What | Output |
+|-------|------|--------|
+| **1a — SLR** | Evidence map + advantage assessment | Taxonomy, Hoefler evaluation, gaps |
+| **1b — Interviews** | Practitioner interviews | Priorities, constraints, tacit knowledge |
+| **2 — Synthesis** | Triangulate SLR + interviews | Convergence/divergence matrix |
+| **3 — Experiments** | Quantum experiments | Empirical validation |
+
+**Why?** SLR = systematic but potentially disconnected from practice. Interviews = rich but unsystematic. **Combined** = experiments grounded in both.
+
+---
+
+# SLR Design — Tiered Extraction
+
+## Tier 1 — Evidence Mapping (all included papers)
+- *What's out there?*
 - Evidence map: problem families × quantum methods × maturity
+- Papers without quantitative evaluation coded `tier2_applicable = no`
 
-## Stage B — Focused SLR
-- Deep dive: *Where is practical advantage credible?*
+## Tier 2 — Advantage Assessment (quantitative papers)
+- *Where is practical advantage credible?*
 - Hoefler framework assessment per workload
-
-![bg right:35% w:350](https://mermaid.ink/img/pako:eNptkE1uwzAMha9CcJUc4AJddNFFF-2iFkWBkmlb-JEBkk4QBLl7acdJ3XYEID7ye-QL3JmkgCeXiizZFnIbonuOhC7s72IXWDQ5sYYB0eCKPxA1x4E88H8pu3RMPqsaVPCqGn0NR3ag7LVj6cqDFyXFYx27Ey14dvMa5tdQ6sCv_1Tqb3T-cLt4g7uETxxAEy_4bBRvZgcDZ_3hfPjm0Q)
+- Only papers with `tier2_applicable = yes`
 
 ---
 
@@ -95,6 +112,7 @@ style: |
 | **Time window** | 2016 – present |
 | **Language** | English only |
 | **Grey lit** | arXiv/SSRN preprints ✓ &nbsp; Theses/patents ✗ |
+| **Research context** | Phase 1a of mixed-methods design |
 
 ---
 
@@ -136,12 +154,12 @@ Must compare against **state-of-the-art** — not a strawman
 
 ## Two-block Boolean: Quantum AND Finance
 
-**Block 1 (Quantum):** `"quantum computing"`, `"quantum algorithm*"`, `"quantum circuit*"`, `"variational quantum"`, `QAOA`, `VQE`, `QAE`, `Grover`, `HHL`, `"quantum walk*"`, `"quantum machine learning"`, `"quantum error correction"`, `"fault-tolerant quantum"`, `"quantum speedup"`, `"quantum advantage"`, `"quantum annealing"`
+**Block 1 (Quantum):** `"quantum computing"`, `"quantum algorithm*"`, `"quantum circuit*"`, `"variational quantum"`, `QAOA`, `VQE`, `QAE`, `"quantum amplitude estimation"`, `"Grover's algorithm"`, `"Grover search"`, `"HHL algorithm"`, `"Harrow-Hassidim-Lloyd"`, `"quantum walk*"`, `"quantum machine learning"`, `"quantum phase estimation"`, `"quantum neural network*"`, `"quantum error correction"`, `"fault-tolerant quantum"`, `"quantum speedup"`, `"quantum advantage"`, `"quantum annealing"`
 
-**Block 2 (Finance):** `finance`, `financial`, `"quantitative finance"`, `"portfolio optim*"`, `"portfolio selection"`, `"option pricing"`, `"derivative pricing"`, `"financial derivative*"`, `"risk analysis"`, `"credit risk"`, `"market risk"`, `VaR`, `"Black-Scholes"`, `CVA`, `xVA`, `"Monte Carlo"`, `"credit scoring"`, `"fraud detection"`, `"algorithmic trading"`, `"asset allocation"`, `"stock market"`, `"stock price*"`, `"hedge fund"`, `"financial hedging"`, `"financial engineering"`
+**Block 2 (Finance):** `finance`, `financial`, `"quantitative finance"`, `"portfolio optim*"`, `"portfolio selection"`, `"option pricing"`, `"derivative pricing"`, `"financial derivative*"`, `"credit risk"`, `"market risk"`, `VaR`, `"Black-Scholes"`, `CVA`, `xVA`, `"interest rate"`, `"bond pricing"`, `"fixed income"`, `"credit scoring"`, `"fraud detection"`, `"algorithmic trading"`, `"asset allocation"`, `"stock market"`, `"stock price*"`, `"hedge fund"`, `"financial hedging"`, `"financial engineering"`
 
 ### Design choice: no third block
-- Stage A = broad capture → **maximise recall** at search, **precision** at screening
+- Evidence mapping needs broad capture → **maximise recall** at search, **precision** at screening
 - Per Okoli (2015, §4.2)
 
 ---
@@ -150,16 +168,17 @@ Must compare against **state-of-the-art** — not a strawman
 
 | Source | Records |
 |--------|---------|
-| OpenAlex | 4,709 |
-| arXiv | 1,196 |
-| Semantic Scholar | 874 |
-| Scopus | 1,685 |
-| **Total raw** | **8,464** |
-| **After deduplication** | **4,750** |
-| Duplicates (DOI + fuzzy) | 3,714 |
+| OpenAlex | 2,692 |
+| arXiv | 496 |
+| Semantic Scholar | 1,497 |
+| Scopus | 1,090 |
+| **Total raw** | **5,775** |
+| **After deduplication** | **2,672** |
+| Duplicates (DOI + fuzzy) | 3,103 |
 
-### Query refinement (Amendments A1–A2)
+### Query refinement (Amendments A1–A5)
 - Tightened noisy bare terms (e.g. `derivative*` → `"derivative pricing"`, `trading` → `"algorithmic trading"`)
+- A5: Removed `"Monte Carlo"` (QMC noise), `"risk analysis"` (generic); replaced bare `Grover`/`HHL` with quoted phrases; added QPE, QNN, fixed-income terms
 - Uncapped result sets per SLR completeness (Kitchenham & Charters 2007)
 - All sources fetched completely — no API-cap truncation
 
@@ -170,13 +189,13 @@ Must compare against **state-of-the-art** — not a strawman
 ### Two reviewers — calibrate then split
 
 1. **Calibration round** — both screen same 50 records; target Cohen's κ ≥ 0.70
-2. **Split screening** — remaining ~4,700 records split equally between reviewers
+2. **Split screening** — remaining ~2,620 records split equally between reviewers
 3. **Borderline escalation** — `maybe` cases resolved jointly
 4. **Re-screening** — excluded full-texts re-screened after 2–4 weeks
 
-### Two phases
-- **Title/Abstract** → broad Stage A inclusion
-- **Full-Text** → deeper Stage B filter (must have quantitative evaluation)
+### Screening phases
+- **Title/Abstract** → inclusion against eligibility criteria (§9)
+- **Full-Text** → same criteria; Tier 2 flag assigned at extraction
 
 ### Exclusion codes (PRISMA 2020 §13b)
 `EX-PARADIGM` · `EX-NONFIN` · `EX-NOMETHOD` · `EX-NOEVAL` · `EX-DUP` · …
@@ -188,7 +207,8 @@ Must compare against **state-of-the-art** — not a strawman
 ## Extraction Codebook
 - **Bibliographic:** title, authors, year, DOI
 - **Classification:** problem family, quantum method, NISQ vs FT
-- **Hoefler fields:** crossover time, end-to-end overhead, classical baseline, tier-1/tier-2 achievability
+- **Tier 2 flag:** `tier2_applicable` (yes/no)
+- **Hoefler fields (Tier 2):** crossover time, end-to-end overhead, classical baseline, tier-1/tier-2 achievability
 
 ## Quality Rubric (0/1/2 per SEGRESS)
 
@@ -204,12 +224,12 @@ Must compare against **state-of-the-art** — not a strawman
 
 # Expected Outputs
 
-## Stage A
+## Tier 1 (Evidence Mapping)
 - **Evidence map:** problem family × quantum method (annotated with maturity)
 - **Trend analysis:** publication volume, method adoption curves
 - **Taxonomy:** problem families, algorithms, evaluation approaches
 
-## Stage B
+## Tier 2 (Advantage Assessment)
 - **Per-workload advantage table:** best evidence on crossover viability
 - **Gap analysis:** missing overhead, weak baselines, no crossover estimates
 - **Certainty ratings:** HIGH / MODERATE / LOW per synthesis finding
@@ -239,24 +259,26 @@ PRISMA 2020 · PRISMA-S · Okoli (2015) · vom Brocke et al. (2015) · SEGRESS
 
 | Phase | Status |
 |-------|--------|
-| Protocol finalisation | ✅ Complete (v2.0) |
-| Database searches | ✅ Complete (8,464 raw → 4,750 unique) |
+| Protocol finalisation | ✅ Complete (v3.0) |
+| Database searches | ✅ Complete (5,775 raw → 2,672 unique) |
 | Benchmark sensitivity check | 🟡 Next |
 | Screening (title/abstract) | ⬜ Planned |
 | Screening (full-text) | ⬜ Planned |
 | Data extraction | ⬜ Planned |
 | Synthesis & writing | ⬜ Planned |
+| Cross-method synthesis & experiments | ⬜ Documented separately |
 
 ---
 
 # Discussion Points
 
-1. **Query breadth:** 8,464 raw → 4,750 unique — is coverage sufficient?
+1. **Query breadth:** 5,775 raw → 2,672 unique — is coverage sufficient?
 2. **Database coverage:** 4 sources sufficient?
 3. **Advantage lens:** Hoefler framework the right choice?
-4. **Stage B depth:** How many papers will realistically qualify?
+4. **Tier 2 depth:** How many papers will realistically qualify?
 5. **Preprint handling:** Include or sensitivity-analyse only?
-6. **What would make this most valuable** for the QC community?
+6. **Mixed-methods integration:** How should we weight SLR vs interview findings when they diverge?
+7. **What would make this most valuable** for the QC community?
 
 ---
 
@@ -265,6 +287,7 @@ PRISMA 2020 · PRISMA-S · Okoli (2015) · vom Brocke et al. (2015) · SEGRESS
 - **Hoefler et al. (2023)** — Practical quantum advantage framework
 - **Herman et al. (2022)** — Survey of QC for finance
 - **Bunescu & Vârtei (2024)** — Prior formal SLR
+- **Creswell & Creswell (2018)** — Mixed-methods research design
 - **Page et al. (2021)** — PRISMA 2020
 - **Rethlefsen et al. (2021)** — PRISMA-S
 - **Wohlin (2014)** — Snowballing guidelines

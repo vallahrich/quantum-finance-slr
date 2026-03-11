@@ -21,7 +21,7 @@ folders = auto_search(
     sources=["openalex", "arxiv", "semantic_scholar", "scopus"],
     from_year=2016,
     max_results=None,
-    run_date="2026-03-10-v2",
+    run_date="2026-03-10-v3",
 )
 
 print(f"\n=== Done. {len(folders)} source(s) ingested ===", flush=True)

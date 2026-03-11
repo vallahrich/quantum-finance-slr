@@ -59,7 +59,8 @@ Produces `04_deduped_library/master_records.csv` and `master_library.bib`.
    `title_abstract_decisions.csv`
 2. Fill in screening decisions (`include` / `exclude` / `maybe`).
 3. For included papers, copy `full_text_decisions_template.csv` →
-   `full_text_decisions.csv` and complete full-text screening.
+   `full_text_decisions.csv` and complete full-text screening
+   (include `tier2_applicable` flag for each included paper).
 
 ### Step 4 — Generate PRISMA counts
 

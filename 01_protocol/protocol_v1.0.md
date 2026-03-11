@@ -2,27 +2,79 @@
 
 ## 0) Title and registration
 
-**Title:** Gate-Based Quantum Computing in Finance: A Two-Stage Systematic
-Literature Review and Practical Advantage Assessment
+**Title:** Gate-Based Quantum Computing in Finance: A Systematic Literature
+Review and Practical Advantage Assessment Within a Mixed-Methods Research
+Design
 
 **Registration:** OSF <https://osf.io/XXXXX>. Registered YYYY-MM-DD.
 Protocol versioned in this repository with amendments tracked in
 `amendments_log.csv`.
 
-**Protocol version:** 2.0 (2026-03-09)
+**Protocol version:** 3.1 (2026-03-10)
+
+This SLR constitutes Phase 1a of a larger exploratory sequential
+mixed-methods study (Creswell & Creswell, 2018). The full study also
+includes semi-structured practitioner interviews (Phase 1b), cross-method
+synthesis (Phase 2), and experimental validation (Phase 3). This protocol
+governs only the SLR component.
+
+---
+
+## 0b) Position within overarching research design
+
+This study follows an exploratory sequential mixed-methods design
+(Creswell & Creswell, 2018), comprising four phases:
+
+| Phase | Component | Scope |
+|-------|-----------|-------|
+| **1a** | Systematic literature review (this protocol) | Theoretical evidence mapping and advantage assessment |
+| **1b** | Semi-structured practitioner interviews | Practitioner perspectives on quantum readiness in finance |
+| **2** | Cross-method synthesis / triangulation | Convergence/divergence analysis of Phases 1a and 1b |
+| **3** | Experimental validation | Quantum computing experiments on prioritised workloads |
+
+Phases 1a and 1b run in parallel; their outputs feed jointly into Phase 2.
+
+**Rationale:** The SLR provides systematic theoretical coverage but may
+miss practical constraints and tacit industry knowledge that do not appear
+in published literature. Semi-structured interviews capture practitioner
+perspectives the literature may not reflect. Combining both before
+experimental design ensures that experiments are both theoretically
+grounded and practically relevant.
+
+The remaining sections of this protocol govern only the SLR (Phase 1a).
+Interview protocol, synthesis methodology, and experimental design are
+documented separately.
+
+**Reference:** Creswell, J. W., & Creswell, J. D. (2018). *Research
+design: Qualitative, quantitative, and mixed methods approaches* (5th
+ed.). Sage.
 
 ---
 
 ## 1) Review type
 
-Two-stage systematic literature review:
+This protocol governs the systematic literature review component (Phase 1a)
+of a larger mixed-methods study (see §0b). The SLR's design is independent
+of the other study phases.
 
-- **Stage A — Mapping Review:** Broad survey of gate-based quantum computing
-  applications in finance. Produces a structured evidence map (taxonomy of
-  problem families, quantum methods, evaluation approaches, and maturity).
-- **Stage B — Focused SLR:** Deep assessment of practical quantum advantage
-  claims, applying the Hoefler et al. (2023) framework to evaluate crossover
-  viability, end-to-end overhead accounting, and classical baseline quality.
+Systematic literature review with **tiered extraction**:
+
+- **Scope:** Comprehensive survey of gate-based quantum computing
+  applications in finance, combined with critical assessment of practical
+  quantum advantage claims using the Hoefler et al. (2023) framework.
+- **Tier 1 extraction (all included papers):** Structured evidence mapping —
+  classification by problem family, quantum method, evaluation approach,
+  hardware regime, and basic technical details. Produces a taxonomy and
+  evidence map.
+- **Tier 2 extraction (papers with quantitative evaluation):** Deep
+  assessment of practical quantum advantage using the Hoefler et al. (2023)
+  framework — crossover viability, end-to-end overhead accounting, classical
+  baseline quality, I/O bottleneck analysis, and speedup characterisation.
+  Produces a per-workload advantage assessment and gap analysis.
+
+Papers without sufficient quantitative evaluation are not excluded but are
+coded as `tier2_applicable = no`. They contribute to the evidence map
+(Tier 1) but not to the advantage assessment (Tier 2).
 
 ---
 
@@ -46,14 +98,34 @@ addresses gaps left by each:
 This review is the first to (1) apply the Hoefler et al. (2023)
 practical-advantage framework systematically to quantum finance literature,
 (2) assess crossover viability and speedup sufficiency for each problem
-family, and (3) combine a mapping review with a focused advantage analysis
-in a two-stage design.
+family, and (3) combine comprehensive evidence mapping with a focused
+practical-advantage assessment using tiered extraction within a single SLR.
+
+Beyond methodological gaps in prior reviews, no prior study in this domain
+has situated a systematic review within a mixed-methods design that
+triangulates theoretical evidence with practitioner perspectives. By
+combining the SLR with semi-structured interviews (Phase 1b), this study
+can identify where academic findings converge with or diverge from industry
+priorities — a gap that purely literature-based reviews cannot address.
 
 ---
 
-## 2) Review question(s)
+## 2) Review questions
 
-**Stage A (mapping):**
+### PICO(S) framing
+
+Following Kitchenham & Charters (2007, §2.4) adaptation of the PICO
+framework for software engineering, the review scope is structured as:
+
+| Element | Definition | This review |
+|---------|-----------|-------------|
+| **P** — Population | Studies under review | Primary studies of gate-based quantum computing applied to financial problems (2016–present) |
+| **I** — Intervention | Technology/method evaluated | Gate-based quantum algorithms (QAOA, VQE, QAE, Grover, HHL, quantum walks, QML, etc.) and hybrid quantum-classical approaches |
+| **C** — Comparison | Baseline/alternative | Classical algorithms and heuristics for the same financial workloads (assessed via Hoefler et al. 2023 baseline-quality criteria) |
+| **O** — Outcome | Measured effect | Practical quantum advantage: Tier-1 crossover viability (≤ 2 weeks wall-clock), Tier-2 finance SLA feasibility, end-to-end speedup, resource cost |
+| **S** — Study design | Eligible study types | Empirical evaluations, simulation studies, analytical proofs, algorithm proposals with complexity analysis, resource estimation studies |
+
+**Evidence mapping:**
 - RQ1: What gate-based quantum computing applications have been proposed or
   demonstrated for financial use cases?
 - RQ2: What quantum algorithms and methods are used, and for which finance
@@ -61,13 +133,22 @@ in a two-stage design.
 - RQ3: What is the distribution of evaluation approaches (real hardware,
   simulation, analytical) and hardware regimes (NISQ, fault-tolerant)?
 
-**Stage B (focused):**
+**Practical advantage assessment:**
 - RQ4: For which financial workloads does the existing literature provide
   credible evidence of practical quantum advantage (Tier-1 crossover
   within ≤ 2 weeks wall-clock time)?
 - RQ5: What are the dominant gaps in advantage claims — missing end-to-end
   overhead, weak classical baselines, unaccounted I/O bottleneck, or
   absent crossover estimates?
+
+**Cross-cutting (answered in Phase 2 synthesis, not by the SLR alone):**
+- RQ6: Where do the theoretical findings from the SLR converge with or
+  diverge from practitioner assessments of quantum readiness and practical
+  viability in finance?
+
+*Note: RQ6 requires input from both the SLR and practitioner interviews.
+It is listed here for completeness of the overarching research questions
+but is not answerable from the SLR data alone.*
 
 ---
 
@@ -81,6 +162,10 @@ in a two-stage design.
    practical advantage framework, focusing on Tier-1 crossover feasibility
    and Tier-2 finance-specific operational windows.
 4. Identify evidence gaps and formulate a prioritised research agenda.
+5. Provide structured SLR outputs (evidence map, advantage assessment, gap
+   analysis) as inputs to the cross-method synthesis with practitioner
+   interview findings (Phase 2) and subsequent experimental validation
+   (Phase 3).
 
 ---
 
@@ -105,10 +190,10 @@ Included:
 - Technical reports and white papers from industry quantum computing groups
   (e.g., IBM Quantum, Google AI Quantum, JPMorgan, Goldman Sachs, QC Ware)
   when they contain sufficient methodological detail to be extractable
-  (i.e., they meet Stage A inclusion criteria in §9).
-- Workshop papers and extended abstracts — included at Stage A if they contain
-  a workload definition or method description; excluded at Stage B unless they
-  provide quantitative evaluation.
+  (i.e., they meet inclusion criteria in §9).
+- Workshop papers and extended abstracts — included if they contain a workload
+  definition or method description; coded as `tier2_applicable = no` if they
+  lack quantitative evaluation.
 
 Excluded:
 - Theses and dissertations (risk of duplicating published work; PhD
@@ -220,8 +305,11 @@ Two-block Boolean strategy: **Quantum** AND **Finance**.
 ```
 "quantum computing" OR "quantum algorithm*" OR "quantum circuit*"
 OR "variational quantum" OR QAOA OR VQE OR QAE
-OR "quantum amplitude estimation" OR Grover OR HHL
+OR "quantum amplitude estimation"
+OR "Grover's algorithm" OR "Grover search"
+OR "HHL algorithm" OR "Harrow-Hassidim-Lloyd"
 OR "quantum walk*" OR "quantum machine learning"
+OR "quantum phase estimation" OR "quantum neural network*"
 OR "quantum error correction" OR "fault-tolerant quantum"
 OR "quantum speedup" OR "quantum advantage"
 OR "quantum annealing"
@@ -233,9 +321,10 @@ finance OR financial OR "quantitative finance"
 OR "portfolio optim*" OR "portfolio selection"
 OR "portfolio management" OR "portfolio risk"
 OR "option pricing" OR "derivative pricing" OR "financial derivative*"
-OR "risk analysis" OR "credit risk" OR "market risk"
+OR "credit risk" OR "market risk"
 OR "value at risk" OR VaR OR "Black-Scholes" OR CVA OR xVA
-OR "Monte Carlo" OR "credit scoring" OR "fraud detection"
+OR "interest rate" OR "bond pricing" OR "fixed income"
+OR "credit scoring" OR "fraud detection"
 OR "algorithmic trading" OR "asset allocation"
 OR "stock market" OR "stock price*"
 OR "hedge fund" OR "financial hedging" OR "financial engineering"
@@ -248,14 +337,14 @@ OR "hedge fund" OR "financial hedging" OR "financial engineering"
 ```
 
 Design rationale: We use a two-block strategy (Quantum AND Finance) without
-a third methods/evaluation block at the search stage. Rationale: Stage A is
-a mapping review requiring broad capture; filtering for evaluation depth is
-applied at screening (Stage B eligibility criteria in §9), not at search.
-Adding evaluation terms to the search string risks excluding papers that
-contain relevant resource estimates or benchmarks but do not use standard
-evaluation vocabulary in their titles/abstracts. This decision is consistent
-with Okoli (2015, §4.2) who recommends erring toward recall at the search
-stage and precision at the screening stage.
+a third methods/evaluation block at the search stage. Rationale: the SLR
+requires broad capture for evidence mapping; filtering for evaluation depth
+is applied at extraction (Tier 2 applicability), not at search. Adding
+evaluation terms to the search string risks excluding papers that contain
+relevant resource estimates or benchmarks but do not use standard evaluation
+vocabulary in their titles/abstracts. This decision is consistent with
+Okoli (2015, §4.2) who recommends erring toward recall at the search stage
+and precision at the screening stage.
 
 ### Adaptation per database
 
@@ -300,7 +389,7 @@ reading (see `02_search_logs/benchmark_sensitivity_check.csv`).
 
 Snowballing follows the guidelines of Wohlin (2014).
 
-**Start set:** All Stage A–included papers after full-text screening.
+**Start set:** All included papers after full-text screening.
 
 **Backward snowballing:** Examine reference lists of all included papers.
 For each reference, apply eligibility criteria (§9) at title/abstract
@@ -356,9 +445,11 @@ concordance rate is reported.
    criteria (§9). Decisions recorded in
    `05_screening/title_abstract_decisions.csv`.
 2. **Full-text screening:** Records passing title/abstract screening are
-   assessed at full-text level. Decisions recorded in
-   `05_screening/full_text_decisions.csv`, with mandatory exclusion reason
-   codes for excluded records (see `05_screening/exclusion_reason_codes.md`).
+   assessed at full-text level against the same inclusion criteria (§9).
+   Decisions recorded in `05_screening/full_text_decisions.csv`, with
+   mandatory exclusion reason codes for excluded records (see
+   `05_screening/exclusion_reason_codes.md`). The tier distinction
+   (`tier2_applicable`) is assigned during extraction, not during screening.
 
 ### Inter-rater reliability
 
@@ -408,21 +499,26 @@ The limitation is reported transparently in the thesis discussion chapter.
 
 ## 9) Eligibility criteria
 
-### Stage A — Mapping inclusion
+### Inclusion criteria
 
-A record is included at Stage A if ALL of the following hold:
+A record is included if ALL of the following hold:
 - Uses or proposes a gate-based quantum computing approach
 - Addresses a financial application or use case
 - Contains sufficient methodological detail to extract at least: problem
   family, quantum method, and evaluation type
 
-### Stage B — Focused SLR inclusion
+### Tier 2 applicability
 
-A Stage A–included record is further included at Stage B if it:
+An included record is additionally flagged as `tier2_applicable = yes`
+if it:
 - Contains a quantitative evaluation (empirical, simulation, or analytical)
   of performance or resource requirements
 - Makes or enables assessment of a quantum advantage claim (explicit or
   implicit via resource estimates)
+
+Records not meeting Tier 2 criteria remain included and receive Tier 1
+extraction. They are coded `tier2_applicable = no` and contribute to the
+evidence map but not to the per-workload advantage assessment.
 
 ### Exclusion codes
 
@@ -445,10 +541,10 @@ Extraction fields are defined in the codebook
   dataset_description
 - **Advantage assessment:** baseline_strength, advantage_claim,
   advantage_evidence
-- **Hoefler framework (Stage B):** input_data_size, output_type,
-  io_bottleneck_discussed, speedup_type_detailed,
-  oracle_stateprep_cost_included, end_to_end_overhead,
-  crossover_time_estimated, crossover_size_estimated,
+- **Hoefler framework (Tier 2 — papers with `tier2_applicable = yes`):**
+  input_data_size, output_type, io_bottleneck_discussed,
+  speedup_type_detailed, oracle_stateprep_cost_included,
+  end_to_end_overhead, crossover_time_estimated, crossover_size_estimated,
   classical_baseline_detail, qubit_type, error_correction_model,
   t_count_or_gate_cost, shots_or_samples, tier1_achievable,
   tier2_finance_sla
@@ -493,14 +589,14 @@ weight findings in synthesis and reported transparently.
 Per PRISMA 2020 (Item 13d), we assess the certainty of the body of evidence
 for each synthesis finding using the following approach:
 
-For Stage A (mapping): We do not apply a formal certainty-of-evidence
-framework, as the mapping outputs are descriptive (frequency counts,
-taxonomy, evidence map). Instead, we report the distribution of rubric
-scores across the included set and flag clusters where evidence quality
-is uniformly low.
+For evidence mapping outputs (Tier 1): We do not apply a formal
+certainty-of-evidence framework, as the mapping outputs are descriptive
+(frequency counts, taxonomy, evidence map). Instead, we report the
+distribution of rubric scores across the included set and flag clusters
+where evidence quality is uniformly low.
 
-For Stage B (focused synthesis): Each synthesis finding (e.g., "Workload X
-shows plausible Tier-1 crossover") is rated on a three-level
+For advantage assessment outputs (Tier 2): Each synthesis finding (e.g.,
+"Workload X shows plausible Tier-1 crossover") is rated on a three-level
 certainty scale grounded in computational benchmarking criteria:
 
 - **HIGH:** ≥3 independent studies, consistent findings, credible classical
@@ -539,7 +635,7 @@ extraction codebook fields `end_to_end_overhead`,
 
 ## 12) Synthesis plan
 
-### Stage A synthesis
+### Evidence mapping synthesis (Tier 1)
 
 - Descriptive statistics: counts by problem family, quantum method,
   evaluation type, hardware regime, year.
@@ -547,7 +643,7 @@ extraction codebook fields `end_to_end_overhead`,
   with evaluation maturity.
 - Trend analysis: publication volume over time, method adoption curves.
 
-### Stage B synthesis
+### Advantage assessment synthesis (Tier 2)
 
 - Per-workload advantage assessment table: for each problem family,
   summarise the best available evidence on crossover viability.
@@ -557,6 +653,20 @@ extraction codebook fields `end_to_end_overhead`,
 
 Meta-analysis (statistical pooling) is not planned due to heterogeneity
 of methods, metrics, and problem instances across studies.
+
+### Outputs for cross-method synthesis
+
+The SLR synthesis outputs — specifically the evidence map (problem family ×
+quantum method matrix), the per-workload advantage assessment table, and the
+gap analysis — serve as structured inputs to the Phase 2 cross-method
+synthesis. In Phase 2, these outputs are compared against practitioner
+interview themes in a convergence/divergence matrix to identify:
+(a) workloads where theory and practice agree on viability,
+(b) workloads where practitioners identify constraints not reflected in the
+literature, (c) theoretically promising workloads that practitioners
+consider impractical, and (d) practitioner-identified priorities
+underrepresented in the literature. The Phase 2 synthesis methodology is
+documented separately.
 
 ---
 
@@ -578,12 +688,13 @@ The PRISMA flow diagram is generated programmatically via
 | Phase | Target |
 |-------|--------|
 | Protocol finalisation | Complete |
-| Database searches | Complete (8,464 raw → 4,750 unique) |
+| Database searches | Complete (5,775 raw → 2,672 unique) |
 | Screening (title/abstract) | — |
 | Screening (full-text) | — |
 | Data extraction | — |
 | Quality appraisal | — |
 | Synthesis and writing | — |
+| Cross-method synthesis and experimental phases | Documented separately |
 
 ---
 

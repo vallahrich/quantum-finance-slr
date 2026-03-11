@@ -1,5 +1,5 @@
 # Gate-Based Quantum Computing in Finance
-## A Two-Stage Systematic Literature Review & Practical Advantage Assessment
+## A Systematic Literature Review Within a Mixed-Methods Research Design
 ### Presentation for Research Colleague
 
 ---
@@ -7,11 +7,11 @@
 ## Slide 1 — Title
 
 **Gate-Based Quantum Computing in Finance:**
-**A Two-Stage Systematic Literature Review & Practical Advantage Assessment**
+**A Systematic Literature Review Within a Mixed-Methods Research Design**
 
 - Presenter: [Your Name]
 - Date: March 2026
-- Protocol: OSF registered, version 2.0
+- Protocol: OSF registered, version 3.0
 
 ---
 
@@ -33,13 +33,31 @@
 ### This Review Is the First To:
 1. Apply the **Hoefler et al. (2023) practical-advantage framework** systematically to quantum finance literature
 2. Assess **crossover viability** and **speedup sufficiency** for each problem family
-3. Combine a **mapping review** (Stage A) with a **focused advantage analysis** (Stage B)
+3. Combine comprehensive **evidence mapping** with a focused **practical-advantage assessment** using tiered extraction within a single SLR
+4. Situate the SLR within a **mixed-methods design** that triangulates theoretical evidence with practitioner perspectives
 
 ---
 
-## Slide 3 — Two-Stage Design
+## Slide 2.5 — Overarching Research Design
 
-### Stage A — Mapping Review (Broad)
+This SLR is **Phase 1a** of a larger mixed-methods study:
+
+| Phase | What | Output |
+|-------|------|--------|
+| **1a — SLR** (this presentation) | Evidence map + advantage assessment | Taxonomy, Hoefler evaluation, evidence gaps |
+| **1b — Interviews** | Semi-structured interviews with finance practitioners | Practitioner priorities, constraints, tacit knowledge |
+| **2 — Synthesis** | Triangulate SLR + interviews | Convergence/divergence matrix, prioritised workload shortlist |
+| **3 — Experiments** | Quantum experiments on prioritised workloads | Empirical validation of advantage claims |
+
+Why mixed-methods? SLR alone = comprehensive but potentially disconnected from practice. Interviews alone = rich but unsystematic. Combined = experiments grounded in both theory and practice.
+
+---
+
+## Slide 3 — SLR Design — Tiered Extraction
+
+### Single SLR with Two Extraction Tiers
+
+**Tier 1 — Evidence Mapping (all included papers)**
 - **Goal:** Comprehensive evidence map of gate-based QC in finance
 - **Outputs:** Taxonomy of problem families, quantum methods, evaluation approaches, maturity levels
 - **RQs:**
@@ -47,12 +65,14 @@
   - RQ2: What algorithms are used, for which problem families?
   - RQ3: Distribution of evaluation approaches (real HW, simulation, analytical)?
 
-### Stage B — Focused SLR (Deep)
-- **Goal:** Critically assess practical quantum advantage claims
+**Tier 2 — Advantage Assessment (papers with quantitative evaluation)**
+- **Goal:** Critically assess practical quantum advantage claims using Hoefler framework
 - **Outputs:** Per-workload advantage assessment, gap analysis
 - **RQs:**
   - RQ4: Which financial workloads have credible evidence of practical quantum advantage?
   - RQ5: What are the dominant gaps? (missing overhead, weak baselines, no crossover estimates)
+
+Papers without quantitative evaluation are coded `tier2_applicable = no` — they still contribute to the evidence map (Tier 1) but not to the advantage assessment (Tier 2).
 
 ---
 
@@ -79,7 +99,7 @@
 
 ## Slide 5 — The Advantage Framework (Hoefler et al. 2023)
 
-This is the **core analytical lens** for Stage B:
+This is the **core analytical lens** for Tier 2 extraction:
 
 ### Tier-1 Crossover Target
 > The quantum solution must complete within **≤ 2 weeks wall-clock time** on projected/available hardware, AND **outperform** the best available classical solution on equivalent hardware budget.
@@ -120,14 +140,14 @@ This is the **core analytical lens** for Stage B:
 (Block 1: Quantum terms) AND (Block 2: Finance terms)
 ```
 
-**Block 1 — Quantum:** "quantum computing", "quantum algorithm\*", "quantum circuit\*", "variational quantum", QAOA, VQE, QAE, Grover, HHL, "quantum walk\*", "quantum machine learning", "quantum error correction", "fault-tolerant quantum", "quantum speedup", "quantum advantage", "quantum annealing"
+**Block 1 — Quantum:** "quantum computing", "quantum algorithm\*", "quantum circuit\*", "variational quantum", QAOA, VQE, QAE, "quantum amplitude estimation", "Grover's algorithm", "Grover search", "HHL algorithm", "Harrow-Hassidim-Lloyd", "quantum walk\*", "quantum machine learning", "quantum phase estimation", "quantum neural network\*", "quantum error correction", "fault-tolerant quantum", "quantum speedup", "quantum advantage", "quantum annealing"
 
-**Block 2 — Finance:** finance, financial, "quantitative finance", "portfolio optim\*", "portfolio selection", "option pricing", "derivative pricing", "financial derivative\*", "risk analysis", "credit risk", "market risk", VaR, "Black-Scholes", CVA, xVA, "Monte Carlo", "credit scoring", "fraud detection", "algorithmic trading", "asset allocation", "stock market", "stock price\*", "hedge fund", "financial hedging", "financial engineering"
+**Block 2 — Finance:** finance, financial, "quantitative finance", "portfolio optim\*", "portfolio selection", "portfolio management", "portfolio risk", "option pricing", "derivative pricing", "financial derivative\*", "credit risk", "market risk", "value at risk", VaR, "Black-Scholes", CVA, xVA, "interest rate", "bond pricing", "fixed income", "credit scoring", "fraud detection", "algorithmic trading", "asset allocation", "stock market", "stock price\*", "hedge fund", "financial hedging", "financial engineering"
 
 ### Design Rationale
 - **No third evaluation block** at search stage
-- Stage A = mapping → needs **broad capture** (recall > precision)
-- Evaluation filtering applied at **screening** (Stage B criteria)
+- Evidence mapping needs **broad capture** (recall > precision)
+- Evaluation depth filtering applied at **extraction** (Tier 2 applicability)
 - Consistent with Okoli (2015, §4.2)
 
 ### Benchmark Sensitivity Check
@@ -142,17 +162,17 @@ This is the **core analytical lens** for Stage B:
 ### Final Search Results (tightened query, 2026-03-10-v2)
 | Source | Records |
 |--------|---------|
-| OpenAlex | 4,709 |
-| arXiv | 1,196 |
-| Semantic Scholar | 874 |
-| Scopus | 1,685 |
-| **Total raw** | **8,464** |
+| OpenAlex | 2,692 |
+| arXiv | 496 |
+| Semantic Scholar | 1,497 |
+| Scopus | 1,090 |
+| **Total raw** | **5,775** |
 
 ### After Deduplication
-- **4,750 unique records** in master library
-- 3,714 duplicates removed (2,387 DOI-exact + 1,327 fuzzy title match)
-- 2,280 preprint-published version groups identified
-- Multiple search iterations refined query (amendments A1–A2: tightened noisy terms, all sources fetch complete result sets)
+- **2,672 unique records** in master library
+- 3,103 duplicates removed (2,270 DOI-exact + 833 fuzzy title match)
+- 1,800 preprint-published version groups identified
+- Multiple search iterations refined query (amendments A1–A5: tightened noisy terms, removed QMC-noise "Monte Carlo" and generic "risk analysis", replaced bare Grover/HHL, added QPE/QNN/fixed-income terms; all sources fetch complete result sets)
 
 ### Next Steps
 - Run benchmark sensitivity check
@@ -165,13 +185,13 @@ This is the **core analytical lens** for Stage B:
 
 ### Two-Reviewer Calibrate-Then-Split Design
 1. **Calibration round:** Both reviewers independently screen same 50 records; compute Cohen's κ; target κ ≥ 0.70; discuss disagreements and clarify criteria
-2. **Split screening:** Remaining ~4,700 records split equally between reviewers; each screens their half independently
+2. **Split screening:** Remaining ~2,620 records split equally between reviewers; each screens their half independently
 3. **Borderline escalation:** `maybe` decisions resolved jointly by both reviewers
 4. **Re-screening after time gap:** Each reviewer re-screens their excluded full-texts after 2–4 weeks
 
-### Two Screening Phases
-1. **Title/Abstract** — broad inclusion (Stage A criteria)
-2. **Full-Text** — deeper assessment (Stage B criteria for advantage evaluation)
+### Screening Phases
+1. **Title/Abstract** — broad inclusion against eligibility criteria (§9)
+2. **Full-Text** — same criteria; Tier 2 applicability flag assigned during extraction, not screening
 
 ### Exclusion Reason Codes (PRISMA 2020 §13b)
 - EX-PARADIGM (not gate-based), EX-NONFIN (not finance), EX-NOMETHOD, EX-NOEVAL, EX-DUP, etc.
@@ -186,7 +206,8 @@ This is the **core analytical lens** for Stage B:
 | Bibliographic | paper_id, title, authors, year, DOI |
 | Classification | problem_family, quantum_method, evaluation_type, NISQ_vs_FT |
 | Technical | qubit_count, gate_depth, hardware_or_sim |
-| Hoefler Framework | crossover_time, end_to_end_overhead, classical_baseline_detail, tier1_achievable, tier2_finance_sla |
+| Tier 2 flag | tier2_applicable (yes/no) |
+| Hoefler Framework (Tier 2) | crossover_time, end_to_end_overhead, classical_baseline_detail, tier1_achievable, tier2_finance_sla |
 
 ### Quality Rubric (0/1/2 scoring per SEGRESS)
 - **q_methodology** — Methodological rigour
@@ -202,12 +223,12 @@ This is the **core analytical lens** for Stage B:
 
 ## Slide 11 — Synthesis Plan
 
-### Stage A Outputs
+### Tier 1 Outputs (Evidence Mapping)
 - **Descriptive stats:** Counts by problem family, quantum method, evaluation type, year
 - **Evidence map:** Problem family × quantum method matrix (annotated with maturity)
 - **Trend analysis:** Publication volume over time, method adoption curves
 
-### Stage B Outputs
+### Tier 2 Outputs (Advantage Assessment)
 - **Per-workload advantage table:** Best evidence on crossover viability per problem family
 - **Gap analysis:** Which claims lack end-to-end overhead, credible baselines, crossover estimates
 - **Narrative synthesis** organised by Hoefler-framework dimensions
@@ -251,17 +272,19 @@ python -m tools.slr_toolkit.cli prisma             # PRISMA counts
 3. **Honest assessment** of how far we are from practical quantum advantage in finance
 4. **Prioritised research agenda** identifying the most promising problem families and the biggest evidence gaps
 5. **Reproducible, open toolkit** for conducting SLRs with API-driven search
+6. **Structured SLR outputs** designed to feed into cross-method synthesis with practitioner interviews and experimental validation
 
 ---
 
 ## Slide 14 — Discussion Points for Colleague
 
 - **Scope refinement:** Is the 2016 start date appropriate? Should we go earlier?
-- **Search coverage:** 8,464 raw → 4,750 unique across 4 databases. Is coverage sufficient?
+- **Search coverage:** 5,775 raw → 2,672 unique across 4 databases. Is coverage sufficient?
 - **Advantage framework:** Is Hoefler et al. (2023) the right lens? Any alternatives?
 - **Missing databases:** Are 4 sources sufficient, or should we add IEEE Xplore directly?
-- **Stage B depth:** How many papers will realistically qualify for Stage B advantage assessment?
+- **Tier 2 depth:** How many papers will realistically qualify for Tier 2 advantage assessment?
 - **Practical value:** What would make this review most useful for the quantum computing community?
+- **Mixed-methods integration:** How should we weight SLR vs interview findings when they diverge?
 
 ---
 
@@ -269,20 +292,20 @@ python -m tools.slr_toolkit.cli prisma             # PRISMA counts
 
 ```
 Identification:
-  Database search → 8,464 raw records (4 sources)
+  Database search → 5,775 raw records (4 sources)
   Other methods (snowballing) → TBD
 
 Deduplication:
-  → 4,750 unique records (3,714 duplicates removed)
-  
+  → 2,672 unique records (3,103 duplicates removed)
+
 Screening (Title/Abstract):
   → TBD excluded / TBD included
-  
+
 Screening (Full-Text):
-  → TBD excluded (with reason codes) / TBD included Stage A
-  
-Stage B Filter:
-  → TBD included in Stage B (quantitative advantage evaluation)
+  → TBD excluded (with reason codes) / TBD included total
+
+Tier 2 Applicability:
+  → TBD with tier2_applicable = yes (Hoefler advantage assessment)
 ```
 
 ## Appendix B — Key References
@@ -291,6 +314,7 @@ Stage B Filter:
 - Herman et al. (2022/2023) — "A Survey of Quantum Computing for Finance"
 - Bunescu & Vârtei (2024) — Only prior formal SLR in this space
 - Egger et al. (2020) — "Quantum computing for finance: Overview and prospects"
+- Creswell & Creswell (2018) — Research design for mixed-methods studies
 - Page et al. (2021) — PRISMA 2020 guidelines
 - Rethlefsen et al. (2021) — PRISMA-S search reporting
 - Wohlin (2014) — Snowballing guidelines

@@ -65,8 +65,7 @@ def _add_instructions_sheet(wb: Workbook, sheet_type: str) -> None:
         ("GOAL", _INSTR_BOLD),
         (
             "Decide whether each paper should be INCLUDED or EXCLUDED based on "
-            "its title and abstract. This is Stage A (broad mapping) — when in "
-            "doubt, INCLUDE.",
+            "its title and abstract. When in doubt, INCLUDE.",
             _INSTR_FONT,
         ),
         ("", _INSTR_FONT),

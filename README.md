@@ -1,15 +1,16 @@
 # Quantum-Finance SLR Toolkit
 
-A reproducible, local-first toolkit for running a **two-stage systematic literature review** (SLR) on gate-based quantum computing in finance.
+A reproducible, local-first toolkit for running a **systematic literature review** (SLR) on gate-based quantum computing in finance, with tiered extraction for evidence mapping and practical advantage assessment. This SLR constitutes Phase 1a of a larger mixed-methods study that also includes practitioner interviews, cross-method synthesis, and experimental validation (documented separately).
 
-- **Stage A — Mapping Review:** Broad survey of QC applications in finance.
-- **Stage B — Focused SLR:** Deep assessment of practical quantum advantage claims.
+- **Tier 1 extraction (all papers):** Evidence mapping — problem families, quantum methods, evaluation approaches, maturity.
+- **Tier 2 extraction (quantitative papers):** Practical advantage assessment using the Hoefler et al. (2023) framework.
 
 ## Scope
 
 | Dimension | Value |
 |-----------|-------|
 | Domain | Gate-based quantum computing in finance |
+| Research context | Phase 1a of an exploratory sequential mixed-methods design (Creswell & Creswell, 2018) |
 | Databases | Scopus, OpenAlex, arXiv, Semantic Scholar (4 sources) |
 | Includes | Preprints (arXiv, SSRN), NISQ + fault-tolerant |
 | Time window | 2016-01-01 → present |
@@ -225,7 +226,7 @@ quantum-finance-slr/
 | `conflict` | Flag if A ≠ B |
 | `final_decision` | Resolved decision: `include` / `exclude` / `maybe` |
 | `reason_code` / `exclusion_reason` | Code from `exclusion_reason_codes.md` — **mandatory** for excluded full-text records |
-| `stage` | `A` or `B` (full-text template only) — for Stage A/B split in PRISMA |
+| `tier2_applicable` | `yes` or `no` — whether the paper qualifies for Tier 2 (Hoefler framework) extraction |
 | `notes` | Free-text notes |
 
 ---
@@ -240,8 +241,8 @@ quantum-finance-slr/
 | `ExcludedTitleAbstract` | Rows with `final_decision == 'exclude'` |
 | `FullTextAssessed` | Rows in `full_text_decisions.csv` |
 | `ExcludedFullText` | Rows with `final_decision == 'exclude'` |
-| `IncludedStageA` | Included count (or split by `stage` column if present) |
-| `IncludedStageB` | Split by `stage` column, or `N/A` |
+| `IncludedTotal` | Total included after full-text screening (`final_decision == 'include'`) |
+| `Tier2Applicable` | Subset of included with `tier2_applicable == 'yes'` |
 
 The `prisma_counts.xlsx` also includes an **Exclusion Reasons** sheet with per-code counts (e.g. EX-PARADIGM: 5, EX-NONFIN: 3). If excluded records are missing an `exclusion_reason`, a warning is logged.
 
@@ -300,6 +301,8 @@ This review is guided by the following methodological frameworks:
   framework for assessing practical quantum advantage.
 - **Wohlin (2014)** — guidelines for snowballing in systematic literature
   studies.
+- **Creswell & Creswell (2018)** — research design for mixed-methods studies
+  (overarching study design; SLR follows PRISMA within this framework).
 
 ---
 
@@ -308,9 +311,9 @@ This review is guided by the following methodological frameworks:
 ```bibtex
 @mastersthesis{wallerich2026quantum,
   author  = {Wallerich, [First Name]},
-  title   = {Gate-Based Quantum Computing in Finance: A Two-Stage
-             Systematic Literature Review and Practical Advantage
-             Assessment},
+  title   = {Gate-Based Quantum Computing in Finance: A Systematic
+             Literature Review and Practical Advantage Assessment
+             Within a Mixed-Methods Research Design},
   school  = {[University Name]},
   year    = {2026},
 }
@@ -322,4 +325,3 @@ This review is guided by the following methodological frameworks:
 
 - Thesis supervisor: [Name]
 - [Any additional acknowledgements]
-
