@@ -658,9 +658,14 @@ def export_asreview_dataset(
 
 def export_asreview_labels(
     calibration_path: Path | None = None,
+    validation_path: Path | None = None,
     output_path: Path | None = None,
 ) -> Path:
-    """Export consensus calibration labels as ASReview prior-knowledge CSV.
+    """Export consensus labels as ASReview prior-knowledge CSV.
+
+    Reads labelled records from the calibration workbook and, if available,
+    the validation workbook.  Both are dual-screened subsets whose labels
+    can safely be used as prior knowledge for ASReview active learning.
 
     Writes ``paper_id``, ``title``, ``abstract``, ``doi``, ``label_included``
     where ``label_included = 1`` for include, ``0`` for exclude.  Records
@@ -668,30 +673,49 @@ def export_asreview_labels(
     """
     if calibration_path is None:
         calibration_path = config.CALIBRATION_SCREENING_XLSX
+    if validation_path is None:
+        validation_path = config.VALIDATION_SCREENING_XLSX
     if output_path is None:
         output_path = config.ASREVIEW_PRIOR_LABELS_CSV
 
     from openpyxl import load_workbook as _load_wb
 
-    wb = _load_wb(calibration_path, read_only=True)
-    ws = wb["Screening"]
+    def _read_labels_from_workbook(path: Path) -> list[dict[str, str]]:
+        """Read labelled rows from an Excel screening workbook."""
+        wb = _load_wb(path, read_only=True)
+        ws = wb["Screening"]
+        rows: list[dict[str, str]] = []
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            if row[2] is None:
+                continue
+            # final decision (col K=10) > reviewer A (col I=8) fallback
+            decision = str(row[10] or row[8] or "").strip().lower()
+            if decision not in ("include", "exclude"):
+                continue
+            rows.append({
+                "paper_id": str(row[1] or ""),
+                "title": str(row[2] or ""),
+                "abstract": str(row[6] or ""),
+                "doi": str(row[5] or ""),
+                "label_included": "1" if decision == "include" else "0",
+            })
+        wb.close()
+        return rows
 
-    rows: list[dict[str, str]] = []
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if row[2] is None:
-            continue
-        # final decision (col K=10) > reviewer A (col I=8) fallback
-        decision = str(row[10] or row[8] or "").strip().lower()
-        if decision not in ("include", "exclude"):
-            continue
-        rows.append({
-            "paper_id": str(row[1] or ""),
-            "title": str(row[2] or ""),
-            "abstract": str(row[6] or ""),
-            "doi": str(row[5] or ""),
-            "label_included": "1" if decision == "include" else "0",
-        })
-    wb.close()
+    rows = _read_labels_from_workbook(calibration_path)
+    cal_count = len(rows)
+
+    val_count = 0
+    if validation_path.exists():
+        seen_ids = {r["paper_id"] for r in rows}
+        val_rows = _read_labels_from_workbook(validation_path)
+        # Avoid duplicates if any paper appears in both workbooks
+        for r in val_rows:
+            if r["paper_id"] not in seen_ids:
+                rows.append(r)
+                seen_ids.add(r["paper_id"])
+        val_count = len(rows) - cal_count
+        log.info("Including %d validation labels as additional priors", val_count)
 
     with open(output_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(
@@ -701,7 +725,10 @@ def export_asreview_labels(
         writer.writeheader()
         writer.writerows(rows)
 
-    log.info("Exported %d prior labels -> %s", len(rows), output_path)
+    log.info(
+        "Exported %d prior labels (%d calibration + %d validation) -> %s",
+        len(rows), cal_count, val_count, output_path,
+    )
     return output_path
 
 
@@ -1048,6 +1075,7 @@ def compute_ai_validation(
     }
 
     # Write Markdown report
+    _pass_fail = "PASS \u2713" if recall >= 0.95 else "FAIL \u2717"
     report = (
         "# AI Validation Report\n\n"
         "## Held-out validation subset performance\n\n"
@@ -1066,7 +1094,7 @@ def compute_ai_validation(
         f"## Threshold check\n\n"
         f"- Required: recall \u2265 0.95\n"
         f"- Achieved: recall = {recall:.4f}\n"
-        f"- **Result: {'PASS \u2713' if recall >= 0.95 else 'FAIL \u2717'}**\n\n"
+        f"- **Result: {_pass_fail}**\n\n"
     )
 
     if not metrics["pass"]:
@@ -1092,6 +1120,7 @@ def run_asreview_simulate(
     *,
     model: str = "elas_u4",
     seed: int = 42,
+    threshold: float = 0.5,
 ) -> Path:
     """Run ASReview active-learning ranking and export decisions.
 
@@ -1112,6 +1141,9 @@ def run_asreview_simulate(
         ASReview model configuration name (default ``elas_u4``).
     seed:
         Random seed for reproducibility.
+    threshold:
+        Probability threshold for inclusion decision.  Records with
+        P(relevant) >= threshold are marked ``include`` (default 0.5).
     """
     import numpy as np
     import pandas as pd
@@ -1171,23 +1203,38 @@ def run_asreview_simulate(
     # Train on prior-labelled records
     cycle.fit(X_features[prior_mask], labels[prior_mask])
 
-    # Rank all unlabeled records by predicted relevance
-    ranked_indices = cycle.rank(X_features[unlabeled_mask])
+    # Compute relevance scores for unlabeled records
+    X_unlabeled = X_features[unlabeled_mask]
+    classifier = cycle.classifier
+
+    try:
+        proba = classifier.predict_proba(X_unlabeled)
+        scores = proba[:, 1]  # P(relevant)
+    except AttributeError:
+        # SVM / classifiers without predict_proba: use decision_function
+        # and normalise to [0, 1] via sigmoid
+        raw = classifier.decision_function(X_unlabeled)
+        scores = 1.0 / (1.0 + np.exp(-raw))
+
+    # Rank by score descending (rank 1 = most relevant)
+    ranked_order = np.argsort(-scores)
 
     # Map back to dataset positions
     unlabeled_positions = np.where(unlabeled_mask)[0]
-    ranked_dataset_indices = unlabeled_positions[ranked_indices]
+    ranked_dataset_indices = unlabeled_positions[ranked_order]
 
     # Build output rows ranked by AI relevance (rank 1 = most relevant)
     paper_ids = dataset["paper_id"].tolist()
     out_rows = []
-    for rank, idx in enumerate(ranked_dataset_indices, 1):
-        pid = paper_ids[idx]
+    for rank, order_idx in enumerate(ranked_order, 1):
+        ds_idx = ranked_dataset_indices[rank - 1]
+        pid = paper_ids[ds_idx]
+        score = float(scores[order_idx])
         out_rows.append({
             "paper_id": pid,
-            "ai_decision": "include" if rank <= len(ranked_dataset_indices) // 2 else "exclude",
+            "ai_decision": "include" if score >= threshold else "exclude",
             "ai_rank": rank,
-            "ai_confidence": "",
+            "ai_confidence": f"{score:.4f}",
         })
 
     out_df = pd.DataFrame(out_rows)

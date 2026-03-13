@@ -179,20 +179,22 @@ def _cmd_export_asreview(args: argparse.Namespace) -> None:
     from .screening import export_asreview_dataset, export_asreview_labels
 
     labels_path = export_asreview_labels()
-    print(f"[ok] Prior labels exported: {labels_path.name}")
 
-    # Read calibration IDs to exclude from the dataset
+    # Count labels by source
     import csv as _csv
-
     cal_ids: set[str] = set()
+    total_labels = 0
     if labels_path.exists():
         with open(labels_path, encoding="utf-8") as f:
             for row in _csv.DictReader(f):
                 cal_ids.add(row.get("paper_id", ""))
+                total_labels += 1
+
+    print(f"[ok] Prior labels exported: {labels_path.name} ({total_labels} labels)")
 
     dataset_path = export_asreview_dataset(exclude_ids=cal_ids)
     print(f"[ok] ASReview dataset exported: {dataset_path.name}")
-    print(f"     {len(cal_ids)} calibration records excluded from dataset")
+    print(f"     {len(cal_ids)} labelled records excluded from dataset")
     print()
     print("Next steps:")
     print("  1. Import both files into ASReview LAB v2")
@@ -244,6 +246,7 @@ def _cmd_run_asreview(args: argparse.Namespace) -> None:
     output = run_asreview_simulate(
         model=args.model,
         seed=args.seed,
+        threshold=args.threshold,
     )
     print(f"[ok] ASReview simulation complete -> {output.name}")
     print("Next: slr-toolkit ai-discrepancies")
@@ -533,6 +536,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_ra.add_argument(
         "--seed", type=int, default=42,
         help="Random seed for reproducibility (default: 42).",
+    )
+    p_ra.add_argument(
+        "--threshold", type=float, default=0.5,
+        help="Probability threshold for AI include decision (default: 0.5).",
     )
     p_ra.set_defaults(func=_cmd_run_asreview)
 

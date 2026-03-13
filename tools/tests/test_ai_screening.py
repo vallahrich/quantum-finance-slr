@@ -373,9 +373,30 @@ class TestRunASReviewSimulate:
             return {"name": name, "value": FakeCycleData()}
 
         # Fake ActiveLearningCycle
+        class FakeClassifier:
+            def decision_function(self, X):
+                import numpy as np
+                # Return descending scores so first records rank highest
+                return np.linspace(1.0, -1.0, len(X))
+
         class FakeCycle:
             def __init__(self, **kwargs):
+                self.classifier = FakeClassifier()
+
+            @classmethod
+            def from_meta(cls, meta):
+                return cls()
+
+            def transform(self, X):
+                import numpy as np
+                return np.zeros((len(X), 2))
+
+            def fit(self, X, y):
                 pass
+
+            def rank(self, X):
+                import numpy as np
+                return np.arange(len(X))
 
         # Monkeypatch ASReview imports inside screening module
         monkeypatch.setattr(
