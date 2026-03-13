@@ -108,6 +108,24 @@ def generate_prisma_counts() -> dict[str, str | int]:
     counts["SnowballIdentified"] = snowball_identified
     counts["SnowballIncluded"] = snowball_included
 
+    # --- AI-assisted screening (PRISMA-trAIce) ------------------------------
+    ai_disc_path = config.AI_DISCREPANCY_REVIEW
+    ai_flagged = 0
+    ai_rescued = 0
+    if ai_disc_path.exists():
+        ai_df = _read_csv_safe(ai_disc_path)
+        if ai_df is not None and "discrepancy_type" in ai_df.columns:
+            ai_flagged = (ai_df["discrepancy_type"] == "ai_rescue").sum()
+            # Records where re-review resulted in inclusion
+            if "re_review_decision" in ai_df.columns:
+                rescued_mask = (
+                    (ai_df["discrepancy_type"] == "ai_rescue")
+                    & (ai_df["re_review_decision"].str.strip().str.lower() == "include")
+                )
+                ai_rescued = rescued_mask.sum()
+    counts["AIFlagged"] = ai_flagged
+    counts["AIRescued"] = ai_rescued
+
     # --- Full-text exclusion reason breakdown (PRISMA 2020 §13b) ------------
     reason_counts: dict[str, int] = {}
     if ft_df is not None and "exclusion_reason" in ft_df.columns:

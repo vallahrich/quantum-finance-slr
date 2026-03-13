@@ -124,7 +124,9 @@ def _cmd_generate_screening(args: argparse.Namespace) -> None:
     """Generate screening Excel workbooks."""
     from .screening import generate_screening_excels
 
-    paths = generate_screening_excels(seed=args.seed)
+    paths = generate_screening_excels(
+        seed=args.seed, validation_size=args.validation_size,
+    )
     print("[ok] Screening workbooks generated:")
     for label, path in paths.items():
         print(f"  {label}: {path.name}")
@@ -170,6 +172,95 @@ def _cmd_merge_screening(args: argparse.Namespace) -> None:
 
     output = merge_screening_results()
     print(f"[ok] Merged screening decisions -> {output.name}")
+
+
+def _cmd_export_asreview(args: argparse.Namespace) -> None:
+    """Export records and prior labels for ASReview."""
+    from .screening import export_asreview_dataset, export_asreview_labels
+
+    labels_path = export_asreview_labels()
+    print(f"[ok] Prior labels exported: {labels_path.name}")
+
+    # Read calibration IDs to exclude from the dataset
+    import csv as _csv
+
+    cal_ids: set[str] = set()
+    if labels_path.exists():
+        with open(labels_path, encoding="utf-8") as f:
+            for row in _csv.DictReader(f):
+                cal_ids.add(row.get("paper_id", ""))
+
+    dataset_path = export_asreview_dataset(exclude_ids=cal_ids)
+    print(f"[ok] ASReview dataset exported: {dataset_path.name}")
+    print(f"     {len(cal_ids)} calibration records excluded from dataset")
+    print()
+    print("Next steps:")
+    print("  1. Import both files into ASReview LAB v2")
+    print("  2. Use prior labels as training data (prior knowledge)")
+    print("  3. Run active-learning screening")
+    print("  4. Export results and run: slr_toolkit import-ai-decisions --file <export.csv>")
+
+
+def _cmd_import_ai_decisions(args: argparse.Namespace) -> None:
+    """Import AI screening results into the pipeline."""
+    from .screening import import_ai_decisions
+
+    output = import_ai_decisions(Path(args.file))
+    print(f"[ok] AI decisions imported -> {output.name}")
+
+
+def _cmd_ai_discrepancies(args: argparse.Namespace) -> None:
+    """Compare human vs AI decisions and flag discrepancies."""
+    from .screening import find_discrepancies
+
+    counts = find_discrepancies()
+    print("[ok] Discrepancy analysis complete:")
+    for dtype, n in sorted(counts.items()):
+        print(f"  {dtype:20s}: {n}")
+
+    ai_rescue = counts.get("ai_rescue", 0)
+    if ai_rescue > 0:
+        print(f"\n  ** {ai_rescue} records flagged for human re-review (AI=include, Human=exclude)")
+        print("  Edit 05_screening/ai_discrepancy_review.csv to resolve these.")
+    else:
+        print("\n  No AI rescue cases found — human and AI screening are aligned.")
+
+
+def _cmd_fn_audit(args: argparse.Namespace) -> None:
+    """Generate false-negative audit sample."""
+    from .screening import generate_fn_audit
+
+    output = generate_fn_audit(audit_fraction=args.fraction, seed=args.seed)
+    print(f"[ok] FN audit sample -> {output.name}")
+    print("  Second reviewer should re-screen these records.")
+    print("  If >=5% should have been included, re-screen all double-excluded records.")
+
+
+def _cmd_ai_validation(args: argparse.Namespace) -> None:
+    """Compute AI performance on the validation subset."""
+    from .screening import compute_ai_validation
+
+    metrics = compute_ai_validation()
+    if metrics.get("error"):
+        print(f"[FAIL] {metrics['error']}")
+        return
+
+    print("AI Validation Results (held-out subset):")
+    print(f"  Records:    {metrics['n']}")
+    print(f"  TP: {metrics['tp']}  FN: {metrics['fn']}  FP: {metrics['fp']}  TN: {metrics['tn']}")
+    print(f"  Recall:     {metrics['recall']:.4f}")
+    print(f"  Specificity:{metrics['specificity']:.4f}")
+    print(f"  Precision:  {metrics['precision']:.4f}")
+    print(f"  F1:         {metrics['f1']:.4f}")
+    print(f"  Cohen's κ:  {metrics['kappa']:.4f}")
+    print()
+    if metrics["pass"]:
+        print(f"  [ok] Recall = {metrics['recall']:.4f} >= 0.95 -- PASS")
+        print("  Proceed with AI-as-safety-net workflow.")
+    else:
+        print(f"  [FAIL] Recall = {metrics['recall']:.4f} < 0.95 -- BELOW THRESHOLD")
+        print("  Options: refine AI model or abandon AI layer.")
+    print(f"\n  Full report: 05_screening/ai_validation_report.md")
 
 
 def _cmd_rerun_clean(args: argparse.Namespace) -> None:
@@ -386,6 +477,10 @@ def build_parser() -> argparse.ArgumentParser:
         "--seed", type=int, default=42,
         help="Random seed for reproducible sampling/splitting (default: 42).",
     )
+    p_gs.add_argument(
+        "--validation-size", type=int, default=100,
+        help="Number of records for the held-out AI validation subset (default: 100).",
+    )
     p_gs.set_defaults(func=_cmd_generate_screening)
 
     # -- compute-kappa -------------------------------------------------------
@@ -405,6 +500,53 @@ def build_parser() -> argparse.ArgumentParser:
         help="Merge calibration + reviewer A/B screening into one decisions CSV.",
     )
     p_ms.set_defaults(func=_cmd_merge_screening)
+
+    # -- export-asreview -----------------------------------------------------
+    p_ea = sub.add_parser(
+        "export-asreview",
+        help="Export records as ASReview-compatible CSV + prior labels.",
+    )
+    p_ea.set_defaults(func=_cmd_export_asreview)
+
+    # -- import-ai-decisions -------------------------------------------------
+    p_ia = sub.add_parser(
+        "import-ai-decisions",
+        help="Import AI screening results (e.g. ASReview export) into the pipeline.",
+    )
+    p_ia.add_argument(
+        "--file", required=True,
+        help="Path to AI decision export CSV (must have paper_id + label column).",
+    )
+    p_ia.set_defaults(func=_cmd_import_ai_decisions)
+
+    # -- ai-discrepancies ----------------------------------------------------
+    p_ad = sub.add_parser(
+        "ai-discrepancies",
+        help="Compare human vs AI screening decisions and flag discrepancies.",
+    )
+    p_ad.set_defaults(func=_cmd_ai_discrepancies)
+
+    # -- fn-audit ------------------------------------------------------------
+    p_fn = sub.add_parser(
+        "fn-audit",
+        help="Sample 10%% of double-excluded records for false-negative audit.",
+    )
+    p_fn.add_argument(
+        "--fraction", type=float, default=0.10,
+        help="Fraction of double-excluded records to sample (default: 0.10).",
+    )
+    p_fn.add_argument(
+        "--seed", type=int, default=42,
+        help="Random seed for reproducible sampling (default: 42).",
+    )
+    p_fn.set_defaults(func=_cmd_fn_audit)
+
+    # -- ai-validation -------------------------------------------------------
+    p_av = sub.add_parser(
+        "ai-validation",
+        help="Compute AI performance on the held-out validation subset.",
+    )
+    p_av.set_defaults(func=_cmd_ai_validation)
 
     return parser
 

@@ -375,8 +375,11 @@ def generate_split_workbooks(
     return path_a, path_b
 
 
-def generate_screening_excels(seed: int = 42) -> dict[str, Path]:
-    """Generate all screening workbooks (calibration + split)."""
+def generate_screening_excels(
+    seed: int = 42,
+    validation_size: int = 100,
+) -> dict[str, Path]:
+    """Generate all screening workbooks (calibration + validation + split)."""
     records = _load_unique_records()
     log.info("Loaded %d unique records for screening", len(records))
 
@@ -391,10 +394,81 @@ def generate_screening_excels(seed: int = 42) -> dict[str, Path]:
             cal_ids.add(str(row[1]))
     cal_wb.close()
 
-    path_a, path_b = generate_split_workbooks(records, cal_ids, seed=seed)
+    # Generate held-out validation workbook (Protocol §8, Step 3)
+    val_path, val_ids = generate_validation_workbook(
+        records, cal_ids, sample_size=validation_size, seed=seed,
+    )
+
+    # Exclude both calibration and validation IDs from split screening
+    excluded_ids = cal_ids | val_ids
+    remaining = [r for r in records if r.get("paper_id", "") not in excluded_ids]
+    random.seed(seed)
+    random.shuffle(remaining)
+    mid = len(remaining) // 2
+    split_a = remaining[:mid]
+    split_b = remaining[mid:]
+
+    path_a = config.SCREENING_DIR / "screening_reviewer_A.xlsx"
+    path_b = config.SCREENING_DIR / "screening_reviewer_B.xlsx"
+
+    for label, subset, path in [("A", split_a, path_a), ("B", split_b, path_b)]:
+        wb = Workbook()
+        _add_instructions_sheet(wb, "split")
+        if "Sheet" in wb.sheetnames:
+            del wb["Sheet"]
+
+        ws = wb.create_sheet("Screening")
+        ws.sheet_properties.tabColor = "FFC000"
+
+        headers = [
+            "#", "Paper ID", "Title", "Authors", "Year", "DOI",
+            "Abstract", "Source", "Decision", "Notes",
+        ]
+        for i, h in enumerate(headers, 1):
+            ws.cell(row=1, column=i, value=h)
+        _style_header(ws, len(headers))
+
+        dv = DataValidation(
+            type="list", formula1='"include,exclude,maybe"', allow_blank=True
+        )
+        dv.error = "Please select: include, exclude, or maybe"
+        dv.errorTitle = "Invalid decision"
+        ws.add_data_validation(dv)
+
+        for row_idx, rec in enumerate(subset, start=2):
+            ws.cell(row=row_idx, column=1, value=row_idx - 1)
+            ws.cell(row=row_idx, column=2, value=rec.get("paper_id", ""))
+            ws.cell(row=row_idx, column=3, value=rec.get("title", ""))
+            ws.cell(row=row_idx, column=4, value=rec.get("authors", ""))
+            ws.cell(row=row_idx, column=5, value=rec.get("year", ""))
+            ws.cell(row=row_idx, column=6, value=rec.get("doi", ""))
+            ws.cell(row=row_idx, column=7, value=rec.get("abstract", ""))
+            ws.cell(row=row_idx, column=8, value=rec.get("source_db", ""))
+            dv.add(ws.cell(row=row_idx, column=9))
+
+            for col in range(1, len(headers) + 1):
+                cell = ws.cell(row=row_idx, column=col)
+                cell.font = _CELL_FONT
+                cell.alignment = _CELL_ALIGN
+                cell.border = _THIN_BORDER
+
+        max_row = len(subset) + 1
+        _add_conditional_formatting(ws, "I", max_row)
+
+        widths = {"A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
+                  "G": 70, "H": 12, "I": 14, "J": 30}
+        for col_letter, w in widths.items():
+            ws.column_dimensions[col_letter].width = w
+        ws.freeze_panes = "C2"
+        ws.auto_filter.ref = f"A1:J{max_row}"
+
+        _add_progress_sheet(wb, "Screening", "I", len(subset))
+        wb.save(path)
+        log.info("Reviewer %s workbook: %s (%d records)", label, path, len(subset))
 
     return {
         "calibration": cal_path,
+        "validation": val_path,
         "reviewer_a": path_a,
         "reviewer_b": path_b,
     }
@@ -525,3 +599,487 @@ def merge_screening_results(
 
     log.info("Merged %d decisions -> %s", len(rows), output_path)
     return output_path
+
+
+# ── AI-assisted screening (Protocol §8, Amendment A8) ─────────────────────
+
+
+def export_asreview_dataset(
+    output_path: Path | None = None,
+    *,
+    exclude_ids: set[str] | None = None,
+) -> Path:
+    """Export master records as a CSV importable by ASReview LAB.
+
+    ASReview expects columns: ``title``, ``abstract``, ``doi``, ``authors``,
+    ``year``, and optionally ``label_included`` (1/0) for prior-knowledge
+    records.  The ``paper_id`` is preserved as an extra column so results
+    can be joined back.
+
+    Parameters
+    ----------
+    output_path:
+        Destination CSV.  Defaults to ``05_screening/asreview_dataset.csv``.
+    exclude_ids:
+        Paper IDs to omit (e.g. calibration training records that will be
+        labelled separately as prior knowledge).
+    """
+    if output_path is None:
+        output_path = config.SCREENING_DIR / "asreview_dataset.csv"
+    if exclude_ids is None:
+        exclude_ids = set()
+
+    records = _load_unique_records()
+    rows: list[dict[str, str]] = []
+    for rec in records:
+        pid = rec.get("paper_id", "")
+        if pid in exclude_ids:
+            continue
+        rows.append({
+            "paper_id": pid,
+            "title": rec.get("title", ""),
+            "abstract": rec.get("abstract", ""),
+            "authors": rec.get("authors", ""),
+            "year": rec.get("year", ""),
+            "doi": rec.get("doi", ""),
+        })
+
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["paper_id", "title", "abstract", "authors", "year", "doi"],
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+    log.info("Exported %d records for ASReview -> %s", len(rows), output_path)
+    return output_path
+
+
+def export_asreview_labels(
+    calibration_path: Path | None = None,
+    output_path: Path | None = None,
+) -> Path:
+    """Export consensus calibration labels as ASReview prior-knowledge CSV.
+
+    Writes ``paper_id``, ``title``, ``abstract``, ``doi``, ``label_included``
+    where ``label_included = 1`` for include, ``0`` for exclude.  Records
+    with ``maybe`` or no final decision are excluded.
+    """
+    if calibration_path is None:
+        calibration_path = config.SCREENING_DIR / "calibration_screening.xlsx"
+    if output_path is None:
+        output_path = config.SCREENING_DIR / "asreview_prior_labels.csv"
+
+    from openpyxl import load_workbook as _load_wb
+
+    wb = _load_wb(calibration_path, read_only=True)
+    ws = wb["Screening"]
+
+    rows: list[dict[str, str]] = []
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if row[2] is None:
+            continue
+        # final decision (col K=10) > reviewer A (col I=8) fallback
+        decision = str(row[10] or row[8] or "").strip().lower()
+        if decision not in ("include", "exclude"):
+            continue
+        rows.append({
+            "paper_id": str(row[1] or ""),
+            "title": str(row[2] or ""),
+            "abstract": str(row[6] or ""),
+            "doi": str(row[5] or ""),
+            "label_included": "1" if decision == "include" else "0",
+        })
+    wb.close()
+
+    with open(output_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=["paper_id", "title", "abstract", "doi", "label_included"],
+        )
+        writer.writeheader()
+        writer.writerows(rows)
+
+    log.info("Exported %d prior labels -> %s", len(rows), output_path)
+    return output_path
+
+
+def generate_validation_workbook(
+    records: list[dict[str, str]],
+    calibration_ids: set[str],
+    sample_size: int = 100,
+    seed: int = 42,
+    output_path: Path | None = None,
+) -> tuple[Path, set[str]]:
+    """Generate held-out validation subset workbook (dual-screened).
+
+    Returns (path, set_of_validation_paper_ids).
+    """
+    if output_path is None:
+        output_path = config.SCREENING_DIR / "validation_screening.xlsx"
+
+    remaining = [r for r in records if r.get("paper_id", "") not in calibration_ids]
+    random.seed(seed + 1)  # distinct seed from calibration sample
+    sample = random.sample(remaining, min(sample_size, len(remaining)))
+    validation_ids = {r.get("paper_id", "") for r in sample}
+
+    wb = Workbook()
+    _add_instructions_sheet(wb, "calibration")  # dual-reviewer style
+    if "Sheet" in wb.sheetnames:
+        del wb["Sheet"]
+
+    ws = wb.create_sheet("Screening")
+    ws.sheet_properties.tabColor = "7030A0"  # purple for validation
+
+    headers = [
+        "#", "Paper ID", "Title", "Authors", "Year", "DOI",
+        "Abstract", "Source", "Reviewer A Decision",
+        "Reviewer B Decision", "Final Decision", "Notes",
+    ]
+    for i, h in enumerate(headers, 1):
+        ws.cell(row=1, column=i, value=h)
+    _style_header(ws, len(headers))
+
+    dv = DataValidation(
+        type="list", formula1='"include,exclude,maybe"', allow_blank=True,
+    )
+    dv.error = "Please select: include, exclude, or maybe"
+    dv.errorTitle = "Invalid decision"
+    ws.add_data_validation(dv)
+
+    for row_idx, rec in enumerate(sample, start=2):
+        ws.cell(row=row_idx, column=1, value=row_idx - 1)
+        ws.cell(row=row_idx, column=2, value=rec.get("paper_id", ""))
+        ws.cell(row=row_idx, column=3, value=rec.get("title", ""))
+        ws.cell(row=row_idx, column=4, value=rec.get("authors", ""))
+        ws.cell(row=row_idx, column=5, value=rec.get("year", ""))
+        ws.cell(row=row_idx, column=6, value=rec.get("doi", ""))
+        ws.cell(row=row_idx, column=7, value=rec.get("abstract", ""))
+        ws.cell(row=row_idx, column=8, value=rec.get("source_db", ""))
+        for col in (9, 10, 11):
+            dv.add(ws.cell(row=row_idx, column=col))
+        for col in range(1, len(headers) + 1):
+            cell = ws.cell(row=row_idx, column=col)
+            cell.font = _CELL_FONT
+            cell.alignment = _CELL_ALIGN
+            cell.border = _THIN_BORDER
+
+    max_row = len(sample) + 1
+    for col_letter in ("I", "J", "K"):
+        _add_conditional_formatting(ws, col_letter, max_row)
+
+    widths = {"A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
+              "G": 70, "H": 12, "I": 18, "J": 18, "K": 16, "L": 30}
+    for col_letter, w in widths.items():
+        ws.column_dimensions[col_letter].width = w
+    ws.freeze_panes = "C2"
+    ws.auto_filter.ref = f"A1:L{max_row}"
+
+    _add_progress_sheet(wb, "Screening", "I", len(sample))
+    wb.save(output_path)
+    log.info("Validation workbook: %s (%d records)", output_path, len(sample))
+    return output_path, validation_ids
+
+
+def import_ai_decisions(
+    ai_export_path: Path,
+    output_path: Path | None = None,
+) -> Path:
+    """Import AI screening results (e.g. ASReview export) into pipeline CSV.
+
+    Expects input CSV with at least ``paper_id`` (or ``record_id``) and one
+    of ``label_included`` (0/1), ``included`` (0/1), or ``label``
+    (``relevant``/``irrelevant``).  Optionally ``confidence`` or
+    ``proba``.
+
+    Writes standardised ``ai_screening_decisions.csv`` with columns:
+    ``paper_id``, ``ai_decision``, ``ai_confidence``.
+    """
+    import pandas as pd
+
+    if output_path is None:
+        output_path = config.AI_SCREENING_DECISIONS
+
+    df = pd.read_csv(ai_export_path, dtype=str).fillna("")
+
+    # Resolve paper_id column
+    if "paper_id" not in df.columns:
+        if "record_id" in df.columns:
+            df = df.rename(columns={"record_id": "paper_id"})
+        else:
+            raise ValueError(
+                f"AI export must have 'paper_id' or 'record_id' column. "
+                f"Found: {list(df.columns)}"
+            )
+
+    # Resolve decision column
+    if "label_included" in df.columns:
+        df["ai_decision"] = df["label_included"].apply(
+            lambda x: "include" if str(x).strip() == "1" else "exclude"
+        )
+    elif "included" in df.columns:
+        df["ai_decision"] = df["included"].apply(
+            lambda x: "include" if str(x).strip() == "1" else "exclude"
+        )
+    elif "label" in df.columns:
+        df["ai_decision"] = df["label"].str.strip().str.lower().apply(
+            lambda x: "include" if x in ("relevant", "1", "include") else "exclude"
+        )
+    else:
+        raise ValueError(
+            "AI export must have 'label_included', 'included', or 'label' column."
+        )
+
+    # Resolve confidence column
+    df["ai_confidence"] = ""
+    for col in ("confidence", "proba", "probability", "score"):
+        if col in df.columns:
+            df["ai_confidence"] = df[col].astype(str)
+            break
+
+    out = df[["paper_id", "ai_decision", "ai_confidence"]]
+    out.to_csv(output_path, index=False)
+    log.info("Imported %d AI decisions -> %s", len(out), output_path)
+    return output_path
+
+
+def find_discrepancies(
+    human_decisions_path: Path | None = None,
+    ai_decisions_path: Path | None = None,
+    output_path: Path | None = None,
+) -> dict[str, int]:
+    """Join human and AI screening decisions to find discrepancies.
+
+    Writes ``ai_discrepancy_review.csv`` with columns:
+    ``paper_id``, ``title``, ``human_decision``, ``ai_decision``,
+    ``ai_confidence``, ``discrepancy_type``, ``re_review_decision``,
+    ``notes``.
+
+    Discrepancy types:
+    - ``ai_rescue``:  AI=include, Human=exclude  (primary safety-net catch)
+    - ``agree_include``: both include
+    - ``agree_exclude``: both exclude
+    - ``human_only``: Human=include, AI=exclude  (human stands)
+
+    Returns counts of each discrepancy type.
+    """
+    import pandas as pd
+
+    if human_decisions_path is None:
+        human_decisions_path = config.TA_DECISIONS_FILE
+    if ai_decisions_path is None:
+        ai_decisions_path = config.AI_SCREENING_DECISIONS
+    if output_path is None:
+        output_path = config.AI_DISCREPANCY_REVIEW
+
+    human_df = pd.read_csv(human_decisions_path, dtype=str).fillna("")
+    ai_df = pd.read_csv(ai_decisions_path, dtype=str).fillna("")
+
+    # Normalise human decision column name
+    if "final_decision" in human_df.columns:
+        human_df["human_decision"] = human_df["final_decision"].str.strip().str.lower()
+    elif "decision" in human_df.columns:
+        human_df["human_decision"] = human_df["decision"].str.strip().str.lower()
+    else:
+        raise ValueError("Human decisions file must have 'final_decision' or 'decision' column.")
+
+    merged = human_df[["paper_id", "human_decision"]].merge(
+        ai_df[["paper_id", "ai_decision", "ai_confidence"]],
+        on="paper_id",
+        how="inner",
+    )
+
+    # Add title from master if available
+    title_map: dict[str, str] = {}
+    if config.MASTER_RECORDS_CSV.exists():
+        master = pd.read_csv(config.MASTER_RECORDS_CSV, dtype=str).fillna("")
+        title_map = dict(zip(master["paper_id"], master["title"]))
+    merged["title"] = merged["paper_id"].map(title_map).fillna("")
+
+    # Classify discrepancy type
+    def _classify(row: pd.Series) -> str:
+        h = row["human_decision"]
+        a = row["ai_decision"]
+        if a == "include" and h == "exclude":
+            return "ai_rescue"
+        if a == "include" and h == "include":
+            return "agree_include"
+        if a == "exclude" and h == "exclude":
+            return "agree_exclude"
+        if a == "exclude" and h == "include":
+            return "human_only"
+        return "other"
+
+    merged["discrepancy_type"] = merged.apply(_classify, axis=1)
+    merged["re_review_decision"] = ""
+    merged["notes"] = ""
+
+    out_cols = [
+        "paper_id", "title", "human_decision", "ai_decision",
+        "ai_confidence", "discrepancy_type", "re_review_decision", "notes",
+    ]
+    merged[out_cols].to_csv(output_path, index=False)
+
+    counts = merged["discrepancy_type"].value_counts().to_dict()
+    log.info("Discrepancy analysis -> %s", output_path)
+    for dtype, n in sorted(counts.items()):
+        log.info("  %s: %d", dtype, n)
+    return counts
+
+
+def generate_fn_audit(
+    discrepancy_path: Path | None = None,
+    output_path: Path | None = None,
+    audit_fraction: float = 0.10,
+    seed: int = 42,
+) -> Path:
+    """Sample 10% of double-excluded records for false-negative audit.
+
+    Reads ``ai_discrepancy_review.csv`` and samples from rows where
+    ``discrepancy_type == 'agree_exclude'``.  Writes audit CSV for the
+    second reviewer to re-screen.
+    """
+    import pandas as pd
+
+    if discrepancy_path is None:
+        discrepancy_path = config.AI_DISCREPANCY_REVIEW
+    if output_path is None:
+        output_path = config.FN_AUDIT_SAMPLE
+
+    df = pd.read_csv(discrepancy_path, dtype=str).fillna("")
+    double_excluded = df[df["discrepancy_type"] == "agree_exclude"]
+
+    n_sample = max(1, int(len(double_excluded) * audit_fraction))
+    sample = double_excluded.sample(n=min(n_sample, len(double_excluded)),
+                                    random_state=seed)
+
+    # Add audit columns
+    sample = sample.copy()
+    sample["audit_decision"] = ""
+    sample["audit_notes"] = ""
+
+    out_cols = [
+        "paper_id", "title", "human_decision", "ai_decision",
+        "ai_confidence", "audit_decision", "audit_notes",
+    ]
+    sample[out_cols].to_csv(output_path, index=False)
+    log.info(
+        "FN audit: sampled %d / %d double-excluded records -> %s",
+        len(sample), len(double_excluded), output_path,
+    )
+    return output_path
+
+
+def compute_ai_validation(
+    validation_path: Path | None = None,
+    ai_decisions_path: Path | None = None,
+    report_path: Path | None = None,
+) -> dict[str, float | int | str]:
+    """Compute AI performance on the held-out validation subset.
+
+    Reads human consensus decisions from the validation workbook and AI
+    decisions from ``ai_screening_decisions.csv``.  Computes recall,
+    specificity, precision, F1, Cohen's \u03ba.  Writes a Markdown report.
+
+    Returns dict with metrics and a ``pass`` boolean (recall >= 0.95).
+    """
+    import pandas as pd
+    from openpyxl import load_workbook as _load_wb
+
+    if validation_path is None:
+        validation_path = config.SCREENING_DIR / "validation_screening.xlsx"
+    if ai_decisions_path is None:
+        ai_decisions_path = config.AI_SCREENING_DECISIONS
+    if report_path is None:
+        report_path = config.AI_VALIDATION_REPORT
+
+    # Read human consensus from validation workbook
+    wb = _load_wb(validation_path, read_only=True)
+    ws = wb["Screening"]
+    human: dict[str, str] = {}
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if row[2] is None:
+            continue
+        pid = str(row[1] or "")
+        decision = str(row[10] or row[8] or "").strip().lower()
+        if decision in ("include", "exclude"):
+            human[pid] = decision
+    wb.close()
+
+    # Read AI decisions
+    ai_df = pd.read_csv(ai_decisions_path, dtype=str).fillna("")
+    ai_map: dict[str, str] = dict(zip(ai_df["paper_id"], ai_df["ai_decision"]))
+
+    # Compute metrics on the intersection
+    common_ids = sorted(set(human.keys()) & set(ai_map.keys()))
+    if not common_ids:
+        return {"error": "No overlapping records between validation and AI decisions"}
+
+    y_true = [1 if human[pid] == "include" else 0 for pid in common_ids]
+    y_pred = [1 if ai_map[pid] == "include" else 0 for pid in common_ids]
+
+    tp = sum(t == 1 and p == 1 for t, p in zip(y_true, y_pred))
+    fn = sum(t == 1 and p == 0 for t, p in zip(y_true, y_pred))
+    fp = sum(t == 0 and p == 1 for t, p in zip(y_true, y_pred))
+    tn = sum(t == 0 and p == 0 for t, p in zip(y_true, y_pred))
+
+    recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+    specificity = tn / (tn + fp) if (tn + fp) > 0 else 0.0
+    precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+    f1 = (2 * precision * recall / (precision + recall)
+           if (precision + recall) > 0 else 0.0)
+
+    # Cohen's kappa
+    n = len(common_ids)
+    po = (tp + tn) / n
+    pe = (((tp + fn) * (tp + fp)) + ((tn + fp) * (tn + fn))) / (n * n)
+    kappa = (po - pe) / (1 - pe) if pe < 1.0 else 1.0
+
+    metrics = {
+        "n": n,
+        "tp": tp, "fn": fn, "fp": fp, "tn": tn,
+        "recall": round(recall, 4),
+        "specificity": round(specificity, 4),
+        "precision": round(precision, 4),
+        "f1": round(f1, 4),
+        "kappa": round(kappa, 4),
+        "pass": recall >= 0.95,
+    }
+
+    # Write Markdown report
+    report = (
+        "# AI Validation Report\n\n"
+        "## Held-out validation subset performance\n\n"
+        f"| Metric | Value |\n"
+        f"|--------|-------|\n"
+        f"| Records evaluated | {n} |\n"
+        f"| True positives (AI=incl, Human=incl) | {tp} |\n"
+        f"| False negatives (AI=excl, Human=incl) | {fn} |\n"
+        f"| False positives (AI=incl, Human=excl) | {fp} |\n"
+        f"| True negatives (AI=excl, Human=excl) | {tn} |\n"
+        f"| **Recall (sensitivity)** | **{recall:.4f}** |\n"
+        f"| Specificity | {specificity:.4f} |\n"
+        f"| Precision | {precision:.4f} |\n"
+        f"| F1 score | {f1:.4f} |\n"
+        f"| Cohen's \u03ba (human-AI) | {kappa:.4f} |\n\n"
+        f"## Threshold check\n\n"
+        f"- Required: recall \u2265 0.95\n"
+        f"- Achieved: recall = {recall:.4f}\n"
+        f"- **Result: {'PASS \u2713' if recall >= 0.95 else 'FAIL \u2717'}**\n\n"
+    )
+
+    if not metrics["pass"]:
+        report += (
+            "### Action required\n\n"
+            "AI recall is below the 0.95 threshold. Options:\n"
+            "1. Refine ASReview model configuration and re-evaluate\n"
+            "2. Abandon AI layer and proceed with purely human screening\n\n"
+        )
+
+    with open(report_path, "w", encoding="utf-8") as f:
+        f.write(report)
+
+    log.info("AI validation report -> %s (recall=%.4f, %s)",
+             report_path, recall, "PASS" if metrics["pass"] else "FAIL")
+    return metrics

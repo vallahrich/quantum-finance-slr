@@ -45,6 +45,13 @@ FT_DECISIONS_FILE     = SCREENING_DIR / "full_text_decisions.csv"
 CALIBRATION_DECISIONS_CSV = SCREENING_DIR / "calibration_decisions.csv"
 CALIBRATION_LOG_MD       = SCREENING_DIR / "calibration_log.md"
 
+# AI-assisted screening (Protocol §8, Amendment A8)
+AI_SCREENING_DECISIONS  = SCREENING_DIR / "ai_screening_decisions.csv"
+AI_DISCREPANCY_REVIEW   = SCREENING_DIR / "ai_discrepancy_review.csv"
+AI_VALIDATION_REPORT    = SCREENING_DIR / "ai_validation_report.md"
+VALIDATION_DECISIONS    = SCREENING_DIR / "validation_decisions.csv"
+FN_AUDIT_SAMPLE         = SCREENING_DIR / "fn_audit_sample.csv"
+
 EXTRACTION_TEMPLATE   = EXTRACTION_DIR / "extraction_template.xlsx"
 CODEBOOK_MD           = EXTRACTION_DIR / "codebook.md"
 PROTOCOL_MD           = PROTOCOL_DIR / "protocol_v1.0.md"

@@ -55,12 +55,65 @@ Produces `04_deduped_library/master_records.csv` and `master_library.bib`.
 
 ### Step 3 — Screen records
 
-1. Copy `05_screening/title_abstract_decisions_template.csv` →
-   `title_abstract_decisions.csv`
-2. Fill in screening decisions (`include` / `exclude` / `maybe`).
-3. For included papers, copy `full_text_decisions_template.csv` →
-   `full_text_decisions.csv` and complete full-text screening
-   (include `tier2_applicable` flag for each included paper).
+1. Generate screening workbooks (calibration + validation + split):
+
+```bash
+python -m tools.slr_toolkit.cli generate-screening --seed 42 --validation-size 100
+```
+
+This produces:
+- `calibration_screening.xlsx` — 50 records, dual-reviewer
+- `validation_screening.xlsx` — 100 records, dual-reviewer (held-out for AI validation)
+- `screening_reviewer_A.xlsx` — half of remaining records
+- `screening_reviewer_B.xlsx` — other half
+
+2. Both reviewers independently screen calibration set. Compute kappa:
+
+```bash
+python -m tools.slr_toolkit.cli compute-kappa
+```
+
+3. Once κ ≥ 0.70, proceed to split screening.
+
+### Step 3b — AI-assisted screening (optional, per Protocol §8)
+
+After calibration, set up ASReview as a recall safety net:
+
+```bash
+# Export prior labels (from calibration consensus) + dataset for ASReview
+python -m tools.slr_toolkit.cli export-asreview
+
+# → asreview_prior_labels.csv (training data)
+# → asreview_dataset.csv (records to screen)
+```
+
+Run ASReview LAB externally, then import results:
+
+```bash
+# Import AI decisions from ASReview export
+python -m tools.slr_toolkit.cli import-ai-decisions --file <asreview_export.csv>
+```
+
+After human screening is complete, compare:
+
+```bash
+# Compare human vs AI decisions
+python -m tools.slr_toolkit.cli ai-discrepancies
+
+# Validate AI on held-out subset
+python -m tools.slr_toolkit.cli ai-validation
+
+# Generate false-negative audit sample (10% of double-excluded)
+python -m tools.slr_toolkit.cli fn-audit
+```
+
+4. Merge screening decisions:
+
+```bash
+python -m tools.slr_toolkit.cli merge-screening
+```
+
+Then fill in `full_text_decisions.csv` with exclusion reasons + `tier2_applicable` flag.
 
 ### Step 4 — Generate PRISMA counts
 

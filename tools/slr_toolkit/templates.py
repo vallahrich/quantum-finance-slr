@@ -18,6 +18,7 @@ log = logging.getLogger("slr_toolkit.templates")
 
 _TA_HEADER = "paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,reason_code,notes\n"
 _FT_HEADER = "paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusion_reason,tier2_applicable,notes\n"
+_AI_SCREENING_HEADER = "paper_id,ai_decision,ai_confidence\n"
 
 
 def create_ta_decisions_template(*, force: bool = False) -> None:
@@ -28,6 +29,15 @@ def create_ta_decisions_template(*, force: bool = False) -> None:
 def create_ft_decisions_template(*, force: bool = False) -> None:
     """Create full-text screening template CSV."""
     safe_write_text(config.FT_DECISIONS_TEMPLATE, _FT_HEADER, force=force)
+
+
+def create_ai_screening_template(*, force: bool = False) -> None:
+    """Create AI screening decisions template CSV."""
+    safe_write_text(
+        config.AI_SCREENING_DECISIONS.parent / "ai_screening_decisions_template.csv",
+        _AI_SCREENING_HEADER,
+        force=force,
+    )
 
 
 # ── Extraction template ────────────────────────────────────────────────────
@@ -222,6 +232,7 @@ def create_all_templates(*, force: bool = False) -> None:
     """Create every template file (idempotent unless *force*)."""
     create_ta_decisions_template(force=force)
     create_ft_decisions_template(force=force)
+    create_ai_screening_template(force=force)
     create_extraction_template(force=force)
     create_protocol(force=force)
     create_amendments_log(force=force)

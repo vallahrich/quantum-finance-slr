@@ -439,53 +439,144 @@ Figure 1. Tracking is documented in
 
 ### Process
 
-Screening is conducted by two independent reviewers (Reviewer A and
-Reviewer B) using a calibration-then-split design.
+Title/abstract screening is conducted by two independent human reviewers
+(Reviewer A and Reviewer B) using a calibration-then-split design,
+supplemented by an AI-assisted recall-safety-net layer. Full-text
+screening remains exclusively human-led.
 
-**Step 1 — Calibration round:** Both reviewers independently screen the
-same random sample of 50 records. Cohen's κ is computed. Target:
-κ ≥ 0.70 before proceeding. Disagreements are discussed, borderline
-cases resolved, and criteria clarifications documented in
+The AI-assisted layer is designed as a supplementary safety mechanism,
+not a replacement for human screening. Its sole function is to identify
+potential false negatives — records that human reviewers may have
+excluded but that warrant re-examination. This asymmetric design is
+consistent with current guidance from the joint position statement of
+Cochrane, the Campbell Collaboration, JBI, and the Collaboration for
+Environmental Evidence, which states that "evidence synthesists are
+ultimately responsible for their evidence synthesis, including the
+decision to use artificial intelligence (AI) and automation, and to
+ensure adherence to legal and ethical standards" (Flemyng et al. 2025).
+The design is further supported by the AHRQ evidence map on machine
+learning tools for evidence synthesis (Adam et al. 2024; 2025 update),
+which found that semi-automated abstract screening tools achieve a
+median recall of 97% with a median 51% reduction in screening burden,
+and recommended human oversight for all AI-assisted screening decisions.
+
+**Step 1 — Human calibration round:** Both reviewers independently
+screen the same random sample of 50 records. Cohen's κ is computed.
+Target: κ ≥ 0.70 before proceeding. Disagreements are discussed,
+borderline cases resolved, and criteria clarifications documented in
 `05_screening/calibration_log.md`. If κ < 0.70, criteria are refined and
 calibration is repeated on a fresh 50-record sample.
 
-**Step 2 — Split screening:** Once calibrated (κ ≥ 0.70), the remaining
-records are split equally between the two reviewers. Each reviewer
-screens their assigned half independently.
+**Step 2 — AI initialisation from consensus labels:** The
+consensus-labelled calibration set (all 50 records with resolved final
+decisions) is used to initialise the active-learning model in ASReview
+LAB v2 (van de Schoot et al. 2021; van de Schoot et al. 2025). Both
+reviewers' agreed labels — not separate, independent seed samples —
+serve as training data. This ensures the AI model is grounded in the
+same calibrated interpretation of the eligibility criteria that the
+human reviewers have aligned on. Initialising from two separate random
+samples would introduce sampling noise and fail to provide a stable
+methodological baseline (Delgado-Chaves et al. 2025).
 
-**Step 3 — Borderline escalation:** Uncertain cases (decision = `maybe`)
-are flagged and resolved jointly by both reviewers. Resolutions are
-documented in the decision CSV `notes` column.
+**Step 3 — Held-out validation subset:** Before split screening begins,
+a further random sample of ≥100 records (drawn from the non-calibration
+pool) is set aside as a held-out validation subset. Both human reviewers
+independently screen this subset using standard dual-screening. The AI
+model also screens this subset independently. Performance metrics are
+computed on this subset (see §8c). This validation subset is not used
+for AI model training.
 
-**Step 4 — Re-screening after time gap:** Each reviewer re-screens all
+**Step 4 — Human split screening:** Once calibrated (κ ≥ 0.70), the
+remaining records (excluding the calibration and validation sets) are
+split equally between the two reviewers. Each reviewer screens their
+assigned half independently.
+
+**Step 5 — AI parallel screening:** The AI model independently screens
+the same full record set (excluding the calibration set used for
+training). AI screening runs in parallel with human screening and does
+not influence human decisions in real time. Each record receives an AI
+relevance prediction and a confidence score.
+
+**Step 6 — Discrepancy resolution (AI-as-safety-net):** After both
+human and AI screening are complete, discrepancies are reviewed as
+follows:
+
+- **AI = "include", Human = "exclude":** These records are manually
+  re-examined by both human reviewers jointly. This is the primary
+  function of the AI layer — catching potential false negatives.
+- **AI = "include", Human = "include":** No action required (agreement).
+- **AI = "exclude", Human = "include":** No action required; the human
+  inclusion decision stands.
+- **AI = "exclude", Human = "exclude":** No immediate action, but a
+  random 10% sample of these records is audited (Step 7).
+
+The human reviewers make the final inclusion/exclusion decision for all
+records. The AI does not have autonomous decision-making authority at
+any point.
+
+**Step 7 — False-negative audit:** A random 10% sample of records
+excluded by both the human reviewer and the AI is independently
+re-screened by the second reviewer. The purpose is to estimate the
+false-negative rate in the double-excluded set. If the audit reveals
+≥5% of re-screened records should have been included, the full
+double-excluded set is re-screened by both reviewers. Audit results are
+reported in the thesis.
+
+**Step 8 — Borderline escalation:** Uncertain cases (decision = `maybe`)
+from any source — human or AI-flagged — are resolved jointly by both
+reviewers. Resolutions are documented in the decision CSV `notes` column.
+
+**Step 9 — Re-screening after time gap:** Each reviewer re-screens all
 their *excluded* full-text papers after 2–4 weeks. Intra-rater
 concordance rate is reported.
 
 ### Screening phases
 
-1. **Title/abstract screening:** Each record assessed against inclusion
-   criteria (§9). Decisions recorded in
-   `05_screening/title_abstract_decisions.csv`.
-2. **Full-text screening:** Records passing title/abstract screening are
-   assessed at full-text level against the same inclusion criteria (§9).
-   Decisions recorded in `05_screening/full_text_decisions.csv`, with
-   mandatory exclusion reason codes for excluded records (see
+1. **Title/abstract screening (AI-assisted):** Each record assessed
+   against inclusion criteria (§9). Human decisions recorded in
+   `05_screening/title_abstract_decisions.csv`. AI decisions recorded
+   separately in `05_screening/ai_screening_decisions.csv`. Final
+   decisions are always the human reviewers' decisions, potentially
+   modified by the discrepancy resolution process (Step 6).
+
+2. **Full-text screening (human only):** Records passing title/abstract
+   screening are assessed at full-text level against the same inclusion
+   criteria (§9). Full-text screening is conducted exclusively by human
+   reviewers without AI assistance. This design choice follows current
+   best practice, which is considerably more supportive of AI-assisted
+   title/abstract triage than fully automated full-text assessment
+   (Siemens et al. 2025; Flemyng et al. 2025). Decisions recorded in
+   `05_screening/full_text_decisions.csv`, with mandatory exclusion
+   reason codes for excluded records (see
    `05_screening/exclusion_reason_codes.md`). The tier distinction
-   (`tier2_applicable`) is assigned during extraction, not during screening.
+   (`tier2_applicable`) is assigned during extraction, not during
+   screening.
 
 ### Inter-rater reliability
 
-We report Cohen's κ (kappa) at the calibration checkpoint:
+We report Cohen's κ at the calibration checkpoint and human-AI agreement
+metrics:
 
-1. **Calibration round:** Both reviewers independently screen the same
-   ~50 records. Target: κ ≥ 0.70 before proceeding to split screening.
-   If κ < 0.70, disagreements are discussed, criteria clarified, any
-   clarifications logged as minor protocol amendments, and calibration
-   repeated on a fresh 50-record sample.
+1. **Human calibration round:** Both reviewers independently screen the
+   same ~50 records. Target: κ ≥ 0.70 before proceeding to split
+   screening. If κ < 0.70, disagreements are discussed, criteria
+   clarified, any clarifications logged as minor protocol amendments,
+   and calibration repeated on a fresh 50-record sample.
+
+2. **Human-AI agreement on validation subset:** On the held-out
+   validation subset (≥100 records), we report: recall (sensitivity) of
+   the AI model for human-included records, specificity, positive
+   predictive value, and Cohen's κ between AI and human consensus
+   decisions. Recall ≥ 0.95 on the validation subset is the minimum
+   threshold for proceeding with the AI-as-safety-net workflow. If
+   recall < 0.95, the AI prompt/model configuration is refined and
+   re-evaluated, or the AI layer is abandoned and screening proceeds as
+   purely human.
 
 Calibration results (agreement rate, κ value, disagreements resolved,
 criteria clarifications) are documented in
-`05_screening/calibration_log.md`.
+`05_screening/calibration_log.md`. AI validation results are documented
+in `05_screening/ai_validation_report.md`.
 
 ### Pilot screening documentation
 
@@ -496,26 +587,140 @@ criteria refinement. All calibration artefacts are retained:
   `05_screening/calibration_decisions.csv`
 - Calibration log: `05_screening/calibration_log.md` documents agreement
   metrics, resolved disagreements, and any criteria clarifications
+- AI validation report: `05_screening/ai_validation_report.md` documents
+  model performance on the held-out validation subset
 - Criteria clarifications arising from calibration are logged as minor
   amendments in `01_protocol/amendments_log.csv` with type
   `calibration_refinement`
 
 This creates a complete audit trail from initial criteria interpretation
-through to final screening reliability.
+through to final screening reliability, for both human and AI
+components.
 
 ---
 
-## 8b) Limitations of split-screening design
+## 8b) Limitations of AI-assisted split-screening design
 
 Split screening after calibration is more efficient than full dual
-screening but means that each record (outside the calibration set) is
-assessed by only one reviewer. This is mitigated by: (1) the calibration
-round establishing high inter-rater agreement (κ ≥ 0.70) before
-splitting; (2) borderline escalation ensuring uncertain cases are
-resolved jointly; (3) re-screening after a time gap catching
-inconsistencies. This design trades some reliability for feasibility
-while maintaining a stronger evidence base than single-reviewer designs.
-The limitation is reported transparently in the thesis discussion chapter.
+screening but means that each record (outside the calibration and
+validation sets) is assessed by only one human reviewer. This is
+mitigated by: (1) the calibration round establishing high inter-rater
+agreement (κ ≥ 0.70) before splitting; (2) the AI recall-safety-net
+independently flagging potential false negatives for human
+re-examination; (3) borderline escalation ensuring uncertain cases are
+resolved jointly; (4) the false-negative audit estimating the miss rate
+in the double-excluded set; (5) re-screening after a time gap catching
+inconsistencies.
+
+The AI-assisted layer introduces its own limitations. LLM and
+active-learning performance varies substantially by dataset, prompt
+design, and review context (Delgado-Chaves et al. 2025; Adam et al.
+2024). The AI model may exhibit systematic blind spots — for example,
+consistently misclassifying records that use non-standard terminology
+for quantum computing or finance concepts. The held-out validation
+subset and the false-negative audit are designed to detect such
+systematic errors, but cannot guarantee their complete absence. Human
+reviewers remain the final decision-makers for all records, and the AI
+layer is explicitly designed to add recall (catch missed papers), never
+to subtract it (exclude papers without human review).
+
+This design trades some complexity for substantially reduced
+false-negative risk while maintaining human authority over all
+inclusion/exclusion decisions. The limitation is reported transparently
+in the thesis discussion chapter.
+
+---
+
+## 8c) AI tool specification and reporting commitments
+
+### Tool specification
+
+| Parameter | Value |
+|-----------|-------|
+| **Tool** | ASReview LAB v2 (van de Schoot et al. 2021; 2025) |
+| **Model** | [Specify model configuration, e.g., ELAS Ultra default or custom] |
+| **Feature extraction** | [Specify: e.g., TF-IDF, SBERT, or other] |
+| **Classifier** | [Specify: e.g., Naive Bayes, SVM, logistic regression] |
+| **Query strategy** | [Specify: e.g., max relevance, uncertainty sampling] |
+| **Balance strategy** | [Specify: e.g., double, undersample] |
+| **Training data** | Consensus-labelled calibration set (n=50 records) |
+| **Stopping rule** | [Specify stopping criterion, e.g., conservative heuristic, n consecutive irrelevant] |
+| **Software version** | [Exact version number, e.g., ASReview LAB v2.x.x] |
+| **Date of screening** | [Date AI screening was executed] |
+| **Hardware/environment** | [Local machine specification or server] |
+| **Reproducibility** | ASReview project file (.asreview) archived in repository; all decision logs exported |
+
+If a custom LLM-based agent is used instead of or in addition to
+ASReview, the following must also be documented: model name and version
+(e.g., Claude Sonnet 4, GPT-4o), exact prompt text (frozen, stored in
+repository), temperature and sampling parameters, API version and date
+of access, and complete input/output logs for all screening decisions.
+
+### Validation design
+
+1. **Held-out validation subset:** ≥100 records randomly sampled from
+   the non-calibration pool, dual-screened by both human reviewers and
+   independently classified by the AI. Performance metrics computed:
+   recall (primary metric), specificity, precision, F1, Cohen's κ
+   (human-AI).
+
+2. **Recall threshold:** AI recall ≥ 0.95 on the validation subset is
+   required to proceed. This threshold is informed by the AHRQ evidence
+   map finding that semi-automated screening tools achieve a median
+   recall of 97% (Adam et al. 2024), and by the Delgado-Chaves et al.
+   (2025) finding that well-calibrated LLMs can achieve recall between
+   85% and 98% depending on domain and prompt design.
+
+3. **False-negative audit:** 10% random sample of double-excluded
+   records (both human and AI excluded) re-screened by the second
+   reviewer. Estimated false-negative rate reported.
+
+4. **Sensitivity analysis:** Synthesis findings are re-computed
+   excluding records rescued by the AI safety net (i.e., records
+   initially excluded by the human reviewer but re-included after AI
+   flagging) to assess the AI layer's impact on the final included set.
+
+### Reporting commitments (per PRISMA-trAIce)
+
+The following items are reported in the thesis methods and results
+chapters, following the PRISMA-trAIce checklist (Holst et al. 2025):
+
+- **Title/abstract:** The use of AI-assisted screening is indicated in
+  the methods chapter title and described in the abstract.
+- **AI tool identification:** Tool name, version, model configuration,
+  and all parameters documented (see table above).
+- **Human-AI interaction:** The specific role of the AI (recall safety
+  net only, not autonomous decision-maker) is described. The workflow
+  diagram distinguishes human-screened from AI-flagged records.
+- **Performance evaluation:** Recall, specificity, precision, F1, and
+  Cohen's κ on the held-out validation subset are reported. The number
+  of records flagged by the AI for human re-examination, and the
+  outcome of that re-examination, are reported.
+- **PRISMA flow:** The PRISMA flow diagram distinguishes between records
+  excluded by human decision and records rescued by AI flagging,
+  following the PRISMA-trAIce flow diagram template (Holst et al. 2025).
+- **Limitations:** AI-specific limitations are discussed, including
+  model blind spots, reproducibility constraints, and the scope of the
+  validation design.
+- **Data availability:** The ASReview project file, all decision logs,
+  the AI prompt (if applicable), and the validation subset results are
+  archived in the repository.
+
+### Ethical and data-handling considerations
+
+Before uploading any bibliographic records (titles, abstracts, metadata)
+to any AI tool, the following are confirmed:
+
+- University AI/data policy compliance: [Confirm compliance with
+  institutional policy]
+- No full-text PDFs or copyrighted content are uploaded to external AI
+  services
+- Only bibliographic metadata (title, abstract, authors, DOI) is
+  processed
+- If using a cloud-based LLM API, data processing agreements and terms
+  of service are reviewed
+- ASReview LAB processes data locally; no data is transmitted to
+  external servers (van de Schoot et al. 2025)
 
 ---
 
@@ -697,11 +902,14 @@ documented separately.
 This review follows:
 - **PRISMA 2020** (Page et al., 2021) for reporting structure
 - **PRISMA-S** (Rethlefsen et al., 2021) for search documentation
+- **PRISMA-trAIce** (Holst et al., 2025) for transparent reporting of
+  AI use in evidence synthesis
 - **Okoli (2015)** for SLR methodology in information systems
 - **vom Brocke et al. (2015)** for rigour in literature search
 
 The PRISMA flow diagram is generated programmatically via
-`python -m tools.slr_toolkit.cli prisma`.
+`python -m tools.slr_toolkit.cli prisma` and includes separate counts
+for AI-flagged records per the PRISMA-trAIce flow diagram template.
 
 ---
 
