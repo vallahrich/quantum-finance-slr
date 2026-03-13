@@ -304,30 +304,46 @@ Two-block Boolean strategy: **Quantum** AND **Finance**.
 **Block 1 — Quantum (technology):**
 ```
 "quantum computing" OR "quantum algorithm*" OR "quantum circuit*"
+OR "gate-based quantum" OR "hybrid quantum-classical"
 OR "variational quantum" OR QAOA OR VQE OR QAE
 OR "quantum amplitude estimation"
+OR "quantum phase estimation"
 OR "Grover's algorithm" OR "Grover search"
 OR "HHL algorithm" OR "Harrow-Hassidim-Lloyd"
-OR "quantum walk*" OR "quantum machine learning"
-OR "quantum phase estimation" OR "quantum neural network*"
-OR "quantum error correction" OR "fault-tolerant quantum"
+OR "quantum linear system*"
+OR "quantum walk*"
+OR "quantum machine learning" OR "quantum neural network*"
+OR "quantum error correction"
+OR "fault-tolerant quantum" OR "fault tolerant quantum" OR NISQ
 OR "quantum speedup" OR "quantum advantage"
 OR "quantum annealing"
+OR QMCI
 ```
 
 **Block 2 — Finance (domain):**
 ```
-finance OR financial OR "quantitative finance"
+finance OR financial OR "computational finance" OR "quantitative finance"
 OR "portfolio optim*" OR "portfolio selection"
 OR "portfolio management" OR "portfolio risk"
-OR "option pricing" OR "derivative pricing" OR "financial derivative*"
+OR "asset allocation" OR "asset management"
+OR "option pricing" OR "derivative pricing"
+OR "financial derivative*" OR "structured product*"
+OR "fixed income" OR "bond pricing"
+OR "interest rate" OR "interest rate derivative*"
 OR "credit risk" OR "market risk"
-OR "value at risk" OR VaR OR "Black-Scholes" OR CVA OR xVA
-OR "interest rate" OR "bond pricing" OR "fixed income"
-OR "credit scoring" OR "fraud detection"
-OR "algorithmic trading" OR "asset allocation"
+OR "counterparty risk" OR "liquidity risk"
+OR "value at risk" OR VaR
+OR "expected shortfall" OR CVaR
+OR "credit valuation adjustment" OR CVA OR xVA
+OR "potential future exposure" OR PFE
+OR "Black-Scholes" OR Greeks
+OR "credit scoring" OR "default prediction"
+OR "fraud detection" OR "anti-money laundering"
+OR "algorithmic trading" OR "trade execution"
+OR "market microstructure"
 OR "stock market" OR "stock price*"
-OR "hedge fund" OR "financial hedging" OR "financial engineering"
+OR "hedge fund" OR "financial hedging"
+OR "financial engineering" OR "financial forecasting"
 ```
 
 ### Combined template
