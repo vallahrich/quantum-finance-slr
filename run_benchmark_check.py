@@ -14,6 +14,17 @@ BENCHMARK = [
     {"title": "Quantum Monte Carlo Integration: The Full Advantage in Minimal Circuit Depth", "doi": "10.22331/q-2021-06-24-481", "authors": "Chakrabarti et al.", "year": "2021"},
     {"title": "Improving Variational Quantum Optimization using CVaR", "doi": "10.22331/q-2020-04-20-256", "authors": "Barkoutsos et al.", "year": "2020"},
     {"title": "Benchmarking the performance of portfolio optimization with QAOA", "doi": "10.1007/s11128-022-03766-5", "authors": "Brandhofer et al.", "year": "2022"},
+    # --- Papers 11–20: added 2026-03-13 (Amendment A7) ---
+    {"title": "Credit Risk Analysis Using Quantum Computers", "doi": "10.1109/TC.2020.3038063", "authors": "Egger et al.", "year": "2021"},
+    {"title": "Mixed Quantum-Classical Method for Fraud Detection With Quantum Feature Selection", "doi": "10.1109/TQE.2022.3213474", "authors": "Grossi et al.", "year": "2022"},
+    {"title": "Quantum algorithm for credit valuation adjustments", "doi": "10.1088/1367-2630/ac5003", "authors": "Alcazar et al.", "year": "2022"},
+    {"title": "Quantum walk-based portfolio optimisation", "doi": "10.22331/q-2021-07-28-513", "authors": "Slate et al.", "year": "2021"},
+    {"title": "Solving Linear Systems on Quantum Hardware with Hybrid HHL++", "doi": "10.1038/s41598-024-69077-0", "authors": "Yalovetzky et al.", "year": "2024"},
+    {"title": "Quantum Machine Learning in Finance: Time Series Forecasting", "doi": "10.48550/arXiv.2202.00599", "authors": "Emmanoulopoulos & Dimoska", "year": "2022"},
+    {"title": "Quantum Monte Carlo simulations for financial risk analytics: scenario generation for equity, rate, and credit risk factors", "doi": "10.22331/q-2024-04-04-1306", "authors": "Matsakos & Nield", "year": "2024"},
+    {"title": "Quantum Generative Adversarial Networks for learning and loading random distributions", "doi": "10.1038/s41534-019-0223-2", "authors": "Zoufal et al.", "year": "2019"},
+    {"title": "Derivative Pricing using Quantum Signal Processing", "doi": "10.22331/q-2024-04-30-1322", "authors": "Stamatopoulos & Zeng", "year": "2024"},
+    {"title": "Enhanced fill probability estimates in institutional algorithmic bond trading using statistical learning algorithms with quantum computers", "doi": "10.48550/arXiv.2509.17715", "authors": "Ciceri et al.", "year": "2025"},
 ]
 
 master = pd.read_csv("04_deduped_library/master_records.csv", dtype=str).fillna("")

@@ -380,18 +380,24 @@ et al. 2021).
 ## 7b) Benchmark sensitivity check
 
 Before committing to full screening, we verify that the 4-database search
-retrieves a set of known-relevant papers. A benchmark set of 15–20
+retrieves a set of known-relevant papers. A benchmark set of 20
 known-relevant papers is compiled from prior surveys and the authors' own
-reading (see `02_search_logs/benchmark_sensitivity_check.csv`).
+reading (see `02_search_logs/benchmark_sensitivity_check.csv`). The 20
+papers are selected to cover all 10 problem families, all listed quantum
+methods, both hardware regimes (NISQ and fault-tolerant), and all
+evaluation types.
 
 **Target:** ≥ 95% recall on the benchmark set.
 
 **Procedure:**
 1. Compile the benchmark set from established references including:
-   Herman et al. (2022/2023), Egger et al. (2020), Stamatopoulos et al.
-   (2020), Woerner & Egger (2019), Brandhofer et al. (2022), Orús et al.
-   (2019), Chakrabarti et al. (2021), Barkoutsos et al. (2020), Rebentrost
-   et al. (2018), and others.
+   Herman et al. (2022/2023), Egger et al. (2020; 2021), Stamatopoulos
+   et al. (2020), Stamatopoulos & Zeng (2024), Woerner & Egger (2019),
+   Brandhofer et al. (2022), Orús et al. (2019), Chakrabarti et al.
+   (2021), Barkoutsos et al. (2020), Rebentrost et al. (2018), Grossi
+   et al. (2022), Alcazar et al. (2022), Slate et al. (2021), Yalovetzky
+   et al. (2024), Emmanoulopoulos & Dimoska (2022), Matsakos & Nield
+   (2024), Zoufal et al. (2019), and Ciceri et al. (2025).
 2. Run all search queries against each database.
 3. Check retrieval of each benchmark paper across all databases.
 4. For any missed paper, determine whether snowballing (§7c) would catch it.
