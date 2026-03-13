@@ -45,6 +45,17 @@ FT_DECISIONS_FILE     = SCREENING_DIR / "full_text_decisions.csv"
 CALIBRATION_DECISIONS_CSV = SCREENING_DIR / "calibration_decisions.csv"
 CALIBRATION_LOG_MD       = SCREENING_DIR / "calibration_log.md"
 
+# Screening workbook paths
+CALIBRATION_SCREENING_XLSX = SCREENING_DIR / "calibration_screening.xlsx"
+VALIDATION_SCREENING_XLSX  = SCREENING_DIR / "validation_screening.xlsx"
+REVIEWER_A_SCREENING_XLSX  = SCREENING_DIR / "screening_reviewer_A.xlsx"
+REVIEWER_B_SCREENING_XLSX  = SCREENING_DIR / "screening_reviewer_B.xlsx"
+
+# ASReview data files
+ASREVIEW_DATASET_CSV      = SCREENING_DIR / "asreview_dataset.csv"
+ASREVIEW_PRIOR_LABELS_CSV = SCREENING_DIR / "asreview_prior_labels.csv"
+ASREVIEW_PROJECT_DIR      = SCREENING_DIR / "asreview_project"
+
 # AI-assisted screening (Protocol §8, Amendment A8)
 AI_SCREENING_DECISIONS  = SCREENING_DIR / "ai_screening_decisions.csv"
 AI_DISCREPANCY_REVIEW   = SCREENING_DIR / "ai_discrepancy_review.csv"

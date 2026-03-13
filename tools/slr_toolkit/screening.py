@@ -214,7 +214,7 @@ def generate_calibration_workbook(
 ) -> Path:
     """Generate the calibration screening Excel (both reviewers)."""
     if output_path is None:
-        output_path = config.SCREENING_DIR / "calibration_screening.xlsx"
+        output_path = config.CALIBRATION_SCREENING_XLSX
 
     random.seed(seed)
     sample = random.sample(records, min(sample_size, len(records)))
@@ -408,8 +408,8 @@ def generate_screening_excels(
     split_a = remaining[:mid]
     split_b = remaining[mid:]
 
-    path_a = config.SCREENING_DIR / "screening_reviewer_A.xlsx"
-    path_b = config.SCREENING_DIR / "screening_reviewer_B.xlsx"
+    path_a = config.REVIEWER_A_SCREENING_XLSX
+    path_b = config.REVIEWER_B_SCREENING_XLSX
 
     for label, subset, path in [("A", split_a, path_a), ("B", split_b, path_b)]:
         wb = Workbook()
@@ -482,7 +482,7 @@ def compute_kappa(calibration_path: Path | None = None) -> dict:
     Returns dict with: n, agreement, kappa, details.
     """
     if calibration_path is None:
-        calibration_path = config.SCREENING_DIR / "calibration_screening.xlsx"
+        calibration_path = config.CALIBRATION_SCREENING_XLSX
 
     wb = load_workbook(calibration_path, read_only=True)
     ws = wb["Screening"]
@@ -545,11 +545,11 @@ def merge_screening_results(
 ) -> Path:
     """Merge calibration + split screening results into one decisions CSV."""
     if calibration_path is None:
-        calibration_path = config.SCREENING_DIR / "calibration_screening.xlsx"
+        calibration_path = config.CALIBRATION_SCREENING_XLSX
     if reviewer_a_path is None:
-        reviewer_a_path = config.SCREENING_DIR / "screening_reviewer_A.xlsx"
+        reviewer_a_path = config.REVIEWER_A_SCREENING_XLSX
     if reviewer_b_path is None:
-        reviewer_b_path = config.SCREENING_DIR / "screening_reviewer_B.xlsx"
+        reviewer_b_path = config.REVIEWER_B_SCREENING_XLSX
     if output_path is None:
         output_path = config.TA_DECISIONS_FILE
 
@@ -625,7 +625,7 @@ def export_asreview_dataset(
         labelled separately as prior knowledge).
     """
     if output_path is None:
-        output_path = config.SCREENING_DIR / "asreview_dataset.csv"
+        output_path = config.ASREVIEW_DATASET_CSV
     if exclude_ids is None:
         exclude_ids = set()
 
@@ -667,9 +667,9 @@ def export_asreview_labels(
     with ``maybe`` or no final decision are excluded.
     """
     if calibration_path is None:
-        calibration_path = config.SCREENING_DIR / "calibration_screening.xlsx"
+        calibration_path = config.CALIBRATION_SCREENING_XLSX
     if output_path is None:
-        output_path = config.SCREENING_DIR / "asreview_prior_labels.csv"
+        output_path = config.ASREVIEW_PRIOR_LABELS_CSV
 
     from openpyxl import load_workbook as _load_wb
 
@@ -717,7 +717,7 @@ def generate_validation_workbook(
     Returns (path, set_of_validation_paper_ids).
     """
     if output_path is None:
-        output_path = config.SCREENING_DIR / "validation_screening.xlsx"
+        output_path = config.VALIDATION_SCREENING_XLSX
 
     remaining = [r for r in records if r.get("paper_id", "") not in calibration_ids]
     random.seed(seed + 1)  # distinct seed from calibration sample
@@ -988,7 +988,7 @@ def compute_ai_validation(
     from openpyxl import load_workbook as _load_wb
 
     if validation_path is None:
-        validation_path = config.SCREENING_DIR / "validation_screening.xlsx"
+        validation_path = config.VALIDATION_SCREENING_XLSX
     if ai_decisions_path is None:
         ai_decisions_path = config.AI_SCREENING_DECISIONS
     if report_path is None:
@@ -1083,3 +1083,124 @@ def compute_ai_validation(
     log.info("AI validation report -> %s (recall=%.4f, %s)",
              report_path, recall, "PASS" if metrics["pass"] else "FAIL")
     return metrics
+
+
+def run_asreview_simulate(
+    dataset_path: Path | None = None,
+    labels_path: Path | None = None,
+    output_path: Path | None = None,
+    *,
+    model: str = "elas_u4",
+    seed: int = 42,
+) -> Path:
+    """Run ASReview active-learning simulation and export decisions.
+
+    Uses ASReview's ``Simulate`` engine to rank all records by predicted
+    relevance.  Prior-knowledge labels from calibration are injected as
+    initial training data.
+
+    Parameters
+    ----------
+    dataset_path:
+        CSV with columns ``paper_id``, ``title``, ``abstract`` (from
+        ``export_asreview_dataset``).
+    labels_path:
+        CSV with ``paper_id`` and ``label_included`` columns (from
+        ``export_asreview_labels``).
+    output_path:
+        Destination CSV.  Defaults to ``config.AI_SCREENING_DECISIONS``.
+    model:
+        ASReview model configuration name (default ``elas_u4``).
+    seed:
+        Random seed for reproducibility.
+    """
+    import numpy as np
+    import pandas as pd
+    from asreview import ActiveLearningCycle, Simulate
+    from asreview.models import get_ai_config
+
+    if dataset_path is None:
+        dataset_path = config.ASREVIEW_DATASET_CSV
+    if labels_path is None:
+        labels_path = config.ASREVIEW_PRIOR_LABELS_CSV
+    if output_path is None:
+        output_path = config.AI_SCREENING_DECISIONS
+
+    # Load dataset
+    dataset = pd.read_csv(dataset_path, dtype=str).fillna("")
+    priors = pd.read_csv(labels_path, dtype=str).fillna("")
+
+    # Merge prior labels into dataset
+    prior_map = dict(zip(priors["paper_id"], priors["label_included"].astype(int)))
+    dataset["label_included"] = dataset["paper_id"].map(prior_map).fillna(-1).astype(int)
+
+    # Build feature matrix from title + abstract text
+    texts = (dataset["title"] + " " + dataset["abstract"]).tolist()
+
+    # Set up labels (-1 = unlabeled for simulation)
+    labels = dataset["label_included"].values.copy()
+
+    # Get model config
+    ai_config = get_ai_config(model)
+    cycle_data = ai_config["value"]
+    cycle = ActiveLearningCycle(
+        querier=cycle_data.querier,
+        classifier=cycle_data.classifier,
+        balancer=cycle_data.balancer,
+        feature_extractor=cycle_data.feature_extractor,
+    )
+
+    # Build text DataFrame (ASReview expects a DataFrame for TF-IDF)
+    X = pd.DataFrame({"text": texts})
+
+    # Create simulation - label all unlabeled based on known labels
+    # ASReview Simulate expects labels as 0/1 for all records
+    # We treat prior-labeled as ground truth and need a full-label vector
+    # For screening: we simulate with known labels, then use ranking order
+    np.random.seed(seed)
+
+    # Run simulation using all priors as known labels
+    sim = Simulate(
+        X=X,
+        labels=labels,
+        cycles=cycle,
+        print_progress=True,
+    )
+    sim.review()
+
+    # Extract results: the order records were labeled = ranking order
+    results = sim._results.copy()
+    labeled_order = results["record_id"].tolist()
+
+    # Build output: records labeled by AI ranked by relevance
+    paper_ids = dataset["paper_id"].tolist()
+    out_rows = []
+    for rank, record_id in enumerate(labeled_order, 1):
+        pid = paper_ids[record_id]
+        label = int(results.loc[results["record_id"] == record_id, "label"].iloc[0])
+        out_rows.append({
+            "paper_id": pid,
+            "ai_decision": "include" if label == 1 else "exclude",
+            "ai_rank": rank,
+            "ai_confidence": "",
+        })
+
+    # Add any records not reached by simulation as "exclude"
+    labeled_ids = {paper_ids[rid] for rid in labeled_order}
+    for pid in paper_ids:
+        if pid not in labeled_ids and pid not in prior_map:
+            out_rows.append({
+                "paper_id": pid,
+                "ai_decision": "exclude",
+                "ai_rank": len(labeled_order) + 1,
+                "ai_confidence": "",
+            })
+
+    out_df = pd.DataFrame(out_rows)
+    out_df.to_csv(output_path, index=False)
+    n_include = sum(1 for r in out_rows if r["ai_decision"] == "include")
+    log.info(
+        "ASReview simulation complete: %d records ranked, %d included -> %s",
+        len(out_rows), n_include, output_path,
+    )
+    return output_path

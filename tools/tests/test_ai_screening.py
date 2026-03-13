@@ -315,3 +315,102 @@ class TestComputeAIValidation:
         metrics = compute_ai_validation(val_xlsx, ai_csv, tmp_path / "report.md")
         assert metrics["recall"] == 0.5
         assert metrics["pass"] is False
+
+
+class TestRunASReviewSimulate:
+    """Test the ASReview simulation wrapper.
+
+    Uses monkeypatching to replace the real ASReview Simulate with a fake
+    that instantly labels all records, avoiding heavy ML computation.
+    """
+
+    def test_produces_ai_decisions_csv(self, tmp_path, monkeypatch):
+        import pandas as pd
+        from tools.slr_toolkit import screening
+
+        # Create dataset CSV (5 unlabeled records)
+        dataset = tmp_path / "dataset.csv"
+        dataset.write_text(
+            "paper_id,title,abstract,authors,year,doi\n"
+            "p001,Quantum finance,Abstract A,Auth,2023,\n"
+            "p002,Classical stuff,Abstract B,Auth,2023,\n"
+            "p003,Hybrid algo,Abstract C,Auth,2023,\n"
+            "p004,Option pricing,Abstract D,Auth,2023,\n"
+            "p005,Random walk,Abstract E,Auth,2023,\n"
+        )
+
+        # Create prior labels CSV (2 labeled records)
+        labels = tmp_path / "labels.csv"
+        labels.write_text(
+            "paper_id,title,abstract,doi,label_included\n"
+            "p010,Prior include,abs,doi,1\n"
+            "p011,Prior exclude,abs,doi,0\n"
+        )
+
+        # Fake Simulate: instantly set _results with all records labeled
+        class FakeSimulate:
+            def __init__(self, X, labels, cycles, print_progress=True):
+                self.X = X
+                self.labels = labels
+                self.cycles = cycles
+                self.print_progress = print_progress
+
+            def review(self):
+                self._results = pd.DataFrame({
+                    "record_id": list(range(len(self.labels))),
+                    "label": [1 if i == 0 else 0 for i in range(len(self.labels))],
+                    "training_set": [1] * len(self.labels),
+                })
+
+        # Fake get_ai_config
+        class FakeCycleData:
+            querier = "max"
+            classifier = "svm"
+            balancer = "balanced"
+            feature_extractor = "tfidf"
+
+        def fake_get_ai_config(name="elas_u4"):
+            return {"name": name, "value": FakeCycleData()}
+
+        # Fake ActiveLearningCycle
+        class FakeCycle:
+            def __init__(self, **kwargs):
+                pass
+
+        # Monkeypatch ASReview imports inside screening module
+        monkeypatch.setattr(
+            "tools.slr_toolkit.screening.run_asreview_simulate.__module__",
+            screening.__name__,
+        ) if False else None  # no-op, just for clarity
+
+        output = tmp_path / "ai_decisions.csv"
+
+        # We need to monkeypatch at the import level inside the function
+        # The function does `from asreview import ...` so we patch sys.modules
+        import types
+        fake_asreview = types.ModuleType("asreview")
+        fake_asreview.Simulate = FakeSimulate
+        fake_asreview.ActiveLearningCycle = FakeCycle
+
+        fake_models = types.ModuleType("asreview.models")
+        fake_models.get_ai_config = fake_get_ai_config
+
+        import sys
+        monkeypatch.setitem(sys.modules, "asreview", fake_asreview)
+        monkeypatch.setitem(sys.modules, "asreview.models", fake_models)
+
+        result = screening.run_asreview_simulate(
+            dataset_path=dataset,
+            labels_path=labels,
+            output_path=output,
+        )
+
+        assert result == output
+        assert output.exists()
+
+        df = pd.read_csv(output, dtype=str)
+        assert "paper_id" in df.columns
+        assert "ai_decision" in df.columns
+        assert "ai_rank" in df.columns
+        # At least one include (record 0 = p001 was labeled 1 by our fake)
+        assert "include" in df["ai_decision"].values

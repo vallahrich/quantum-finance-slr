@@ -213,7 +213,8 @@ def _cmd_ai_discrepancies(args: argparse.Namespace) -> None:
     """Compare human vs AI decisions and flag discrepancies."""
     from .screening import find_discrepancies
 
-    counts = find_discrepancies()
+    human_path = Path(args.human_decisions) if args.human_decisions else None
+    counts = find_discrepancies(human_decisions_path=human_path)
     print("[ok] Discrepancy analysis complete:")
     for dtype, n in sorted(counts.items()):
         print(f"  {dtype:20s}: {n}")
@@ -234,6 +235,18 @@ def _cmd_fn_audit(args: argparse.Namespace) -> None:
     print(f"[ok] FN audit sample -> {output.name}")
     print("  Second reviewer should re-screen these records.")
     print("  If >=5% should have been included, re-screen all double-excluded records.")
+
+
+def _cmd_run_asreview(args: argparse.Namespace) -> None:
+    """Run ASReview active-learning simulation in-pipeline."""
+    from .screening import run_asreview_simulate
+
+    output = run_asreview_simulate(
+        model=args.model,
+        seed=args.seed,
+    )
+    print(f"[ok] ASReview simulation complete -> {output.name}")
+    print("Next: slr-toolkit ai-discrepancies")
 
 
 def _cmd_ai_validation(args: argparse.Namespace) -> None:
@@ -508,6 +521,21 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_ea.set_defaults(func=_cmd_export_asreview)
 
+    # -- run-asreview --------------------------------------------------------
+    p_ra = sub.add_parser(
+        "run-asreview",
+        help="Run ASReview active-learning simulation and export AI decisions.",
+    )
+    p_ra.add_argument(
+        "--model", default="elas_u4",
+        help="ASReview model config name (default: elas_u4).",
+    )
+    p_ra.add_argument(
+        "--seed", type=int, default=42,
+        help="Random seed for reproducibility (default: 42).",
+    )
+    p_ra.set_defaults(func=_cmd_run_asreview)
+
     # -- import-ai-decisions -------------------------------------------------
     p_ia = sub.add_parser(
         "import-ai-decisions",
@@ -523,6 +551,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_ad = sub.add_parser(
         "ai-discrepancies",
         help="Compare human vs AI screening decisions and flag discrepancies.",
+    )
+    p_ad.add_argument(
+        "--human-decisions", default=None,
+        help="Path to human decisions CSV (default: title_abstract_decisions.csv from merge-screening).",
     )
     p_ad.set_defaults(func=_cmd_ai_discrepancies)
 

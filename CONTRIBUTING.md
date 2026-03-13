@@ -87,17 +87,27 @@ python -m tools.slr_toolkit.cli export-asreview
 # → asreview_dataset.csv (records to screen)
 ```
 
-Run ASReview LAB externally, then import results:
+Run ASReview simulation directly in the pipeline:
+
+```bash
+# Run ASReview active-learning simulation (uses ELAS-u4 model by default)
+python -m tools.slr_toolkit.cli run-asreview
+```
+
+Or, if you used ASReview LAB externally, import results:
 
 ```bash
 # Import AI decisions from ASReview export
 python -m tools.slr_toolkit.cli import-ai-decisions --file <asreview_export.csv>
 ```
 
-After human screening is complete, compare:
+After human screening is complete, merge results then compare with AI:
 
 ```bash
-# Compare human vs AI decisions
+# Merge calibration + reviewer A/B decisions into one CSV
+python -m tools.slr_toolkit.cli merge-screening
+
+# Compare human vs AI decisions (requires merge-screening output)
 python -m tools.slr_toolkit.cli ai-discrepancies
 
 # Validate AI on held-out subset
@@ -107,13 +117,21 @@ python -m tools.slr_toolkit.cli ai-validation
 python -m tools.slr_toolkit.cli fn-audit
 ```
 
-4. Merge screening decisions:
-
-```bash
-python -m tools.slr_toolkit.cli merge-screening
-```
-
 Then fill in `full_text_decisions.csv` with exclusion reasons + `tier2_applicable` flag.
+
+> **Protocol §8 ↔ CLI mapping:**
+>
+> | Protocol Step | CLI Command |
+> |---|---|
+> | §8.1 Human calibration | `generate-screening` + manual review |
+> | §8.2 AI initialisation | `export-asreview` |
+> | §8.3 Held-out validation | `generate-screening --validation-size 100` |
+> | §8.4 Human split screening | Manual review of split workbooks |
+> | §8.5 AI parallel screening | `run-asreview` |
+> | §8.6 Discrepancy resolution | `merge-screening` → `ai-discrepancies` → manual |
+> | §8.7 False-negative audit | `fn-audit` |
+> | §8.8 Borderline escalation | Manual (during discrepancy review) |
+> | §8.9 Re-screening check | Manual (intra-rater concordance) |
 
 ### Step 4 — Generate PRISMA counts
 
