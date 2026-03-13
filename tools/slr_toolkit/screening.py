@@ -1093,11 +1093,10 @@ def run_asreview_simulate(
     model: str = "elas_u4",
     seed: int = 42,
 ) -> Path:
-    """Run ASReview active-learning simulation and export decisions.
+    """Run ASReview active-learning ranking and export decisions.
 
-    Uses ASReview's ``Simulate`` engine to rank all records by predicted
-    relevance.  Prior-knowledge labels from calibration are injected as
-    initial training data.
+    Uses ASReview's ``ActiveLearningCycle`` to train on prior labels and
+    rank all unlabeled records by predicted relevance.
 
     Parameters
     ----------
@@ -1116,7 +1115,7 @@ def run_asreview_simulate(
     """
     import numpy as np
     import pandas as pd
-    from asreview import ActiveLearningCycle, Simulate
+    from asreview import ActiveLearningCycle
     from asreview.models import get_ai_config
 
     if dataset_path is None:
@@ -1126,81 +1125,76 @@ def run_asreview_simulate(
     if output_path is None:
         output_path = config.AI_SCREENING_DECISIONS
 
-    # Load dataset
+    # Load dataset and prior labels
     dataset = pd.read_csv(dataset_path, dtype=str).fillna("")
     priors = pd.read_csv(labels_path, dtype=str).fillna("")
 
-    # Merge prior labels into dataset
+    # Prior records may have been excluded from the dataset during export.
+    # Merge them back so the model can train on them.
+    prior_ids_in_dataset = set(dataset["paper_id"]) & set(priors["paper_id"])
+    missing_priors = priors[~priors["paper_id"].isin(prior_ids_in_dataset)]
+    if not missing_priors.empty:
+        # Build rows for missing priors using fields available in priors CSV
+        extra_rows = []
+        for _, row in missing_priors.iterrows():
+            extra_rows.append({
+                "paper_id": row.get("paper_id", ""),
+                "title": row.get("title", ""),
+                "abstract": row.get("abstract", ""),
+                "authors": row.get("authors", ""),
+                "year": row.get("year", ""),
+                "doi": row.get("doi", ""),
+            })
+        dataset = pd.concat(
+            [dataset, pd.DataFrame(extra_rows).fillna("")], ignore_index=True,
+        )
+
+    # Map prior labels onto the dataset
     prior_map = dict(zip(priors["paper_id"], priors["label_included"].astype(int)))
     dataset["label_included"] = dataset["paper_id"].map(prior_map).fillna(-1).astype(int)
 
-    # Build feature matrix from title + abstract text
-    texts = (dataset["title"] + " " + dataset["abstract"]).tolist()
-
-    # Set up labels (-1 = unlabeled for simulation)
     labels = dataset["label_included"].values.copy()
+    prior_mask = labels >= 0
+    unlabeled_mask = ~prior_mask
 
-    # Get model config
+    # Get model config and instantiate model objects
     ai_config = get_ai_config(model)
     cycle_data = ai_config["value"]
-    cycle = ActiveLearningCycle(
-        querier=cycle_data.querier,
-        classifier=cycle_data.classifier,
-        balancer=cycle_data.balancer,
-        feature_extractor=cycle_data.feature_extractor,
-    )
+    cycle = ActiveLearningCycle.from_meta(cycle_data)
 
-    # Build text DataFrame (ASReview expects a DataFrame for TF-IDF)
-    X = pd.DataFrame({"text": texts})
-
-    # Create simulation - label all unlabeled based on known labels
-    # ASReview Simulate expects labels as 0/1 for all records
-    # We treat prior-labeled as ground truth and need a full-label vector
-    # For screening: we simulate with known labels, then use ranking order
     np.random.seed(seed)
 
-    # Run simulation using all priors as known labels
-    sim = Simulate(
-        X=X,
-        labels=labels,
-        cycles=cycle,
-        print_progress=True,
-    )
-    sim.review()
+    # ASReview feature extractor expects DataFrame with 'title' and 'abstract'
+    X = dataset[["title", "abstract"]].copy()
+    X_features = cycle.transform(X)
 
-    # Extract results: the order records were labeled = ranking order
-    results = sim._results.copy()
-    labeled_order = results["record_id"].tolist()
+    # Train on prior-labelled records
+    cycle.fit(X_features[prior_mask], labels[prior_mask])
 
-    # Build output: records labeled by AI ranked by relevance
+    # Rank all unlabeled records by predicted relevance
+    ranked_indices = cycle.rank(X_features[unlabeled_mask])
+
+    # Map back to dataset positions
+    unlabeled_positions = np.where(unlabeled_mask)[0]
+    ranked_dataset_indices = unlabeled_positions[ranked_indices]
+
+    # Build output rows ranked by AI relevance (rank 1 = most relevant)
     paper_ids = dataset["paper_id"].tolist()
     out_rows = []
-    for rank, record_id in enumerate(labeled_order, 1):
-        pid = paper_ids[record_id]
-        label = int(results.loc[results["record_id"] == record_id, "label"].iloc[0])
+    for rank, idx in enumerate(ranked_dataset_indices, 1):
+        pid = paper_ids[idx]
         out_rows.append({
             "paper_id": pid,
-            "ai_decision": "include" if label == 1 else "exclude",
+            "ai_decision": "include" if rank <= len(ranked_dataset_indices) // 2 else "exclude",
             "ai_rank": rank,
             "ai_confidence": "",
         })
-
-    # Add any records not reached by simulation as "exclude"
-    labeled_ids = {paper_ids[rid] for rid in labeled_order}
-    for pid in paper_ids:
-        if pid not in labeled_ids and pid not in prior_map:
-            out_rows.append({
-                "paper_id": pid,
-                "ai_decision": "exclude",
-                "ai_rank": len(labeled_order) + 1,
-                "ai_confidence": "",
-            })
 
     out_df = pd.DataFrame(out_rows)
     out_df.to_csv(output_path, index=False)
     n_include = sum(1 for r in out_rows if r["ai_decision"] == "include")
     log.info(
-        "ASReview simulation complete: %d records ranked, %d included -> %s",
+        "ASReview ranking complete: %d records ranked, %d flagged include -> %s",
         len(out_rows), n_include, output_path,
     )
     return output_path
