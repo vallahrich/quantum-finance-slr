@@ -1,5 +1,9 @@
 # Search Strategy Peer Review
 
+<!-- TODO: Complete this before thesis submission. Have your supervisor
+     review the Block 1 + Block 2 search terms, database selection,
+     and date limits. Document their feedback and any changes made. -->
+
 ## Reviewer details
 
 | Field | Value |

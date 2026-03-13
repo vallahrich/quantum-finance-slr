@@ -54,7 +54,6 @@ REVIEWER_B_SCREENING_XLSX  = SCREENING_DIR / "screening_reviewer_B.xlsx"
 # ASReview data files
 ASREVIEW_DATASET_CSV      = SCREENING_DIR / "asreview_dataset.csv"
 ASREVIEW_PRIOR_LABELS_CSV = SCREENING_DIR / "asreview_prior_labels.csv"
-ASREVIEW_PROJECT_DIR      = SCREENING_DIR / "asreview_project"
 
 # AI-assisted screening (Protocol §8, Amendment A8)
 AI_SCREENING_DECISIONS  = SCREENING_DIR / "ai_screening_decisions.csv"

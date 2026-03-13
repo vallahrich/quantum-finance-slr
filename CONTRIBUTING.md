@@ -25,6 +25,13 @@ python -m venv .venv
 pip install -e ".[dev]"
 ```
 
+```bash
+# 4. (Optional) Install AI-assisted screening dependencies
+pip install -e ".[ai]"
+# Required for: export-asreview, run-asreview, import-ai-decisions,
+# ai-discrepancies, ai-validation, fn-audit commands
+```
+
 ---
 
 ## Running the full pipeline

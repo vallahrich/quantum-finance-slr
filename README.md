@@ -210,11 +210,20 @@ quantum-finance-slr/
 
 ## Screening Workflow
 
-0. Run calibration round (see §8 of protocol) — target Cohen's κ ≥ 0.70 before main screening.
-1. Run `build-master` to get `04_deduped_library/master_records.csv`.
-2. Copy `05_screening/title_abstract_decisions_template.csv` → `title_abstract_decisions.csv`.
-3. Fill in screening decisions (`include` / `exclude` / `maybe`) for each `paper_id`.
-4. For included papers, copy `full_text_decisions_template.csv` → `full_text_decisions.csv` and fill in full-text screening decisions.
+0. Run `generate-screening --seed 42 --validation-size 100` to produce:
+   - `calibration_screening.xlsx` (50 records, both reviewers)
+   - `validation_screening.xlsx` (100 records, both reviewers — held-out for AI validation)
+   - `screening_reviewer_A.xlsx` (half of remaining records)
+   - `screening_reviewer_B.xlsx` (other half)
+1. Both reviewers independently screen the calibration set. Compute kappa: `compute-kappa`. Target: κ ≥ 0.70.
+2. Once calibrated, each reviewer screens their assigned split workbook.
+3. (Optional, per Protocol §8 Amendment A8) Set up AI-assisted recall safety net:
+   - `export-asreview` — export prior labels + dataset for ASReview
+   - Run ASReview LAB externally, or: `run-asreview`
+   - After human screening: `merge-screening` → `ai-discrepancies` → manually review AI rescue cases
+   - `ai-validation` — compute AI performance on held-out validation subset
+   - `fn-audit` — sample 10% of double-excluded records for false-negative audit
+4. For included papers, copy `full_text_decisions_template.csv` → `full_text_decisions.csv` and complete full-text screening (include `tier2_applicable` flag).
 5. Run `prisma` to generate counts.
 
 ### Decision columns

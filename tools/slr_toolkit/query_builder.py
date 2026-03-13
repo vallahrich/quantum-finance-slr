@@ -16,10 +16,13 @@ import urllib.parse
 # OpenAlex silently strips *, ?, ~ characters from queries.
 # Only needs to cover terms actually used in our SLR queries.
 OPENALEX_WILDCARD_EXPANSIONS: dict[str, str] = {
+    "quantum linear system*": '"quantum linear system" OR "quantum linear systems"',
+    "interest rate derivative*": '"interest rate derivative" OR "interest rate derivatives"',
     "quantum algorithm*": '"quantum algorithm" OR "quantum algorithms"',
     "quantum circuit*": '"quantum circuit" OR "quantum circuits"',
     "quantum walk*": '"quantum walk" OR "quantum walks"',
     "portfolio optim*": '"portfolio optimization" OR "portfolio optimisation"',
+    "structured product*": '"structured product" OR "structured products"',
     "stock price*": '"stock price" OR "stock prices"',
     "financial derivative*": '"financial derivative" OR "financial derivatives"',
     "derivative*": '"derivative" OR "derivatives"',

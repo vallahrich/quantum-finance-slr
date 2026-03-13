@@ -8,10 +8,11 @@
 ## Key Numbers to Remember
 - **5,775** raw records from 4 search runs across 4 databases (OpenAlex, arXiv, Semantic Scholar, Scopus)
 - **2,672** unique records after deduplication (3,103 duplicates removed)
-- **10** benchmark papers for sensitivity checking
+- **20** benchmark papers for sensitivity checking
 - **2016–present** time window
 - **6 research questions** (5 SLR + 1 cross-cutting)
 - **2 reviewers** with calibrate-then-split design
+- **AI-assisted** screening via ASReview as recall safety net (Protocol §8, Amendment A8)
 
 ## The "So What?" for Each Slide
 
@@ -26,7 +27,7 @@
 | Sources | 4 databases, coverage-justified, API-automated |
 | Search | Two-block Boolean (refined A5), maximise recall, filter at screening |
 | Numbers | Large initial set reflects broad search — expect heavy reduction at screening |
-| Screening | Two reviewers, calibrated (κ ≥ 0.70), then split — efficient and defensible |
+| Screening | Two reviewers + AI safety net: calibrated (κ ≥ 0.70), split, AI flags potential false negatives for re-review |
 | Extraction | Codebook directly maps to Hoefler dimensions — every paper assessed on same criteria |
 | Outputs | Evidence map + advantage table + gap analysis = actionable research agenda |
 | Tooling | Fully reproducible, open, API-driven — not just a Word doc |
@@ -59,3 +60,6 @@ A: The SLR tells us what researchers have found, but practitioners face operatio
 
 **Q: How do the interviews relate to the SLR?**
 A: They run in parallel. The interview topic guide uses the same problem families but we don't share SLR conclusions with interviewees to avoid anchoring. Synthesis happens afterward.
+
+**Q: You use AI for screening — doesn't that undermine the systematic methodology?**
+A: The AI is a supplementary recall safety net, not a replacement for human screening. Both human reviewers make all final decisions. The AI's only role is to flag records we might have missed (false negatives). This follows the 2025 joint position statement from Cochrane, Campbell Collaboration, JBI, and CEE (Flemyng et al. 2025), which supports AI in evidence synthesis with human oversight. We validate AI performance on a held-out subset (≥100 records) and require recall ≥ 0.95 before trusting it. We also audit 10% of double-excluded records. Everything is reported per PRISMA-trAIce (Holst et al. 2025).

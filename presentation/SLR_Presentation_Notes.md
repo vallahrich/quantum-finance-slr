@@ -151,7 +151,7 @@ This is the **core analytical lens** for Tier 2 extraction:
 - Consistent with Okoli (2015, §4.2)
 
 ### Benchmark Sensitivity Check
-- 10 known-relevant papers from Herman et al., Egger et al., Stamatopoulos et al., etc.
+- 20 known-relevant papers spanning all 10 problem families, all quantum methods, both hardware regimes, and all evaluation types (see §7b and benchmark_sensitivity_check.csv)
 - **Target: ≥ 95% recall** on benchmark set
 - Validates that 4-database search doesn't miss key papers
 

@@ -102,6 +102,15 @@ class TestExpandWildcardsForOpenalex:
         assert "quantum algorithms" in result
         assert "*" not in result
 
+    def test_new_amendment_a6_wildcards(self) -> None:
+        """Amendment A6 wildcard terms must be expanded."""
+        for term in ["quantum linear system*", "interest rate derivative*", "structured product*"]:
+            result = expand_wildcards_for_openalex(f'"{term}"')
+            assert "*" not in result
+            # Check both singular and plural forms are present
+            singular = term.rstrip("*")
+            assert singular in result
+
 
 class TestBuildArxivQuery:
     """arXiv query builder."""

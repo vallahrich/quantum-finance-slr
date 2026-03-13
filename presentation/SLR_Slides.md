@@ -192,6 +192,7 @@ Must compare against **state-of-the-art** — not a strawman
 2. **Split screening** — remaining ~2,620 records split equally between reviewers
 3. **Borderline escalation** — `maybe` cases resolved jointly
 4. **Re-screening** — excluded full-texts re-screened after 2–4 weeks
+5. **AI recall safety net** — ASReview active-learning screens all records in parallel; AI=include + Human=exclude cases re-examined jointly (Protocol §8, Amendment A8)
 
 ### Screening phases
 - **Title/Abstract** → inclusion against eligibility criteria (§9)

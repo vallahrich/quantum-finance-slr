@@ -10,7 +10,7 @@ Design
 Protocol versioned in this repository with amendments tracked in
 `amendments_log.csv`.
 
-**Protocol version:** 3.1 (2026-03-10)
+**Protocol version:** 3.4 (2026-03-13)
 
 This SLR constitutes Phase 1a of a larger exploratory sequential
 mixed-methods study (Creswell & Creswell, 2018). The full study also
