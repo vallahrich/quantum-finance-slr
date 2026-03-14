@@ -224,7 +224,11 @@ quantum-finance-slr/
    - `ai-validation` — compute AI performance on held-out validation subset
    - `fn-audit` — sample 10% of double-excluded records for false-negative audit
 4. For included papers, copy `full_text_decisions_template.csv` → `full_text_decisions.csv` and complete full-text screening (include `tier2_applicable` flag).
-5. Run `prisma` to generate counts.
+5. Run `topic-code` to generate draft LLM-assisted thematic coding for included papers:
+   - `06_extraction/topic_coding.csv` (per-paper multi-label topics)
+   - `06_extraction/topic_coding_summary.md` (cluster and overlap summary)
+   - Review topic labels before using them in synthesis or evidence mapping
+6. Run `prisma` to generate counts.
 
 ### Decision columns
 
@@ -290,7 +294,28 @@ Tests cover:
 - **Fuzzy dedup** gracefully degrades to DOI-only if `rapidfuzz` is not installed.
 - All CLI commands are idempotent where applicable.
 - Ingest, deduplication, screening, and PRISMA generation are local file-based.
-- `auto-search` and `llm-screen` are networked workflows that call external APIs.
+- `auto-search`, `llm-screen`, and `topic-code` are networked workflows that call external APIs.
+
+---
+
+## Topic Coding
+
+Use LLM-assisted thematic coding only after final full-text inclusion decisions are available.
+
+```bash
+python -m tools.slr_toolkit.cli topic-code
+python -m tools.slr_toolkit.cli topic-code --dry-run
+python -m tools.slr_toolkit.cli topic-code --max-records 25
+```
+
+This step:
+- reads included papers from `05_screening/full_text_decisions.csv`
+- joins paper metadata from `04_deduped_library/master_records.csv`
+- assigns one or more controlled topics plus optional emergent topics
+- writes reviewable draft coding to `06_extraction/topic_coding.csv`
+- generates `06_extraction/topic_coding_summary.md` from the saved CSV
+
+The coding is intentionally treated as draft analytical support, not as a replacement for manual extraction or final synthesis judgment.
 
 ---
 

@@ -29,9 +29,9 @@ from .utils import ensure_dir, load_master_records
 log = logging.getLogger(__name__)
 
 # ── Azure OpenAI pricing (USD per 1 K tokens) ───────────────────────────
-# Default: gpt-4o pricing.  Adjust these two constants for your deployment.
-INPUT_COST_PER_1K: float = 0.0025   # $2.50 / 1M input tokens
-OUTPUT_COST_PER_1K: float = 0.010   # $10.00 / 1M output tokens
+# Default: gpt-4.1-mini pricing.  Adjust these for your deployment.
+INPUT_COST_PER_1K: float = 0.0004   # $0.40 / 1M input tokens
+OUTPUT_COST_PER_1K: float = 0.0016  # $1.60 / 1M output tokens
 
 # ── File paths ───────────────────────────────────────────────────────────
 CHECKPOINT_FILE = config.SCREENING_DIR / "llm_screening_checkpoint.json"
@@ -353,7 +353,17 @@ def _save_checkpoint(path: Path, state: dict) -> None:
     tmp = path.with_suffix(".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2)
-    tmp.replace(path)
+    # Retry rename to handle OneDrive / antivirus file locks on Windows
+    for attempt in range(5):
+        try:
+            tmp.replace(path)
+            return
+        except PermissionError:
+            time.sleep(0.2 * (attempt + 1))
+    # Last resort: overwrite directly (non-atomic but avoids crash)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
+    tmp.unlink(missing_ok=True)
 
 
 # ── Audit log ────────────────────────────────────────────────────────────

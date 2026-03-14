@@ -313,6 +313,41 @@ def _cmd_ai_validation(args: argparse.Namespace) -> None:
     print(f"\n  Full report: 05_screening/ai_validation_report.md")
 
 
+def _cmd_topic_code(args: argparse.Namespace) -> None:
+    """Run LLM-assisted thematic coding on final included papers."""
+    from .topic_coding import generate_topic_summary, run_topic_coding
+
+    result = run_topic_coding(
+        api_key=args.api_key,
+        endpoint=args.endpoint,
+        deployment=args.deployment,
+        batch_size=args.batch_size,
+        delay=args.delay,
+        max_records=args.max_records,
+        dry_run=args.dry_run,
+        estimate_only=args.estimate_cost,
+        input_file=Path(args.input_file) if args.input_file else None,
+    )
+
+    if isinstance(result, dict):
+        print("Topic Coding Cost Estimate:")
+        print(f"  Records to code:    {result['n_records']}")
+        print(f"  Est. input tokens:  {result['est_input_tokens']:,}")
+        print(f"  Est. output tokens: {result['est_output_tokens']:,}")
+        print(f"  Est. total tokens:  {result['est_total_tokens']:,}")
+        print(f"  Est. input cost:    ${result['est_input_cost_usd']:.4f}")
+        print(f"  Est. output cost:   ${result['est_output_cost_usd']:.4f}")
+        print(f"  Est. total cost:    ${result['est_total_cost_usd']:.4f}")
+        if args.dry_run:
+            print("\n  [dry-run] No API calls made.")
+        return
+
+    summary_path = generate_topic_summary(result)
+    print(f"[ok] Topic coding complete -> {result.name}")
+    print(f"[ok] Topic summary generated -> {summary_path.name}")
+    print("  Draft LLM coding only: review topic labels before using them in synthesis.")
+
+
 def _cmd_rerun_clean(args: argparse.Namespace) -> None:
     """Move noisy run folders to a deprecated directory and log the amendment."""
     import csv
@@ -663,6 +698,49 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print token/cost estimate and exit.",
     )
     p_ls.set_defaults(func=_cmd_llm_screen)
+
+    # -- topic-code ---------------------------------------------------------
+    p_tc = sub.add_parser(
+        "topic-code",
+        help="Run LLM-assisted thematic coding on final included papers.",
+    )
+    p_tc.add_argument(
+        "--input-file", default=None,
+        help="Optional input CSV override. Default: 05_screening/full_text_decisions.csv.",
+    )
+    p_tc.add_argument(
+        "--api-key", default=None,
+        help="Azure OpenAI API key (default: AZURE_OPENAI_API_KEY env var).",
+    )
+    p_tc.add_argument(
+        "--endpoint", default=None,
+        help="Azure OpenAI endpoint URL (default: AZURE_OPENAI_ENDPOINT env var).",
+    )
+    p_tc.add_argument(
+        "--deployment", default=None,
+        help="Azure OpenAI deployment/model name (default: AZURE_OPENAI_DEPLOYMENT env var).",
+    )
+    p_tc.add_argument(
+        "--batch-size", type=int, default=10,
+        help="Number of records per batch (default: 10).",
+    )
+    p_tc.add_argument(
+        "--delay", type=float, default=1.0,
+        help="Seconds to wait between batches (default: 1.0).",
+    )
+    p_tc.add_argument(
+        "--max-records", type=int, default=None,
+        help="Maximum number of included papers to code (default: all).",
+    )
+    p_tc.add_argument(
+        "--dry-run", action="store_true",
+        help="Show cost estimate without calling the API.",
+    )
+    p_tc.add_argument(
+        "--estimate-cost", action="store_true",
+        help="Print token/cost estimate and exit.",
+    )
+    p_tc.set_defaults(func=_cmd_topic_code)
 
     return parser
 

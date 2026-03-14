@@ -226,6 +226,47 @@ def create_codebook_md(*, force: bool = False) -> None:
     )
 
 
+def create_topic_taxonomy_md(*, force: bool = False) -> None:
+    """Ensure topic_taxonomy.md exists."""
+    if config.TOPIC_TAXONOMY_MD.exists() and not force:
+        log.info("Skipping (exists): %s", config.TOPIC_TAXONOMY_MD)
+        return
+    safe_write_text(
+        config.TOPIC_TAXONOMY_MD,
+        "# Topic Taxonomy\n\n"
+        "Draft controlled taxonomy for LLM-assisted thematic coding.\n\n"
+        "## Controlled Topics\n\n"
+        "- portfolio_optimization: Asset allocation, portfolio construction, rebalancing, selection.\n"
+        "- derivative_pricing: Option pricing, structured products, Greeks, valuation.\n"
+        "- risk_management: Market risk, credit risk, CVaR, stress testing, exposure.\n"
+        "- fraud_and_detection: Fraud detection, AML, anomaly detection in finance.\n"
+        "- forecasting_and_prediction: Time series forecasting, return prediction, regime prediction.\n"
+        "- trading_and_execution: Trading strategies, execution, market microstructure.\n"
+        "- insurance_and_actuarial: Insurance, actuarial science, reinsurance.\n"
+        "- credit_and_lending: Credit scoring, default prediction, lending decisions.\n"
+        "- quantum_ml_for_finance: QML methods applied to financial tasks.\n"
+        "- optimization_methods: Generic optimization methods with explicit finance application.\n"
+        "- simulation_and_monte_carlo: Monte Carlo, amplitude estimation, stochastic simulation.\n"
+        "- benchmarking_and_advantage: Benchmarking, complexity, utility, advantage claims in finance.\n\n"
+        "## Method Families\n\n"
+        "- qaoa_or_optimization\n"
+        "- variational_or_vqe\n"
+        "- amplitude_estimation\n"
+        "- quantum_ml\n"
+        "- quantum_walk_or_search\n"
+        "- linear_systems_or_hhl\n"
+        "- hybrid_unspecified\n"
+        "- other_gate_based\n\n"
+        "## Evaluation Types\n\n"
+        "- simulator\n"
+        "- real_hardware\n"
+        "- analytical\n"
+        "- benchmark_comparison\n"
+        "- conceptual_only\n",
+        force=force,
+    )
+
+
 # ── Convenience: create all ────────────────────────────────────────────────
 
 def create_all_templates(*, force: bool = False) -> None:
@@ -237,3 +278,4 @@ def create_all_templates(*, force: bool = False) -> None:
     create_protocol(force=force)
     create_amendments_log(force=force)
     create_codebook_md(force=force)
+    create_topic_taxonomy_md(force=force)
