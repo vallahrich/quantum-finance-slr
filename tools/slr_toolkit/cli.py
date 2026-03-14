@@ -252,6 +252,40 @@ def _cmd_run_asreview(args: argparse.Namespace) -> None:
     print("Next: slr-toolkit ai-discrepancies")
 
 
+def _cmd_llm_screen(args: argparse.Namespace) -> None:
+    """Run LLM-based title/abstract screening via Azure OpenAI."""
+    from .llm_screening import run_llm_screening
+
+    result = run_llm_screening(
+        api_key=args.api_key,
+        endpoint=args.endpoint,
+        deployment=args.deployment,
+        batch_size=args.batch_size,
+        delay=args.delay,
+        max_records=args.max_records,
+        dry_run=args.dry_run,
+        estimate_only=args.estimate_cost,
+    )
+
+    if isinstance(result, dict):
+        # Cost estimation or dry-run output
+        print("LLM Screening Cost Estimate:")
+        print(f"  Records to screen:  {result['n_records']}")
+        print(f"  Est. input tokens:  {result['est_input_tokens']:,}")
+        print(f"  Est. output tokens: {result['est_output_tokens']:,}")
+        print(f"  Est. total tokens:  {result['est_total_tokens']:,}")
+        print(f"  Est. input cost:    ${result['est_input_cost_usd']:.4f}")
+        print(f"  Est. output cost:   ${result['est_output_cost_usd']:.4f}")
+        print(f"  Est. total cost:    ${result['est_total_cost_usd']:.4f}")
+        print(f"  Pricing: ${result['input_cost_per_1k']}/1K in, "
+              f"${result['output_cost_per_1k']}/1K out")
+        if args.dry_run:
+            print("\n  [dry-run] No API calls made.")
+    else:
+        print(f"[ok] LLM screening complete -> {result.name}")
+        print("Next: slr-toolkit ai-validation")
+
+
 def _cmd_ai_validation(args: argparse.Namespace) -> None:
     """Compute AI performance on the validation subset."""
     from .screening import compute_ai_validation
@@ -586,6 +620,45 @@ def build_parser() -> argparse.ArgumentParser:
         help="Compute AI performance on the held-out validation subset.",
     )
     p_av.set_defaults(func=_cmd_ai_validation)
+
+    # -- llm-screen ----------------------------------------------------------
+    p_ls = sub.add_parser(
+        "llm-screen",
+        help="Run LLM-based title/abstract screening via Azure OpenAI.",
+    )
+    p_ls.add_argument(
+        "--api-key", default=None,
+        help="Azure OpenAI API key (default: AZURE_OPENAI_API_KEY env var).",
+    )
+    p_ls.add_argument(
+        "--endpoint", default=None,
+        help="Azure OpenAI endpoint URL (default: AZURE_OPENAI_ENDPOINT env var).",
+    )
+    p_ls.add_argument(
+        "--deployment", default=None,
+        help="Azure OpenAI deployment/model name (default: AZURE_OPENAI_DEPLOYMENT env var).",
+    )
+    p_ls.add_argument(
+        "--batch-size", type=int, default=10,
+        help="Number of records per batch (default: 10).",
+    )
+    p_ls.add_argument(
+        "--delay", type=float, default=1.0,
+        help="Seconds to wait between batches (default: 1.0).",
+    )
+    p_ls.add_argument(
+        "--max-records", type=int, default=None,
+        help="Maximum number of records to screen (default: all pending).",
+    )
+    p_ls.add_argument(
+        "--dry-run", action="store_true",
+        help="Show cost estimate without calling the API.",
+    )
+    p_ls.add_argument(
+        "--estimate-cost", action="store_true",
+        help="Print token/cost estimate and exit.",
+    )
+    p_ls.set_defaults(func=_cmd_llm_screen)
 
     return parser
 
