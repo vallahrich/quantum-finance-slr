@@ -339,6 +339,10 @@ def _cmd_rerun_clean(args: argparse.Namespace) -> None:
     print(f"Moving {len(matched)} folder(s) to _deprecated_noisy/:")
     for folder in matched:
         dest = deprecated_dir / folder.name
+        if dest.exists():
+            raise FileExistsError(
+                f"Cannot move {folder.name}: destination already exists at {dest}"
+            )
         folder.rename(dest)
         print(f"  {folder.name} -> _deprecated_noisy/{folder.name}")
         log.info("Moved %s to %s", folder, dest)

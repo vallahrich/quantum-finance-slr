@@ -24,7 +24,7 @@ from json import JSONDecodeError
 from pathlib import Path
 
 from . import config
-from .utils import ensure_dir
+from .utils import ensure_dir, load_master_records
 
 log = logging.getLogger(__name__)
 
@@ -368,12 +368,7 @@ def _append_prompt_log(path: Path, entry: dict) -> None:
 
 def _load_records_for_screening() -> list[dict[str, str]]:
     """Load non-duplicate records from master_records.csv."""
-    records: list[dict[str, str]] = []
-    with open(config.MASTER_RECORDS_CSV, encoding="utf-8") as f:
-        for row in csv.DictReader(f):
-            if not row.get("duplicate_of", "").strip():
-                records.append(row)
-    return records
+    return load_master_records(unique_only=True)
 
 
 def _load_existing_decisions(path: Path) -> list[dict[str, str]]:
@@ -450,6 +445,11 @@ def run_llm_screening(
         checkpoint_path = CHECKPOINT_FILE
     if prompt_log_path is None:
         prompt_log_path = PROMPT_LOG_FILE
+
+    if batch_size <= 0:
+        raise ValueError("batch_size must be >= 1")
+    if delay < 0:
+        raise ValueError("delay must be >= 0")
 
     # ── Load records ─────────────────────────────────────────────────────
     records = _load_records_for_screening()

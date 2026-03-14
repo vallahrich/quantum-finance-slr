@@ -1025,7 +1025,11 @@ def auto_search(
             continue
 
         # Create run folder
-        run_folder = create_search_run(source=source, run_date=run_date)
+        run_folder = create_search_run(
+            source=source,
+            run_date=run_date,
+            log_search=False,
+        )
 
         # Normalise and write
         df = pd.DataFrame(records)

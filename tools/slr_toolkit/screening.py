@@ -14,7 +14,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
 from . import config
-from .utils import cohens_kappa
+from .utils import cohens_kappa, load_master_records
 
 log = logging.getLogger(__name__)
 
@@ -63,13 +63,7 @@ _SPLIT_REVIEW_WIDTHS = {
 
 def _load_unique_records() -> list[dict[str, str]]:
     """Load non-duplicate records from master_records.csv."""
-    records = []
-    with open(config.MASTER_RECORDS_CSV, encoding="utf-8") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            if not row.get("duplicate_of", "").strip():
-                records.append(row)
-    return records
+    return load_master_records(unique_only=True)
 
 
 def _make_decision_validation() -> DataValidation:
@@ -308,8 +302,8 @@ def generate_calibration_workbook(
     if output_path is None:
         output_path = config.CALIBRATION_SCREENING_XLSX
 
-    random.seed(seed)
-    sample = random.sample(records, min(sample_size, len(records)))
+    rng = random.Random(seed)
+    sample = rng.sample(records, min(sample_size, len(records)))
     _create_screening_workbook(
         sample,
         output_path=output_path,
@@ -338,8 +332,8 @@ def generate_split_workbooks(
     remaining = [r for r in records if r.get("paper_id", "") not in calibration_ids]
 
     # Shuffle deterministically then split
-    random.seed(seed)
-    random.shuffle(remaining)
+    rng = random.Random(seed)
+    rng.shuffle(remaining)
     mid = len(remaining) // 2
     split_a = remaining[:mid]
     split_b = remaining[mid:]
@@ -663,8 +657,8 @@ def generate_validation_workbook(
         output_path = config.VALIDATION_SCREENING_XLSX
 
     remaining = [r for r in records if r.get("paper_id", "") not in calibration_ids]
-    random.seed(seed + 1)  # distinct seed from calibration sample
-    sample = random.sample(remaining, min(sample_size, len(remaining)))
+    rng = random.Random(seed + 1)  # distinct seed from calibration sample
+    sample = rng.sample(remaining, min(sample_size, len(remaining)))
     validation_ids = {r.get("paper_id", "") for r in sample}
     _create_screening_workbook(
         sample,

@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+import csv
 import hashlib
 import logging
 import sys
 from pathlib import Path
+
+from . import config
 
 
 def configure_logging(level: int = logging.INFO) -> None:
@@ -118,3 +121,25 @@ def safe_write_bytes(path: Path, data: bytes, *, force: bool = False) -> bool:
     path.write_bytes(data)
     log.info("Wrote: %s", path)
     return True
+
+
+def load_master_records(*, unique_only: bool = False) -> list[dict[str, str]]:
+    """Load records from ``master_records.csv``.
+
+    Parameters
+    ----------
+    unique_only:
+        When ``True``, exclude rows already marked as duplicates.
+    """
+    path = config.MASTER_RECORDS_CSV
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Master records file not found: {path}. Run build-master first."
+        )
+
+    with open(path, encoding="utf-8", newline="") as f:
+        rows = list(csv.DictReader(f))
+
+    if unique_only:
+        return [row for row in rows if not row.get("duplicate_of", "").strip()]
+    return rows

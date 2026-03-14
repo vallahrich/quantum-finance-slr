@@ -189,6 +189,9 @@ def build_master() -> pd.DataFrame:
     for rd in run_dirs:
         if not rd.is_dir():
             continue
+        if rd.name.startswith("_"):
+            log.info("Skipping inactive run directory: %s", rd)
+            continue
         norm_csv = rd / "normalized_records.csv"
         if norm_csv.exists():
             log.info("Loading %s", norm_csv)

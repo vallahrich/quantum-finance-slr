@@ -84,6 +84,8 @@ Instructions
 def create_search_run(
     source: str,
     run_date: str | None = None,
+    *,
+    log_search: bool = True,
 ) -> Path:
     """Create a new search-run folder and append a row to the search log.
 
@@ -104,11 +106,24 @@ def create_search_run(
     readme_path.write_text(readme_text, encoding="utf-8")
     log.info("Created run folder: %s", run_folder)
 
+    if not log_search:
+        return run_folder
+
     # Append row to search log
     xlsx_path = _ensure_search_log_xlsx()
     wb = load_workbook(xlsx_path)
     ws = wb.active
     assert ws is not None
+    existing_ids = {
+        str(value).strip()
+        for value, in ws.iter_rows(min_row=2, max_col=1, values_only=True)
+        if value
+    }
+    if run_id in existing_ids:
+        log.info("Search run '%s' already present in %s", run_id, xlsx_path)
+        wb.close()
+        return run_folder
+
     ws.append([
         run_id,      # SearchRunID
         run_date,    # Date
@@ -125,6 +140,7 @@ def create_search_run(
         "",          # Notes
     ])
     wb.save(xlsx_path)
+    wb.close()
     log.info("Appended search run '%s' to %s", run_id, xlsx_path)
 
     return run_folder

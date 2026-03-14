@@ -336,3 +336,17 @@ class TestDownstreamCompatibility:
         assert metrics["n"] == 4
         assert "recall" in metrics
         assert "pass" in metrics
+
+
+class TestRunLLMScreeningValidation:
+    def test_rejects_non_positive_batch_size(self):
+        from tools.slr_toolkit.llm_screening import run_llm_screening
+
+        with pytest.raises(ValueError, match="batch_size"):
+            run_llm_screening(batch_size=0, estimate_only=True)
+
+    def test_rejects_negative_delay(self):
+        from tools.slr_toolkit.llm_screening import run_llm_screening
+
+        with pytest.raises(ValueError, match="delay"):
+            run_llm_screening(delay=-0.1, estimate_only=True)
