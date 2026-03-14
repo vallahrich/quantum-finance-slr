@@ -16,12 +16,15 @@ import logging
 import os
 import re
 import ssl
+import subprocess
 import time
 import urllib.error
 import urllib.request
+from json import JSONDecodeError
 from pathlib import Path
 
 from . import config
+from .utils import ensure_dir
 
 log = logging.getLogger(__name__)
 
@@ -33,6 +36,11 @@ OUTPUT_COST_PER_1K: float = 0.010   # $10.00 / 1M output tokens
 # ── File paths ───────────────────────────────────────────────────────────
 CHECKPOINT_FILE = config.SCREENING_DIR / "llm_screening_checkpoint.json"
 PROMPT_LOG_FILE = config.SCREENING_DIR / "llm_screening_prompt_log.jsonl"
+_DEFAULT_CHECKPOINT_STATE = {"screened_ids": [], "version": 1}
+_VALID_REASON_CODES = {
+    "INCLUDE", "EX-PARADIGM", "EX-NONFIN", "EX-NOMETHOD",
+    "EX-TOOSHORT", "EX-NOTEN", "EX-OTHER", "ERR-LLM",
+}
 
 # ── Screening system prompt ──────────────────────────────────────────────
 SYSTEM_PROMPT: str = (
@@ -99,6 +107,81 @@ def _build_url(endpoint: str, deployment: str) -> str:
     )
 
 
+def _extract_message_content(content: object) -> str:
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        text_parts = []
+        for part in content:
+            if isinstance(part, dict) and part.get("type") == "text":
+                text_parts.append(str(part.get("text", "")))
+        return "".join(text_parts)
+    return str(content or "")
+
+
+def _safe_float(value: object, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _normalize_reason_code(value: object, decision: str) -> str:
+    raw = str(value or "").strip().upper()
+    if raw in _VALID_REASON_CODES:
+        return raw
+    return "INCLUDE" if decision == "include" else "EX-OTHER"
+
+
+# ── Azure AD token helper ────────────────────────────────────────────────
+
+_cached_ad_token: dict | None = None  # {"token": str, "expires_on": float}
+
+
+def _get_azure_ad_token() -> str:
+    """Obtain a bearer token via ``az account get-access-token``.
+
+    Uses the caller's existing ``az login`` session — no stored secrets.
+    Tokens are cached until 2 minutes before expiry.
+    """
+    global _cached_ad_token  # noqa: PLW0603
+    now = time.time()
+    if _cached_ad_token and _cached_ad_token["expires_on"] - now > 120:
+        return _cached_ad_token["token"]
+
+    import shutil
+    az_cmd = shutil.which("az") or shutil.which("az.cmd") or "az"
+
+    try:
+        result = subprocess.run(  # noqa: S603
+            [az_cmd, "account", "get-access-token",
+             "--resource", "https://cognitiveservices.azure.com",
+             "--query", "accessToken", "-o", "tsv"],
+            capture_output=True, text=True, timeout=30,
+            check=True,
+        )
+    except FileNotFoundError:
+        raise RuntimeError(
+            "Azure CLI ('az') not found. Install it or provide --api-key."
+        )
+    except subprocess.CalledProcessError as exc:
+        raise RuntimeError(
+            f"'az account get-access-token' failed.\n"
+            f"Run 'az login' first.\n{exc.stderr.strip()}"
+        )
+
+    token = result.stdout.strip()
+    if not token:
+        raise RuntimeError(
+            "Azure CLI returned an empty token.  Run 'az login' and retry."
+        )
+
+    # Cache with ~1 hour expiry (Azure AD default)
+    _cached_ad_token = {"token": token, "expires_on": now + 3300}
+    log.info("Acquired Azure AD token via 'az account get-access-token'")
+    return token
+
+
 # ── Azure OpenAI client (stdlib only) ────────────────────────────────────
 
 def _call_azure_openai(
@@ -111,6 +194,7 @@ def _call_azure_openai(
     temperature: float = 0.0,
     max_tokens: int = 256,
     timeout: int = 60,
+    use_ad_token: bool = False,
 ) -> dict:
     """Send a chat-completion request and return the parsed JSON response."""
     body: dict = {
@@ -126,10 +210,17 @@ def _call_azure_openai(
         body["model"] = deployment
 
     data = json.dumps(body).encode("utf-8")
-    headers = {
-        "Content-Type": "application/json",
-        "api-key": api_key,
-    }
+    if use_ad_token:
+        token = _get_azure_ad_token()
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {token}",
+        }
+    else:
+        headers = {
+            "Content-Type": "application/json",
+            "api-key": api_key,
+        }
 
     req = urllib.request.Request(url, data=data, headers=headers, method="POST")
     ctx = ssl.create_default_context()
@@ -159,12 +250,12 @@ def _parse_llm_response(raw_response: dict) -> dict:
     if not choices:
         raise ValueError("No choices in API response")
 
-    content = choices[0].get("message", {}).get("content", "")
+    content = _extract_message_content(choices[0].get("message", {}).get("content", ""))
     usage = raw_response.get("usage", {})
 
     try:
         decision = json.loads(content)
-    except json.JSONDecodeError:
+    except JSONDecodeError:
         match = re.search(r"\{[^{}]*\}", content, re.DOTALL)
         if match:
             decision = json.loads(match.group())
@@ -191,8 +282,8 @@ def _parse_llm_response(raw_response: dict) -> dict:
         confidence = 0.5
     decision["confidence"] = confidence
 
-    decision.setdefault(
-        "reason_code", "INCLUDE" if dec == "include" else "EX-OTHER",
+    decision["reason_code"] = _normalize_reason_code(
+        decision.get("reason_code"), dec,
     )
     decision.setdefault("reasoning", "")
     decision["_usage"] = usage
@@ -244,12 +335,21 @@ def estimate_cost(
 
 def _load_checkpoint(path: Path) -> dict:
     if path.exists():
-        with open(path, encoding="utf-8") as f:
-            return json.load(f)
-    return {"screened_ids": [], "version": 1}
+        try:
+            with open(path, encoding="utf-8") as f:
+                state = json.load(f)
+            if isinstance(state, dict):
+                return {
+                    "screened_ids": list(state.get("screened_ids", [])),
+                    "version": state.get("version", 1),
+                }
+        except (OSError, JSONDecodeError) as exc:
+            log.warning("Ignoring unreadable checkpoint %s: %s", path, exc)
+    return dict(_DEFAULT_CHECKPOINT_STATE)
 
 
 def _save_checkpoint(path: Path, state: dict) -> None:
+    ensure_dir(path.parent)
     tmp = path.with_suffix(".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2)
@@ -259,6 +359,7 @@ def _save_checkpoint(path: Path, state: dict) -> None:
 # ── Audit log ────────────────────────────────────────────────────────────
 
 def _append_prompt_log(path: Path, entry: dict) -> None:
+    ensure_dir(path.parent)
     with open(path, "a", encoding="utf-8") as f:
         f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
@@ -287,9 +388,10 @@ def _load_existing_decisions(path: Path) -> list[dict[str, str]]:
 
 def _write_decisions_csv(path: Path, rows: list[dict[str, str]]) -> None:
     """Write ai_screening_decisions.csv ranked by confidence descending."""
+    ensure_dir(path.parent)
     sorted_rows = sorted(
         rows,
-        key=lambda r: float(r.get("ai_confidence", "0") or "0"),
+        key=lambda r: _safe_float(r.get("ai_confidence", "0"), 0.0),
         reverse=True,
     )
     fieldnames = [
@@ -381,11 +483,19 @@ def run_llm_screening(
         return estimate_cost(pending)
 
     # ── Validate credentials ─────────────────────────────────────────────
+    use_ad_token = False
     if not api_key:
-        raise RuntimeError(
-            "Azure OpenAI API key not set. "
-            "Set AZURE_OPENAI_API_KEY or pass --api-key."
-        )
+        # Try Azure AD auth via 'az login' session (keyless)
+        try:
+            _get_azure_ad_token()
+            use_ad_token = True
+            log.info("Using Azure AD token auth (no API key needed)")
+        except RuntimeError:
+            raise RuntimeError(
+                "No API key and Azure AD auth unavailable. "
+                "Either set AZURE_OPENAI_API_KEY / pass --api-key, "
+                "or run 'az login' for keyless auth."
+            )
     if not endpoint:
         raise RuntimeError(
             "Azure OpenAI endpoint not set. "
@@ -414,7 +524,10 @@ def run_llm_screening(
                 rec.get("title", ""), rec.get("abstract", ""), pid,
             )
 
-            decision = _screen_one_record(url, api_key, deployment, user_prompt, pid)
+            decision = _screen_one_record(
+                url, api_key, deployment, user_prompt, pid,
+                use_ad_token=use_ad_token,
+            )
 
             usage = decision.pop("_usage", {})
             total_prompt_tokens += usage.get("prompt_tokens", 0)
@@ -470,6 +583,7 @@ def run_llm_screening(
 
 def _screen_one_record(
     url: str, api_key: str, deployment: str, user_prompt: str, paper_id: str,
+    *, use_ad_token: bool = False,
 ) -> dict:
     """Call the API with retries and return a parsed decision dict."""
     last_error: Exception | None = None
@@ -478,6 +592,7 @@ def _screen_one_record(
         try:
             raw = _call_azure_openai(
                 url, api_key, deployment, SYSTEM_PROMPT, user_prompt,
+                use_ad_token=use_ad_token,
             )
             return _parse_llm_response(raw)
 

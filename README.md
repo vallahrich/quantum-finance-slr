@@ -289,7 +289,8 @@ Tests cover:
 - **RIS export** of the master library is not supported (`rispy` has no writer). Use `.bib` or `.csv`.
 - **Fuzzy dedup** gracefully degrades to DOI-only if `rapidfuzz` is not installed.
 - All CLI commands are idempotent where applicable.
-- No network calls — everything is local file-based.
+- Ingest, deduplication, screening, and PRISMA generation are local file-based.
+- `auto-search` and `llm-screen` are networked workflows that call external APIs.
 
 ---
 

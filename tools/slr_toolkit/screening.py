@@ -14,6 +14,7 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
 from . import config
+from .utils import cohens_kappa
 
 log = logging.getLogger(__name__)
 
@@ -39,6 +40,23 @@ _FILL_LIGHT_BLUE = PatternFill(start_color="DEEAF6", end_color="DEEAF6", fill_ty
 _INSTR_FONT = Font(name="Segoe UI", size=11)
 _INSTR_BOLD = Font(name="Segoe UI", size=11, bold=True)
 _INSTR_TITLE = Font(name="Segoe UI", size=14, bold=True, color="0078D4")
+_DUAL_REVIEW_HEADERS = [
+    "#", "Paper ID", "Title", "Authors", "Year", "DOI",
+    "Abstract", "Source", "Reviewer A Decision",
+    "Reviewer B Decision", "Final Decision", "Notes",
+]
+_SPLIT_REVIEW_HEADERS = [
+    "#", "Paper ID", "Title", "Authors", "Year", "DOI",
+    "Abstract", "Source", "Decision", "Notes",
+]
+_DUAL_REVIEW_WIDTHS = {
+    "A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
+    "G": 70, "H": 12, "I": 18, "J": 18, "K": 16, "L": 30,
+}
+_SPLIT_REVIEW_WIDTHS = {
+    "A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
+    "G": 70, "H": 12, "I": 14, "J": 30,
+}
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────
@@ -52,6 +70,100 @@ def _load_unique_records() -> list[dict[str, str]]:
             if not row.get("duplicate_of", "").strip():
                 records.append(row)
     return records
+
+
+def _make_decision_validation() -> DataValidation:
+    dv = DataValidation(
+        type="list", formula1='"include,exclude,maybe"', allow_blank=True,
+    )
+    dv.error = "Please select: include, exclude, or maybe"
+    dv.errorTitle = "Invalid decision"
+    dv.prompt = "Select your screening decision"
+    dv.promptTitle = "Decision"
+    return dv
+
+
+def _populate_record_rows(
+    ws,
+    records: list[dict[str, str]],
+    headers: list[str],
+    decision_columns: tuple[int, ...],
+    dv: DataValidation,
+) -> int:
+    for i, header in enumerate(headers, 1):
+        ws.cell(row=1, column=i, value=header)
+    _style_header(ws, len(headers))
+    ws.add_data_validation(dv)
+
+    for row_idx, rec in enumerate(records, start=2):
+        ws.cell(row=row_idx, column=1, value=row_idx - 1)
+        ws.cell(row=row_idx, column=2, value=rec.get("paper_id", ""))
+        ws.cell(row=row_idx, column=3, value=rec.get("title", ""))
+        ws.cell(row=row_idx, column=4, value=rec.get("authors", ""))
+        ws.cell(row=row_idx, column=5, value=rec.get("year", ""))
+        ws.cell(row=row_idx, column=6, value=rec.get("doi", ""))
+        ws.cell(row=row_idx, column=7, value=rec.get("abstract", ""))
+        ws.cell(row=row_idx, column=8, value=rec.get("source_db", ""))
+        for col in decision_columns:
+            dv.add(ws.cell(row=row_idx, column=col))
+        for col in range(1, len(headers) + 1):
+            cell = ws.cell(row=row_idx, column=col)
+            cell.font = _CELL_FONT
+            cell.alignment = _CELL_ALIGN
+            cell.border = _THIN_BORDER
+
+    return len(records) + 1
+
+
+def _apply_sheet_layout(
+    ws,
+    *,
+    max_row: int,
+    widths: dict[str, int],
+    filter_range: str,
+    decision_columns: tuple[str, ...],
+) -> None:
+    for col_letter in decision_columns:
+        _add_conditional_formatting(ws, col_letter, max_row)
+
+    for col_letter, width in widths.items():
+        ws.column_dimensions[col_letter].width = width
+
+    ws.freeze_panes = "C2"
+    ws.auto_filter.ref = filter_range
+
+
+def _create_screening_workbook(
+    records: list[dict[str, str]],
+    *,
+    output_path: Path,
+    instructions_type: str,
+    tab_color: str,
+    headers: list[str],
+    decision_columns: tuple[int, ...],
+    decision_letters: tuple[str, ...],
+    widths: dict[str, int],
+) -> Path:
+    wb = Workbook()
+    _add_instructions_sheet(wb, instructions_type)
+    if "Sheet" in wb.sheetnames:
+        del wb["Sheet"]
+
+    ws = wb.create_sheet("Screening")
+    ws.sheet_properties.tabColor = tab_color
+    max_row = _populate_record_rows(
+        ws, records, headers, decision_columns, _make_decision_validation(),
+    )
+    _apply_sheet_layout(
+        ws,
+        max_row=max_row,
+        widths=widths,
+        filter_range=f"A1:{get_column_letter(len(headers))}{max_row}",
+        decision_columns=decision_letters,
+    )
+    _add_progress_sheet(wb, "Screening", decision_letters[0], len(records))
+    wb.save(output_path)
+    return output_path
 
 
 def _add_instructions_sheet(wb: Workbook, sheet_type: str) -> None:
@@ -137,26 +249,6 @@ def _add_conditional_formatting(ws, decision_col_letter: str, max_row: int) -> N
     )
 
 
-def _add_row_formatting(ws, decision_col_idx: int, max_row: int, col_count: int) -> None:
-    """Add row-level conditional formatting so entire rows colour."""
-    decision_col = get_column_letter(decision_col_idx)
-    for col in range(1, col_count + 1):
-        col_letter = get_column_letter(col)
-        rng = f"{col_letter}2:{col_letter}{max_row}"
-        ws.conditional_formatting.add(
-            rng,
-            CellIsRule(
-                operator="equal",
-                formula=[f'"include"'],
-                fill=_FILL_GREEN,
-            ),
-        )
-        # Only apply row colouring based on decision column
-        # Use formula-based rule instead
-    # Simpler: just colour the decision column
-    _add_conditional_formatting(ws, decision_col, max_row)
-
-
 def _add_progress_sheet(wb: Workbook, screening_sheet_name: str,
                         decision_col_letter: str, total: int) -> None:
     """Add a Progress tracking sheet with live formulas."""
@@ -172,7 +264,7 @@ def _add_progress_sheet(wb: Workbook, screening_sheet_name: str,
 
     sn = screening_sheet_name
     col = decision_col_letter
-    rng = f"'{sn}'.{col}2:{col}{total + 1}"
+    rng = f"'{sn}'!{col}2:{col}{total + 1}"
 
     metrics = [
         ("Total records", str(total), ""),
@@ -218,75 +310,16 @@ def generate_calibration_workbook(
 
     random.seed(seed)
     sample = random.sample(records, min(sample_size, len(records)))
-
-    wb = Workbook()
-    _add_instructions_sheet(wb, "calibration")
-
-    # Remove default sheet
-    if "Sheet" in wb.sheetnames:
-        del wb["Sheet"]
-
-    ws = wb.create_sheet("Screening")
-    ws.sheet_properties.tabColor = "FFC000"
-
-    headers = [
-        "#", "Paper ID", "Title", "Authors", "Year", "DOI",
-        "Abstract", "Source", "Reviewer A Decision",
-        "Reviewer B Decision", "Final Decision", "Notes",
-    ]
-    for i, h in enumerate(headers, 1):
-        ws.cell(row=1, column=i, value=h)
-    _style_header(ws, len(headers))
-
-    # Data validation for decision columns
-    dv = DataValidation(
-        type="list", formula1='"include,exclude,maybe"', allow_blank=True
+    _create_screening_workbook(
+        sample,
+        output_path=output_path,
+        instructions_type="calibration",
+        tab_color="FFC000",
+        headers=_DUAL_REVIEW_HEADERS,
+        decision_columns=(9, 10, 11),
+        decision_letters=("I", "J", "K"),
+        widths=_DUAL_REVIEW_WIDTHS,
     )
-    dv.error = "Please select: include, exclude, or maybe"
-    dv.errorTitle = "Invalid decision"
-    dv.prompt = "Select your screening decision"
-    dv.promptTitle = "Decision"
-    ws.add_data_validation(dv)
-
-    for row_idx, rec in enumerate(sample, start=2):
-        ws.cell(row=row_idx, column=1, value=row_idx - 1)
-        ws.cell(row=row_idx, column=2, value=rec.get("paper_id", ""))
-        ws.cell(row=row_idx, column=3, value=rec.get("title", ""))
-        ws.cell(row=row_idx, column=4, value=rec.get("authors", ""))
-        ws.cell(row=row_idx, column=5, value=rec.get("year", ""))
-        ws.cell(row=row_idx, column=6, value=rec.get("doi", ""))
-        ws.cell(row=row_idx, column=7, value=rec.get("abstract", ""))
-        ws.cell(row=row_idx, column=8, value=rec.get("source_db", ""))
-
-        for col in (9, 10, 11):
-            dv.add(ws.cell(row=row_idx, column=col))
-
-        for col in range(1, len(headers) + 1):
-            cell = ws.cell(row=row_idx, column=col)
-            cell.font = _CELL_FONT
-            cell.alignment = _CELL_ALIGN
-            cell.border = _THIN_BORDER
-
-    max_row = len(sample) + 1
-
-    # Conditional formatting on all three decision columns
-    for col_letter in ("I", "J", "K"):
-        _add_conditional_formatting(ws, col_letter, max_row)
-
-    # Column widths
-    widths = {"A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
-              "G": 70, "H": 12, "I": 18, "J": 18, "K": 16, "L": 30}
-    for col_letter, w in widths.items():
-        ws.column_dimensions[col_letter].width = w
-
-    # Freeze panes
-    ws.freeze_panes = "C2"
-    ws.auto_filter.ref = f"A1:L{max_row}"
-
-    # Progress sheet
-    _add_progress_sheet(wb, "Screening", "I", len(sample))
-
-    wb.save(output_path)
     log.info("Calibration workbook: %s (%d records)", output_path, len(sample))
     return output_path
 
@@ -315,61 +348,16 @@ def generate_split_workbooks(
     path_b = output_dir / "screening_reviewer_B.xlsx"
 
     for label, subset, path in [("A", split_a, path_a), ("B", split_b, path_b)]:
-        wb = Workbook()
-        _add_instructions_sheet(wb, "split")
-        if "Sheet" in wb.sheetnames:
-            del wb["Sheet"]
-
-        ws = wb.create_sheet("Screening")
-        ws.sheet_properties.tabColor = "FFC000"
-
-        headers = [
-            "#", "Paper ID", "Title", "Authors", "Year", "DOI",
-            "Abstract", "Source", "Decision", "Notes",
-        ]
-        for i, h in enumerate(headers, 1):
-            ws.cell(row=1, column=i, value=h)
-        _style_header(ws, len(headers))
-
-        dv = DataValidation(
-            type="list", formula1='"include,exclude,maybe"', allow_blank=True
+        _create_screening_workbook(
+            subset,
+            output_path=path,
+            instructions_type="split",
+            tab_color="FFC000",
+            headers=_SPLIT_REVIEW_HEADERS,
+            decision_columns=(9,),
+            decision_letters=("I",),
+            widths=_SPLIT_REVIEW_WIDTHS,
         )
-        dv.error = "Please select: include, exclude, or maybe"
-        dv.errorTitle = "Invalid decision"
-        dv.prompt = "Select your screening decision"
-        dv.promptTitle = "Decision"
-        ws.add_data_validation(dv)
-
-        for row_idx, rec in enumerate(subset, start=2):
-            ws.cell(row=row_idx, column=1, value=row_idx - 1)
-            ws.cell(row=row_idx, column=2, value=rec.get("paper_id", ""))
-            ws.cell(row=row_idx, column=3, value=rec.get("title", ""))
-            ws.cell(row=row_idx, column=4, value=rec.get("authors", ""))
-            ws.cell(row=row_idx, column=5, value=rec.get("year", ""))
-            ws.cell(row=row_idx, column=6, value=rec.get("doi", ""))
-            ws.cell(row=row_idx, column=7, value=rec.get("abstract", ""))
-            ws.cell(row=row_idx, column=8, value=rec.get("source_db", ""))
-            dv.add(ws.cell(row=row_idx, column=9))
-
-            for col in range(1, len(headers) + 1):
-                cell = ws.cell(row=row_idx, column=col)
-                cell.font = _CELL_FONT
-                cell.alignment = _CELL_ALIGN
-                cell.border = _THIN_BORDER
-
-        max_row = len(subset) + 1
-        _add_conditional_formatting(ws, "I", max_row)
-
-        widths = {"A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
-                  "G": 70, "H": 12, "I": 14, "J": 30}
-        for col_letter, w in widths.items():
-            ws.column_dimensions[col_letter].width = w
-
-        ws.freeze_panes = "C2"
-        ws.auto_filter.ref = f"A1:J{max_row}"
-
-        _add_progress_sheet(wb, "Screening", "I", len(subset))
-        wb.save(path)
         log.info("Reviewer %s workbook: %s (%d records)", label, path, len(subset))
 
     return path_a, path_b
@@ -399,72 +387,10 @@ def generate_screening_excels(
         records, cal_ids, sample_size=validation_size, seed=seed,
     )
 
-    # Exclude both calibration and validation IDs from split screening
     excluded_ids = cal_ids | val_ids
-    remaining = [r for r in records if r.get("paper_id", "") not in excluded_ids]
-    random.seed(seed)
-    random.shuffle(remaining)
-    mid = len(remaining) // 2
-    split_a = remaining[:mid]
-    split_b = remaining[mid:]
-
-    path_a = config.REVIEWER_A_SCREENING_XLSX
-    path_b = config.REVIEWER_B_SCREENING_XLSX
-
-    for label, subset, path in [("A", split_a, path_a), ("B", split_b, path_b)]:
-        wb = Workbook()
-        _add_instructions_sheet(wb, "split")
-        if "Sheet" in wb.sheetnames:
-            del wb["Sheet"]
-
-        ws = wb.create_sheet("Screening")
-        ws.sheet_properties.tabColor = "FFC000"
-
-        headers = [
-            "#", "Paper ID", "Title", "Authors", "Year", "DOI",
-            "Abstract", "Source", "Decision", "Notes",
-        ]
-        for i, h in enumerate(headers, 1):
-            ws.cell(row=1, column=i, value=h)
-        _style_header(ws, len(headers))
-
-        dv = DataValidation(
-            type="list", formula1='"include,exclude,maybe"', allow_blank=True
-        )
-        dv.error = "Please select: include, exclude, or maybe"
-        dv.errorTitle = "Invalid decision"
-        ws.add_data_validation(dv)
-
-        for row_idx, rec in enumerate(subset, start=2):
-            ws.cell(row=row_idx, column=1, value=row_idx - 1)
-            ws.cell(row=row_idx, column=2, value=rec.get("paper_id", ""))
-            ws.cell(row=row_idx, column=3, value=rec.get("title", ""))
-            ws.cell(row=row_idx, column=4, value=rec.get("authors", ""))
-            ws.cell(row=row_idx, column=5, value=rec.get("year", ""))
-            ws.cell(row=row_idx, column=6, value=rec.get("doi", ""))
-            ws.cell(row=row_idx, column=7, value=rec.get("abstract", ""))
-            ws.cell(row=row_idx, column=8, value=rec.get("source_db", ""))
-            dv.add(ws.cell(row=row_idx, column=9))
-
-            for col in range(1, len(headers) + 1):
-                cell = ws.cell(row=row_idx, column=col)
-                cell.font = _CELL_FONT
-                cell.alignment = _CELL_ALIGN
-                cell.border = _THIN_BORDER
-
-        max_row = len(subset) + 1
-        _add_conditional_formatting(ws, "I", max_row)
-
-        widths = {"A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
-                  "G": 70, "H": 12, "I": 14, "J": 30}
-        for col_letter, w in widths.items():
-            ws.column_dimensions[col_letter].width = w
-        ws.freeze_panes = "C2"
-        ws.auto_filter.ref = f"A1:J{max_row}"
-
-        _add_progress_sheet(wb, "Screening", "I", len(subset))
-        wb.save(path)
-        log.info("Reviewer %s workbook: %s (%d records)", label, path, len(subset))
+    path_a, path_b = generate_split_workbooks(
+        records, excluded_ids, seed=seed, output_dir=config.SCREENING_DIR,
+    )
 
     return {
         "calibration": cal_path,
@@ -500,20 +426,10 @@ def compute_kappa(calibration_path: Path | None = None) -> dict:
     if not pairs:
         return {"n": 0, "agreement": 0, "kappa": 0, "error": "No paired decisions found"}
 
-    # Cohen's kappa
     n = len(pairs)
-    categories = sorted(set(a for a, _ in pairs) | set(b for _, b in pairs))
     agree = sum(1 for a, b in pairs if a == b)
     po = agree / n  # observed agreement
-
-    # Expected agreement
-    pe = 0.0
-    for cat in categories:
-        pa = sum(1 for a, _ in pairs if a == cat) / n
-        pb = sum(1 for _, b in pairs if b == cat) / n
-        pe += pa * pb
-
-    kappa = (po - pe) / (1 - pe) if pe < 1.0 else 1.0
+    kappa = cohens_kappa([a for a, _ in pairs], [b for _, b in pairs])
 
     # Confusion details
     confusion: dict[tuple[str, str], int] = {}
@@ -750,61 +666,16 @@ def generate_validation_workbook(
     random.seed(seed + 1)  # distinct seed from calibration sample
     sample = random.sample(remaining, min(sample_size, len(remaining)))
     validation_ids = {r.get("paper_id", "") for r in sample}
-
-    wb = Workbook()
-    _add_instructions_sheet(wb, "calibration")  # dual-reviewer style
-    if "Sheet" in wb.sheetnames:
-        del wb["Sheet"]
-
-    ws = wb.create_sheet("Screening")
-    ws.sheet_properties.tabColor = "7030A0"  # purple for validation
-
-    headers = [
-        "#", "Paper ID", "Title", "Authors", "Year", "DOI",
-        "Abstract", "Source", "Reviewer A Decision",
-        "Reviewer B Decision", "Final Decision", "Notes",
-    ]
-    for i, h in enumerate(headers, 1):
-        ws.cell(row=1, column=i, value=h)
-    _style_header(ws, len(headers))
-
-    dv = DataValidation(
-        type="list", formula1='"include,exclude,maybe"', allow_blank=True,
+    _create_screening_workbook(
+        sample,
+        output_path=output_path,
+        instructions_type="calibration",
+        tab_color="7030A0",
+        headers=_DUAL_REVIEW_HEADERS,
+        decision_columns=(9, 10, 11),
+        decision_letters=("I", "J", "K"),
+        widths=_DUAL_REVIEW_WIDTHS,
     )
-    dv.error = "Please select: include, exclude, or maybe"
-    dv.errorTitle = "Invalid decision"
-    ws.add_data_validation(dv)
-
-    for row_idx, rec in enumerate(sample, start=2):
-        ws.cell(row=row_idx, column=1, value=row_idx - 1)
-        ws.cell(row=row_idx, column=2, value=rec.get("paper_id", ""))
-        ws.cell(row=row_idx, column=3, value=rec.get("title", ""))
-        ws.cell(row=row_idx, column=4, value=rec.get("authors", ""))
-        ws.cell(row=row_idx, column=5, value=rec.get("year", ""))
-        ws.cell(row=row_idx, column=6, value=rec.get("doi", ""))
-        ws.cell(row=row_idx, column=7, value=rec.get("abstract", ""))
-        ws.cell(row=row_idx, column=8, value=rec.get("source_db", ""))
-        for col in (9, 10, 11):
-            dv.add(ws.cell(row=row_idx, column=col))
-        for col in range(1, len(headers) + 1):
-            cell = ws.cell(row=row_idx, column=col)
-            cell.font = _CELL_FONT
-            cell.alignment = _CELL_ALIGN
-            cell.border = _THIN_BORDER
-
-    max_row = len(sample) + 1
-    for col_letter in ("I", "J", "K"):
-        _add_conditional_formatting(ws, col_letter, max_row)
-
-    widths = {"A": 5, "B": 14, "C": 50, "D": 30, "E": 7, "F": 22,
-              "G": 70, "H": 12, "I": 18, "J": 18, "K": 16, "L": 30}
-    for col_letter, w in widths.items():
-        ws.column_dimensions[col_letter].width = w
-    ws.freeze_panes = "C2"
-    ws.auto_filter.ref = f"A1:L{max_row}"
-
-    _add_progress_sheet(wb, "Screening", "I", len(sample))
-    wb.save(output_path)
     log.info("Validation workbook: %s (%d records)", output_path, len(sample))
     return output_path, validation_ids
 

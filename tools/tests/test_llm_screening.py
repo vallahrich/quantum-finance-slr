@@ -150,6 +150,19 @@ class TestParseLLMResponse:
         assert result["reason_code"] == "EX-OTHER"
         assert result["confidence"] == 0.5
 
+    def test_invalid_reason_code_falls_back_to_schema_default(self):
+        from tools.slr_toolkit.llm_screening import _parse_llm_response
+
+        raw = {
+            "choices": [{"message": {"content": json.dumps({
+                "decision": "exclude",
+                "reason_code": "not-a-real-code",
+            })}}],
+            "usage": {},
+        }
+        result = _parse_llm_response(raw)
+        assert result["reason_code"] == "EX-OTHER"
+
 
 # ── Tests: estimate_cost ─────────────────────────────────────────────────
 
@@ -194,6 +207,16 @@ class TestCheckpoint:
 
         loaded = _load_checkpoint(tmp_path / "nonexistent.json")
         assert loaded["screened_ids"] == []
+
+    def test_load_corrupt_checkpoint_returns_default_state(self, tmp_path):
+        from tools.slr_toolkit.llm_screening import _load_checkpoint
+
+        checkpoint = tmp_path / "checkpoint.json"
+        checkpoint.write_text("{not valid json", encoding="utf-8")
+
+        loaded = _load_checkpoint(checkpoint)
+        assert loaded["screened_ids"] == []
+        assert loaded["version"] == 1
 
 
 # ── Tests: _write_decisions_csv ──────────────────────────────────────────

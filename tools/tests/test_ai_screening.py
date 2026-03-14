@@ -123,6 +123,31 @@ class TestExportASReviewLabels:
         assert rows[1]["label_included"] == "0"
 
 
+class TestScreeningWorkbookGeneration:
+    def test_validation_workbook_progress_formulas_reference_screening_sheet(self, tmp_path):
+        from openpyxl import load_workbook
+
+        from tools.slr_toolkit.screening import generate_validation_workbook
+
+        out = tmp_path / "validation.xlsx"
+        workbook_path, validation_ids = generate_validation_workbook(
+            SAMPLE_RECORDS[:6],
+            calibration_ids={"p000"},
+            sample_size=3,
+            seed=7,
+            output_path=out,
+        )
+
+        assert workbook_path == out
+        assert len(validation_ids) == 3
+
+        wb = load_workbook(out, read_only=False)
+        ws = wb["Progress"]
+        assert ws["B3"].value == "=COUNTA('Screening'!I2:I4)"
+        assert ws["B6"].value == '=COUNTIF(\'Screening\'!I2:I4,"include")'
+        wb.close()
+
+
 # ── Tests: import_ai_decisions ────────────────────────────────────────────
 
 
