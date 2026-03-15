@@ -169,8 +169,9 @@ Use `--input-file 05_screening/included_for_coding.csv` when you have an interim
 ## AI / LLM Notes
 
 - `llm-screen` and `topic-code` support either `--api-key` / `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
-- The toolkit's current default pricing assumptions are set to `gpt-5-mini`.
-- `gpt-5-mini` is the recommended starting deployment for this repo.
+- The toolkit's current default pricing assumptions are set to `gpt-4.1-mini`.
+- `o4-mini` is the recommended deployment for screening and topic coding.
+- Models tested: `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini` (o4-mini selected).
 - `llm-screen` writes resumable progress to `05_screening/llm_screening_checkpoint.json`.
 - `llm-screen` writes a per-record audit log to `05_screening/llm_screening_prompt_log.jsonl`.
 - `import-ai-decisions` validates imported labels instead of silently treating unknown values as excludes.

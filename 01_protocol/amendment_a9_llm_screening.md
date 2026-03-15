@@ -25,7 +25,11 @@ LLM-based classification does not require a training set. Each record is indepen
 
 ## Current Implementation Notes
 
-- The repository currently recommends `gpt-5-mini` as the default deployment for `llm-screen`.
+- The screening was run with `o4-mini` (OpenAI reasoning model) after evaluating
+  `gpt-4.1-mini`, `DeepSeek-V3.2`, and `o4-mini`.
+- `gpt-4.1-mini` was the first successful run (572 include, 17.7%).
+- `DeepSeek-V3.2` failed due to rate limiting and token auth issues (94% ERR-LLM).
+- `o4-mini` produced the final run (600 include, 18.6%, 0 errors).
 - `llm-screen` supports either `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
 - Screening runs are resumable through `05_screening/llm_screening_checkpoint.json`.
 - Per-record prompt and response metadata are logged to `05_screening/llm_screening_prompt_log.jsonl`.
