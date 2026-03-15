@@ -202,6 +202,34 @@ class TestImportAIDecisions:
             rows = list(csv.DictReader(f))
         assert rows[0]["paper_id"] == "p001"
 
+    def test_accepts_boolean_style_values(self, tmp_path):
+        from tools.slr_toolkit.screening import import_ai_decisions
+
+        ai_csv = tmp_path / "ai_export.csv"
+        ai_csv.write_text(
+            "paper_id,included\n"
+            "p001,true\n"
+            "p002,no\n"
+        )
+
+        out = import_ai_decisions(ai_csv, output_path=tmp_path / "out.csv")
+        with open(out, encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+        assert rows[0]["ai_decision"] == "include"
+        assert rows[1]["ai_decision"] == "exclude"
+
+    def test_invalid_label_values_raise(self, tmp_path):
+        from tools.slr_toolkit.screening import import_ai_decisions
+
+        ai_csv = tmp_path / "ai_export.csv"
+        ai_csv.write_text(
+            "paper_id,label_included\n"
+            "p001,maybe\n"
+        )
+
+        with pytest.raises(ValueError, match="Unsupported values"):
+            import_ai_decisions(ai_csv, output_path=tmp_path / "out.csv")
+
 
 # ── Tests: find_discrepancies ─────────────────────────────────────────────
 

@@ -26,7 +26,7 @@ from .llm_screening import (
     _append_prompt_log,
     _safe_float,
 )
-from .utils import ensure_dir
+from .utils import atomic_write_text, ensure_dir
 
 log = logging.getLogger(__name__)
 
@@ -417,8 +417,7 @@ def generate_topic_summary(
     for topic, count in emergent_counts.most_common():
         report.append(f"| {topic} | {count} |")
 
-    ensure_dir(summary_path.parent)
-    summary_path.write_text("\n".join(report) + "\n", encoding="utf-8")
+    atomic_write_text(summary_path, "\n".join(report) + "\n")
     return summary_path
 
 
@@ -510,8 +509,20 @@ def run_topic_coding(
         raise RuntimeError("Azure OpenAI endpoint not set. Set AZURE_OPENAI_ENDPOINT or pass --endpoint.")
     if not deployment:
         raise RuntimeError("Azure OpenAI deployment not set. Set AZURE_OPENAI_DEPLOYMENT or pass --deployment.")
+
+    use_ad_token = False
     if not api_key:
-        raise RuntimeError("Azure OpenAI API key not set. Set AZURE_OPENAI_API_KEY or pass --api-key.")
+        from .llm_screening import _get_azure_ad_token
+        try:
+            _get_azure_ad_token()
+            use_ad_token = True
+            log.info("Using Azure AD token auth (no API key needed)")
+        except RuntimeError:
+            raise RuntimeError(
+                "No API key and Azure AD auth unavailable. "
+                "Either set AZURE_OPENAI_API_KEY / pass --api-key, "
+                "or run 'az login' for keyless auth."
+            )
 
     url = _build_url(endpoint, deployment)
     checkpoint = _load_checkpoint(checkpoint_path)
@@ -522,7 +533,7 @@ def run_topic_coding(
     for batch_start in range(0, len(pending), batch_size):
         batch = pending[batch_start : batch_start + batch_size]
         for record in batch:
-            decision = _screen_one_record(url, api_key, deployment, record)
+            decision = _screen_one_record(url, api_key, deployment, record, use_ad_token=use_ad_token)
             usage = decision.pop("_usage", {})
             row = _serialize_topic_row(record, decision)
             results.append(row)

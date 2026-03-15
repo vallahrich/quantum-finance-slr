@@ -18,6 +18,9 @@ from .utils import cohens_kappa, load_master_records
 
 log = logging.getLogger(__name__)
 
+_TRUTHY_LABEL_VALUES = {"1", "true", "yes", "include", "included", "relevant"}
+_FALSY_LABEL_VALUES = {"0", "false", "no", "exclude", "excluded", "irrelevant"}
+
 # ── Styles ────────────────────────────────────────────────────────────────
 
 _HEADER_FONT = Font(name="Segoe UI", bold=True, size=11, color="FFFFFF")
@@ -695,6 +698,21 @@ def import_ai_decisions(
 
     df = pd.read_csv(ai_export_path, dtype=str).fillna("")
 
+    def _normalize_binary_series(series: pd.Series, column_name: str) -> pd.Series:
+        normalized = series.astype(str).str.strip().str.lower()
+        invalid_values = sorted({
+            value for value in normalized
+            if value and value not in _TRUTHY_LABEL_VALUES and value not in _FALSY_LABEL_VALUES
+        })
+        if invalid_values:
+            raise ValueError(
+                f"Unsupported values in '{column_name}': {invalid_values}. "
+                "Expected truthy/falsy labels such as 1/0, true/false, yes/no, or include/exclude."
+            )
+        return normalized.map(
+            lambda value: "include" if value in _TRUTHY_LABEL_VALUES else "exclude"
+        )
+
     # Resolve paper_id column
     if "paper_id" not in df.columns:
         if "record_id" in df.columns:
@@ -707,17 +725,11 @@ def import_ai_decisions(
 
     # Resolve decision column
     if "label_included" in df.columns:
-        df["ai_decision"] = df["label_included"].apply(
-            lambda x: "include" if str(x).strip() == "1" else "exclude"
-        )
+        df["ai_decision"] = _normalize_binary_series(df["label_included"], "label_included")
     elif "included" in df.columns:
-        df["ai_decision"] = df["included"].apply(
-            lambda x: "include" if str(x).strip() == "1" else "exclude"
-        )
+        df["ai_decision"] = _normalize_binary_series(df["included"], "included")
     elif "label" in df.columns:
-        df["ai_decision"] = df["label"].str.strip().str.lower().apply(
-            lambda x: "include" if x in ("relevant", "1", "include") else "exclude"
-        )
+        df["ai_decision"] = _normalize_binary_series(df["label"], "label")
     else:
         raise ValueError(
             "AI export must have 'label_included', 'included', or 'label' column."

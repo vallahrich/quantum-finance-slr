@@ -24,14 +24,14 @@ from json import JSONDecodeError
 from pathlib import Path
 
 from . import config
-from .utils import ensure_dir, load_master_records
+from .utils import atomic_write_text, ensure_dir, load_master_records
 
 log = logging.getLogger(__name__)
 
 # ── Azure OpenAI pricing (USD per 1 K tokens) ───────────────────────────
-# Default: gpt-4.1-mini pricing.  Adjust these for your deployment.
-INPUT_COST_PER_1K: float = 0.0004   # $0.40 / 1M input tokens
-OUTPUT_COST_PER_1K: float = 0.0016  # $1.60 / 1M output tokens
+# Default: gpt-5-mini pricing as of 2026-03-14. Adjust these for your deployment.
+INPUT_COST_PER_1K: float = 0.00025  # $0.25 / 1M input tokens
+OUTPUT_COST_PER_1K: float = 0.002   # $2.00 / 1M output tokens
 
 # ── File paths ───────────────────────────────────────────────────────────
 CHECKPOINT_FILE = config.SCREENING_DIR / "llm_screening_checkpoint.json"
@@ -92,18 +92,19 @@ def _build_user_prompt(title: str, abstract: str, paper_id: str) -> str:
 
 
 def _build_url(endpoint: str, deployment: str) -> str:
-    """Build the Azure OpenAI chat completions URL.
+    """Build the Azure OpenAI / AI Services chat completions URL.
 
-    Supports two endpoint styles:
+    Supports three endpoint styles:
     - ``https://RESOURCE.openai.azure.com/openai/v1/``  (OpenAI-compatible)
-    - ``https://RESOURCE.openai.azure.com``              (standard Azure)
+    - ``https://RESOURCE.openai.azure.com``              (standard Azure OpenAI)
+    - ``https://RESOURCE.cognitiveservices.azure.com``   (AI Services / MaaS)
     """
     endpoint = endpoint.rstrip("/")
     if "/openai/v1" in endpoint:
         return f"{endpoint}/chat/completions"
     return (
         f"{endpoint}/openai/deployments/{deployment}"
-        f"/chat/completions?api-version=2024-10-21"
+        f"/chat/completions?api-version=2025-01-01-preview"
     )
 
 
@@ -156,7 +157,7 @@ def _get_azure_ad_token() -> str:
         result = subprocess.run(  # noqa: S603
             [az_cmd, "account", "get-access-token",
              "--resource", "https://cognitiveservices.azure.com",
-             "--query", "accessToken", "-o", "tsv"],
+             "-o", "json"],
             capture_output=True, text=True, timeout=30,
             check=True,
         )
@@ -170,14 +171,22 @@ def _get_azure_ad_token() -> str:
             f"Run 'az login' first.\n{exc.stderr.strip()}"
         )
 
-    token = result.stdout.strip()
+    try:
+        token_data = json.loads(result.stdout)
+        token = token_data["accessToken"]
+        # expires_on is a Unix timestamp (int/float)
+        expires_on = float(token_data.get("expires_on", now + 3300))
+    except (json.JSONDecodeError, KeyError) as exc:
+        raise RuntimeError(
+            f"Failed to parse 'az account get-access-token' output: {exc}"
+        )
     if not token:
         raise RuntimeError(
             "Azure CLI returned an empty token.  Run 'az login' and retry."
         )
 
-    # Cache with ~1 hour expiry (Azure AD default)
-    _cached_ad_token = {"token": token, "expires_on": now + 3300}
+    # Cache with real expiry from az CLI
+    _cached_ad_token = {"token": token, "expires_on": expires_on}
     log.info("Acquired Azure AD token via 'az account get-access-token'")
     return token
 
@@ -193,19 +202,30 @@ def _call_azure_openai(
     *,
     temperature: float = 0.0,
     max_tokens: int = 256,
-    timeout: int = 60,
+    timeout: int = 120,
     use_ad_token: bool = False,
 ) -> dict:
     """Send a chat-completion request and return the parsed JSON response."""
-    body: dict = {
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ],
-        "temperature": temperature,
-        "max_tokens": max_tokens,
-        "response_format": {"type": "json_object"},
-    }
+    is_reasoning = "o1" in deployment or "o3" in deployment or "o4" in deployment
+    
+    if is_reasoning:
+        body: dict = {
+            "messages": [
+                {"role": "developer", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "max_completion_tokens": max_tokens * 4,
+        }
+    else:
+        body = {
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_prompt},
+            ],
+            "temperature": temperature,
+            "max_tokens": max_tokens,
+            "response_format": {"type": "json_object"},
+        }
     if "/openai/v1" in url:
         body["model"] = deployment
 
@@ -240,6 +260,8 @@ def _call_azure_openai(
         ) from exc
     except urllib.error.URLError as exc:
         raise _AzureAPIError(f"Connection error: {exc.reason}") from exc
+    except (TimeoutError, OSError) as exc:
+        raise _AzureAPIError(f"Timeout/connection error: {exc}") from exc
 
 
 # ── Response parsing ─────────────────────────────────────────────────────
@@ -349,29 +371,23 @@ def _load_checkpoint(path: Path) -> dict:
 
 
 def _save_checkpoint(path: Path, state: dict) -> None:
-    ensure_dir(path.parent)
-    tmp = path.with_suffix(".tmp")
-    with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(state, f, indent=2)
-    # Retry rename to handle OneDrive / antivirus file locks on Windows
-    for attempt in range(5):
-        try:
-            tmp.replace(path)
-            return
-        except PermissionError:
-            time.sleep(0.2 * (attempt + 1))
-    # Last resort: overwrite directly (non-atomic but avoids crash)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(state, f, indent=2)
-    tmp.unlink(missing_ok=True)
+    atomic_write_text(path, json.dumps(state, indent=2))
 
 
 # ── Audit log ────────────────────────────────────────────────────────────
 
 def _append_prompt_log(path: Path, entry: dict) -> None:
     ensure_dir(path.parent)
-    with open(path, "a", encoding="utf-8") as f:
-        f.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    line = json.dumps(entry, ensure_ascii=False) + "\n"
+    for attempt in range(5):
+        try:
+            with open(path, "a", encoding="utf-8") as f:
+                f.write(line)
+            return
+        except PermissionError:
+            time.sleep(0.3 * (attempt + 1))
+    # Last resort — skip this log entry rather than crash
+    log.warning("Could not write prompt log entry for %s (OneDrive lock)", entry.get("paper_id", "?"))
 
 
 # ── I/O helpers ──────────────────────────────────────────────────────────
@@ -389,6 +405,30 @@ def _load_existing_decisions(path: Path) -> list[dict[str, str]]:
         for row in csv.DictReader(f):
             rows.append(row)
     return rows
+
+
+def _rebuild_results_from_log(
+    log_path: Path, screened_ids: set[str],
+) -> list[dict[str, str]]:
+    """Rebuild screening results from the prompt log (latest entry per paper)."""
+    decisions: dict[str, dict[str, str]] = {}
+    with open(log_path, encoding="utf-8") as f:
+        for line in f:
+            try:
+                entry = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            pid = entry.get("paper_id", "")
+            if pid in screened_ids:
+                decisions[pid] = {
+                    "paper_id": pid,
+                    "ai_decision": entry.get("decision", ""),
+                    "ai_confidence": f"{float(entry.get('confidence', 0)):.4f}",
+                    "reason_code": entry.get("reason_code", ""),
+                    "reasoning": entry.get("reasoning", ""),
+                }
+    log.info("Rebuilt %d results from prompt log", len(decisions))
+    return list(decisions.values())
 
 
 def _write_decisions_csv(path: Path, rows: list[dict[str, str]]) -> None:
@@ -472,8 +512,11 @@ def run_llm_screening(
     checkpoint = _load_checkpoint(checkpoint_path)
     screened_set: set[str] = set(checkpoint.get("screened_ids", []))
 
-    # On resume, keep existing results for screened IDs
-    if screened_set:
+    # On resume, rebuild results from the prompt log (ground truth)
+    # rather than the CSV which may have been truncated by a crash.
+    if screened_set and prompt_log_path.exists():
+        results = _rebuild_results_from_log(prompt_log_path, screened_set)
+    elif screened_set:
         existing = _load_existing_decisions(output_path)
         results = [r for r in existing if r.get("paper_id") in screened_set]
     else:
@@ -598,7 +641,7 @@ def _screen_one_record(
     """Call the API with retries and return a parsed decision dict."""
     last_error: Exception | None = None
 
-    for attempt in range(3):
+    for attempt in range(5):
         try:
             raw = _call_azure_openai(
                 url, api_key, deployment, SYSTEM_PROMPT, user_prompt,
@@ -608,19 +651,29 @@ def _screen_one_record(
 
         except (ValueError, json.JSONDecodeError) as exc:
             last_error = exc
-            log.warning("Parse error for %s (attempt %d/3): %s", paper_id, attempt + 1, exc)
+            log.warning("Parse error for %s (attempt %d/5): %s", paper_id, attempt + 1, exc)
             time.sleep(2)
 
         except _AzureAPIError as exc:
             last_error = exc
             code = exc.status_code or 0
-            if code == 429:
+            if code == 401 and use_ad_token:
+                # Token expired — force refresh and retry
+                global _cached_ad_token  # noqa: PLW0603
+                _cached_ad_token = None
+                log.warning("Token expired for %s, refreshing and retrying", paper_id)
+                time.sleep(1)
+            elif code == 429:
                 wait = min(60, 2 ** (attempt + 2))
                 log.warning("Rate-limited on %s, waiting %ds", paper_id, wait)
                 time.sleep(wait)
             elif 500 <= code < 600:
                 wait = min(30, 2 ** (attempt + 1))
                 log.warning("Server error %d on %s, retrying in %ds", code, paper_id, wait)
+                time.sleep(wait)
+            elif code == 0:  # timeout / connection error
+                wait = min(30, 2 ** (attempt + 1))
+                log.warning("Timeout/connection on %s, retrying in %ds", paper_id, wait)
                 time.sleep(wait)
             else:
                 raise

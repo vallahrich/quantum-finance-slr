@@ -675,7 +675,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_ls.add_argument(
         "--deployment", default=None,
-        help="Azure OpenAI deployment/model name (default: AZURE_OPENAI_DEPLOYMENT env var).",
+        help="Azure OpenAI deployment/model name (default: AZURE_OPENAI_DEPLOYMENT env var; recommended: gpt-5-mini).",
     )
     p_ls.add_argument(
         "--batch-size", type=int, default=10,
@@ -718,7 +718,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_tc.add_argument(
         "--deployment", default=None,
-        help="Azure OpenAI deployment/model name (default: AZURE_OPENAI_DEPLOYMENT env var).",
+        help="Azure OpenAI deployment/model name (default: AZURE_OPENAI_DEPLOYMENT env var; recommended: gpt-5-mini).",
     )
     p_tc.add_argument(
         "--batch-size", type=int, default=10,

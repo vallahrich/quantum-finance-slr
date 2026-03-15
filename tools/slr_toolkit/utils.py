@@ -6,6 +6,7 @@ import csv
 import hashlib
 import logging
 import sys
+import time
 from pathlib import Path
 
 from . import config
@@ -25,6 +26,43 @@ def ensure_dir(path: Path) -> Path:
     """Create directory (and parents) if it doesn't exist. Returns the path."""
     path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+def _replace_with_retries(tmp_path: Path, path: Path, *, attempts: int = 10) -> None:
+    """Replace ``path`` with ``tmp_path``, retrying on transient Windows/OneDrive locks."""
+    log = logging.getLogger("slr_toolkit")
+    for attempt in range(attempts):
+        try:
+            tmp_path.replace(path)
+            return
+        except PermissionError:
+            time.sleep(0.5 * (attempt + 1))
+
+    # All atomic retries exhausted — fall back to direct overwrite
+    log.warning("Atomic rename failed after %d retries for %s; falling back to direct write", attempts, path)
+    try:
+        content = tmp_path.read_bytes()
+        path.write_bytes(content)
+        tmp_path.unlink(missing_ok=True)
+    except PermissionError:
+        log.error("Direct write also failed for %s — skipping this checkpoint save", path)
+        tmp_path.unlink(missing_ok=True)
+
+
+def atomic_write_text(path: Path, content: str) -> None:
+    """Write text atomically where possible, with lock retries for Windows sync tools."""
+    ensure_dir(path.parent)
+    tmp_path = path.with_suffix(f"{path.suffix}.tmp")
+    tmp_path.write_text(content, encoding="utf-8")
+    _replace_with_retries(tmp_path, path)
+
+
+def atomic_write_bytes(path: Path, data: bytes) -> None:
+    """Binary variant of :func:`atomic_write_text`."""
+    ensure_dir(path.parent)
+    tmp_path = path.with_suffix(f"{path.suffix}.tmp")
+    tmp_path.write_bytes(data)
+    _replace_with_retries(tmp_path, path)
 
 
 def generate_paper_id(
@@ -56,8 +94,7 @@ def safe_write_text(path: Path, content: str, *, force: bool = False) -> bool:
     if path.exists() and not force:
         log.info("Skipping (exists): %s", path)
         return False
-    ensure_dir(path.parent)
-    path.write_text(content, encoding="utf-8")
+    atomic_write_text(path, content)
     log.info("Wrote: %s", path)
     return True
 
@@ -117,8 +154,7 @@ def safe_write_bytes(path: Path, data: bytes, *, force: bool = False) -> bool:
     if path.exists() and not force:
         log.info("Skipping (exists): %s", path)
         return False
-    ensure_dir(path.parent)
-    path.write_bytes(data)
+    atomic_write_bytes(path, data)
     log.info("Wrote: %s", path)
     return True
 

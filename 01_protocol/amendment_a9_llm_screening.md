@@ -1,74 +1,62 @@
-# Protocol Amendment A9 — LLM-Based Screening
+# Protocol Amendment A9 - LLM-Based Screening
 
-| Field               | Value                                      |
-|---------------------|--------------------------------------------|
-| **Amendment ID**    | A9                                         |
-| **Date**            | 2026-03-13                                 |
-| **Protocol version**| v3.5                                       |
-| **Sections affected** | §8, §8c                                  |
-| **Author**          | TVW                                        |
+| Field | Value |
+|-------|-------|
+| Amendment ID | A9 |
+| Date | 2026-03-13 |
+| Protocol version | v3.5 |
+| Sections affected | 8, 8c |
+| Author | TVW |
 
 ## Summary
 
-The AI-assisted screening tool is changed from ASReview active-learning
-classification to LLM-based classification via Azure OpenAI.
+The AI-assisted screening tool was changed from ASReview active learning to LLM-based title and abstract classification via Azure OpenAI.
 
 ## Rationale
 
-ASReview active learning failed to discriminate effectively with the
-available 50 calibration + 100 validation labels.  All unlabelled records
-were predicted as "include" with approximately 0.67 confidence, providing
-no useful ranking or exclusion signal.  The active-learning approach
-requires a substantially larger training set to converge, which conflicts
-with the resource constraints of this review.
+ASReview active learning did not discriminate effectively with the available calibration and validation labels. In practice, unlabeled records collapsed toward broad "include" predictions and did not provide a useful ranking or exclusion signal.
 
-LLM-based classification via Azure OpenAI does not require a training set.
-Each record is independently classified against the review's
-inclusion/exclusion criteria through a structured prompt, returning a
-binary decision (include/exclude), a confidence score (0–1), a reason code
-matching the protocol's exclusion taxonomy, and a one-sentence reasoning
-trace.
+LLM-based classification does not require a training set. Each record is independently evaluated against the inclusion and exclusion criteria through a structured prompt that returns:
+
+- a binary decision
+- a confidence score
+- a reason code aligned with the exclusion taxonomy
+- a brief reasoning trace
+
+## Current Implementation Notes
+
+- The repository currently recommends `gpt-5-mini` as the default deployment for `llm-screen`.
+- `llm-screen` supports either `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
+- Screening runs are resumable through `05_screening/llm_screening_checkpoint.json`.
+- Per-record prompt and response metadata are logged to `05_screening/llm_screening_prompt_log.jsonl`.
 
 ## Changes
 
-1. **New module**: `tools/slr_toolkit/llm_screening.py` — stdlib-only
-   Azure OpenAI client for title/abstract screening.
-2. **New CLI command**: `llm-screen` — replaces `run-asreview` as the
-   primary AI screening step.
-3. **Output format**: identical `ai_screening_decisions.csv` with columns
-   `paper_id`, `ai_decision`, `ai_rank`, `ai_confidence`, `reason_code`,
-   `reasoning`.  The first four columns match the existing ASReview output
-   schema exactly; the last two are additive and do not affect downstream
-   consumers.
-4. **Audit artefacts**:
-   - `05_screening/llm_screening_checkpoint.json` — resume state.
-   - `05_screening/llm_screening_prompt_log.jsonl` — per-record
-     prompt/response log for PRISMA-trAIce compliance.
+1. Added `tools/slr_toolkit/llm_screening.py` as a stdlib-only Azure OpenAI client.
+2. Added the `llm-screen` CLI command as the primary LLM screening step.
+3. Preserved downstream compatibility by continuing to write `ai_screening_decisions.csv`.
+4. Added checkpoint and prompt-log artifacts for auditability and resumability.
 
-## Unchanged procedures
+## Unchanged Procedures
 
-| Procedure                   | Status      |
-|-----------------------------|-------------|
-| Human calibration (κ ≥ 0.70)| Unchanged   |
-| Calibrate-then-split design | Unchanged   |
-| Held-out validation subset  | Unchanged   |
-| AI validation (recall ≥ 0.95)| Unchanged  |
-| Discrepancy review          | Unchanged   |
-| False-negative audit (10%)  | Unchanged   |
-| Full-text screening (human) | Unchanged   |
+| Procedure | Status |
+|-----------|--------|
+| Human calibration (kappa >= 0.70) | Unchanged |
+| Calibrate-then-split design | Unchanged |
+| Held-out validation subset | Unchanged |
+| AI validation (recall >= 0.95) | Unchanged |
+| Discrepancy review | Unchanged |
+| False-negative audit (10%) | Unchanged |
+| Full-text screening (human) | Unchanged |
 
 ## Configuration
 
-| Variable                    | Description                         |
-|-----------------------------|-------------------------------------|
-| `AZURE_OPENAI_API_KEY`      | Azure OpenAI API key                |
-| `AZURE_OPENAI_ENDPOINT`     | Resource endpoint URL               |
-| `AZURE_OPENAI_DEPLOYMENT`   | Deployment (model) name             |
+| Variable | Description |
+|----------|-------------|
+| `AZURE_OPENAI_API_KEY` | Azure OpenAI API key |
+| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI endpoint URL |
+| `AZURE_OPENAI_DEPLOYMENT` | Deployment / model name |
 
-## Transparency and reporting
+## Transparency and Reporting
 
-All LLM interactions are logged to
-`05_screening/llm_screening_prompt_log.jsonl` with timestamps, prompts,
-decisions, confidence scores, reason codes, and token counts.  This
-supports reproducibility auditing and PRISMA-trAIce compliance
-(Holst et al. 2025).
+All LLM interactions are logged with timestamps, prompts, decisions, confidence scores, reason codes, and token counts. This supports reproducibility audits and AI-assisted review traceability.
