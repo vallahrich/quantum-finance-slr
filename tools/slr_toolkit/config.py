@@ -69,7 +69,7 @@ TOPIC_CODING_CSV      = EXTRACTION_DIR / "topic_coding.csv"
 TOPIC_CODING_SUMMARY  = EXTRACTION_DIR / "topic_coding_summary.md"
 TOPIC_CODING_CHECKPOINT = EXTRACTION_DIR / "topic_coding_checkpoint.json"
 TOPIC_CODING_PROMPT_LOG = EXTRACTION_DIR / "topic_coding_prompt_log.jsonl"
-PROTOCOL_MD           = PROTOCOL_DIR / "protocol_v1.0.md"
+PROTOCOL_MD           = PROTOCOL_DIR / "protocol.md"
 AMENDMENTS_CSV        = PROTOCOL_DIR / "amendments_log.csv"
 
 # ---------------------------------------------------------------------------

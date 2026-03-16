@@ -9,8 +9,8 @@ Design
 **Registration:** OSF registration pending update. Until the registration
 record is finalized, the repository version history and amendments log are
 the authoritative audit trail.
-Protocol versioned in this repository with amendments tracked in
-`amendments_log.csv`.
+Protocol versioned in this repository with amendments tracked in the
+authoritative log `amendments_log.csv`.
 
 **Protocol version:** 3.5 (2026-03-13)
 
@@ -935,11 +935,15 @@ for AI-flagged records per the PRISMA-trAIce flow diagram template.
 
 ## 15) Amendments
 
-All protocol amendments are logged in `01_protocol/amendments_log.csv` and
-`01_protocol/amendments_log.md` with date, version, affected section(s),
-description, rationale, and expected impact on results.
+All protocol amendments are logged in the authoritative file
+`01_protocol/amendments_log.csv`.
+
+Legacy narrative amendment notes are archived under `01_protocol/archive/`
+for provenance only; they are supplementary and not the source of record.
 
 Minor amendments (e.g., search string refinements, criteria clarifications
-from calibration) are logged with type "minor" or "calibration_refinement".
-Major amendments (e.g., scope changes, new databases) are logged with type
-"major" and require explicit justification.
+from calibration) should be added directly to `amendments_log.csv`.
+Major amendments (e.g., scope changes, new databases, screening design
+changes) should also be recorded in `amendments_log.csv`, with an optional
+supplementary narrative note in `01_protocol/archive/` only if a longer
+explanation is genuinely useful.

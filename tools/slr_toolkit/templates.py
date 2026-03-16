@@ -176,10 +176,10 @@ def create_extraction_template(*, force: bool = False) -> None:
 # ── Protocol & amendments ──────────────────────────────────────────────────
 
 def create_protocol(*, force: bool = False) -> None:
-    """Write protocol skeleton to 01_protocol/protocol_v1.0.md."""
+    """Write protocol skeleton to 01_protocol/protocol.md."""
     # Protocol is shipped as a static file in the repo; this function
     # ensures it exists during `init`.  The content lives in the repo
-    # itself (01_protocol/protocol_v1.0.md) and is only generated if
+    # itself (01_protocol/protocol.md) and is only generated if
     # the file is missing.
     if config.PROTOCOL_MD.exists() and not force:
         log.info("Skipping (exists): %s", config.PROTOCOL_MD)
