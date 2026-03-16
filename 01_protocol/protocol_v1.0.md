@@ -6,11 +6,13 @@
 Review and Practical Advantage Assessment Within a Mixed-Methods Research
 Design
 
-**Registration:** OSF <https://osf.io/XXXXX>. Registered YYYY-MM-DD.
+**Registration:** OSF registration pending update. Until the registration
+record is finalized, the repository version history and amendments log are
+the authoritative audit trail.
 Protocol versioned in this repository with amendments tracked in
 `amendments_log.csv`.
 
-**Protocol version:** 3.4 (2026-03-13)
+**Protocol version:** 3.5 (2026-03-13)
 
 This SLR constitutes Phase 1a of a larger exploratory sequential
 mixed-methods study (Creswell & Creswell, 2018). The full study also
@@ -467,35 +469,35 @@ borderline cases resolved, and criteria clarifications documented in
 `05_screening/calibration_log.md`. If κ < 0.70, criteria are refined and
 calibration is repeated on a fresh 50-record sample.
 
-**Step 2 — AI initialisation from consensus labels:** The
-consensus-labelled calibration set (all 50 records with resolved final
-decisions) is used to initialise the active-learning model in ASReview
-LAB v2 (van de Schoot et al. 2021; van de Schoot et al. 2025). Both
-reviewers' agreed labels — not separate, independent seed samples —
-serve as training data. This ensures the AI model is grounded in the
-same calibrated interpretation of the eligibility criteria that the
-human reviewers have aligned on. Initialising from two separate random
-samples would introduce sampling noise and fail to provide a stable
-methodological baseline (Delgado-Chaves et al. 2025).
+**Step 2 — AI configuration and prompt freeze:** After calibration, the
+AI-assisted layer is configured as an LLM-based title/abstract
+classifier via Azure OpenAI (see §8c). The screening prompt is frozen
+before the main AI run begins. Unlike the earlier ASReview design, this
+LLM workflow does **not** require training labels from the calibration
+set; the calibration round is used to align the human reviewers, not to
+train the AI.
 
 **Step 3 — Held-out validation subset:** Before split screening begins,
 a further random sample of ≥100 records (drawn from the non-calibration
 pool) is set aside as a held-out validation subset. Both human reviewers
-independently screen this subset using standard dual-screening. The AI
-model also screens this subset independently. Performance metrics are
-computed on this subset (see §8c). This validation subset is not used
-for AI model training.
+independently screen this subset using standard dual-screening. The LLM
+also classifies this subset independently. Performance metrics are
+computed on this subset (see §8c). Because the LLM workflow does not use
+supervised training labels, the validation subset is reserved for
+prospective performance evaluation rather than model training.
 
 **Step 4 — Human split screening:** Once calibrated (κ ≥ 0.70), the
 remaining records (excluding the calibration and validation sets) are
 split equally between the two reviewers. Each reviewer screens their
 assigned half independently.
 
-**Step 5 — AI parallel screening:** The AI model independently screens
-the same full record set (excluding the calibration set used for
-training). AI screening runs in parallel with human screening and does
-not influence human decisions in real time. Each record receives an AI
-relevance prediction and a confidence score.
+**Step 5 — AI parallel screening:** The AI layer independently screens
+the unique non-duplicate record set in parallel with human screening and
+does not influence human decisions in real time. Because no training set
+is required, the AI layer can also classify calibration and validation
+records independently for audit and validation purposes. Each record
+receives an AI inclusion/exclusion decision, a confidence score, an
+exclusion reason code where applicable, and a brief rationale.
 
 **Step 6 — Discrepancy resolution (AI-as-safety-net):** After both
 human and AI screening are complete, discrepancies are reviewed as
@@ -574,9 +576,11 @@ metrics:
    purely human.
 
 Calibration results (agreement rate, κ value, disagreements resolved,
-criteria clarifications) are documented in
-`05_screening/calibration_log.md`. AI validation results are documented
-in `05_screening/ai_validation_report.md`.
+criteria clarifications) are recorded in
+`05_screening/calibration_log.md` when the finalized calibration log is
+completed. AI validation results are recorded in
+`05_screening/ai_validation_report.md` when the validation report is
+generated.
 
 ### Pilot screening documentation
 
@@ -585,10 +589,11 @@ criteria refinement. All calibration artefacts are retained:
 
 - Calibration screening decisions: stored in
   `05_screening/calibration_decisions.csv`
-- Calibration log: `05_screening/calibration_log.md` documents agreement
-  metrics, resolved disagreements, and any criteria clarifications
-- AI validation report: `05_screening/ai_validation_report.md` documents
-  model performance on the held-out validation subset
+- Calibration log: `05_screening/calibration_log.md` records agreement
+  metrics, resolved disagreements, and any criteria clarifications once
+  the finalized log is completed
+- AI validation report: `05_screening/ai_validation_report.md` records
+  model performance on the held-out validation subset once generated
 - Criteria clarifications arising from calibration are logged as minor
   amendments in `01_protocol/amendments_log.csv` with type
   `calibration_refinement`
@@ -637,24 +642,23 @@ in the thesis discussion chapter.
 
 | Parameter | Value |
 |-----------|-------|
-| **Tool** | ASReview LAB v2 (van de Schoot et al. 2021; 2025) |
-| **Model** | [Specify model configuration, e.g., ELAS Ultra default or custom] |
-| **Feature extraction** | [Specify: e.g., TF-IDF, SBERT, or other] |
-| **Classifier** | [Specify: e.g., Naive Bayes, SVM, logistic regression] |
-| **Query strategy** | [Specify: e.g., max relevance, uncertainty sampling] |
-| **Balance strategy** | [Specify: e.g., double, undersample] |
-| **Training data** | Consensus-labelled calibration set (n=50 records) |
-| **Stopping rule** | [Specify stopping criterion, e.g., conservative heuristic, n consecutive irrelevant] |
-| **Software version** | [Exact version number, e.g., ASReview LAB v2.x.x] |
-| **Date of screening** | [Date AI screening was executed] |
-| **Hardware/environment** | [Local machine specification or server] |
-| **Reproducibility** | ASReview project file (.asreview) archived in repository; all decision logs exported |
+| **Tool** | Custom `llm-screen` workflow implemented in `tools/slr_toolkit/llm_screening.py`, using Azure OpenAI chat-completions |
+| **Model / deployment** | Azure OpenAI deployment specified at runtime via `AZURE_OPENAI_DEPLOYMENT` or `--deployment`; exact deployment used for the study run must be reported in the thesis methods and run notes |
+| **Input to AI** | Title, abstract, and `paper_id` for each record |
+| **Output schema** | `decision` (include/exclude), `confidence` (0–1), `reason_code`, and one-sentence `reasoning` |
+| **Prompting approach** | Single-record criterion-based classification against the protocol eligibility rules; prompt text frozen before the main run |
+| **Training data** | None required |
+| **Stopping rule** | Screen all pending unique records; interrupted runs resume from `05_screening/llm_screening_checkpoint.json` |
+| **Authentication** | Azure OpenAI API key or keyless Azure AD authentication via `az login` |
+| **Date of completed screening run in current repository artifacts** | 2026-03-15 (`ai_screening_decisions.csv` and prompt-log timestamps) |
+| **Current completed run size** | 3,230 AI-classified records in `05_screening/ai_screening_decisions.csv` |
+| **Reproducibility artifacts** | `05_screening/ai_screening_decisions.csv`, `05_screening/llm_screening_checkpoint.json`, and `05_screening/llm_screening_prompt_log.jsonl` |
 
-If a custom LLM-based agent is used instead of or in addition to
-ASReview, the following must also be documented: model name and version
-(e.g., Claude Sonnet 4, GPT-4o), exact prompt text (frozen, stored in
-repository), temperature and sampling parameters, API version and date
-of access, and complete input/output logs for all screening decisions.
+The exact Azure OpenAI deployment name, endpoint family, and any
+pricing assumptions are operational settings rather than methodological
+design choices. They must therefore be reported with the executed run,
+but the workflow itself remains deployment-agnostic as long as the same
+screening prompt and output schema are preserved.
 
 ### Validation design
 
@@ -702,25 +706,26 @@ chapters, following the PRISMA-trAIce checklist (Holst et al. 2025):
 - **Limitations:** AI-specific limitations are discussed, including
   model blind spots, reproducibility constraints, and the scope of the
   validation design.
-- **Data availability:** The ASReview project file, all decision logs,
-  the AI prompt (if applicable), and the validation subset results are
-  archived in the repository.
+- **Data availability:** The AI decisions file, checkpoint, prompt log,
+  frozen prompt text, and the validation subset results are archived in
+  the repository.
 
 ### Ethical and data-handling considerations
 
 Before uploading any bibliographic records (titles, abstracts, metadata)
 to any AI tool, the following are confirmed:
 
-- University AI/data policy compliance: [Confirm compliance with
-  institutional policy]
+- University AI/data policy compliance is confirmed before any external
+  AI screening run is executed and should be documented in the thesis
+  compliance notes
 - No full-text PDFs or copyrighted content are uploaded to external AI
   services
 - Only bibliographic metadata (title, abstract, authors, DOI) is
   processed
 - If using a cloud-based LLM API, data processing agreements and terms
   of service are reviewed
-- ASReview LAB processes data locally; no data is transmitted to
-  external servers (van de Schoot et al. 2025)
+- For Azure OpenAI screening, bibliographic metadata is transmitted to
+  the configured Azure service; no full-text PDFs are uploaded
 
 ---
 
@@ -918,7 +923,7 @@ for AI-flagged records per the PRISMA-trAIce flow diagram template.
 | Phase | Target |
 |-------|--------|
 | Protocol finalisation | Complete |
-| Database searches | Complete (5,775 raw → 2,672 unique) |
+| Database searches | Complete for the current active runs (6,232 raw records in the 2026-03-14-v5 source exports; current master library contains 3,879 canonical records and 2,353 duplicates) |
 | Screening (title/abstract) | — |
 | Screening (full-text) | — |
 | Data extraction | — |

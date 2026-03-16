@@ -12,7 +12,7 @@ python -m venv .venv
 pip install -e ".[dev]"
 ```
 
-Optional AI / ASReview dependencies:
+Optional AI / ASReview dependencies for the legacy ASReview path:
 
 ```bash
 pip install -e ".[ai]"
@@ -57,7 +57,8 @@ Proceed once Cohen's kappa is at least `0.70`.
 
 ### Step 3b: AI-Assisted Screening
 
-You can use either the ASReview workflow or the Azure OpenAI workflow.
+The current production workflow uses Azure OpenAI LLM screening. The
+ASReview path remains in the repo as a legacy / experimental option.
 
 ASReview path:
 
@@ -76,7 +77,8 @@ python -m tools.slr_toolkit.cli llm-screen
 Notes:
 
 - `llm-screen` supports `--api-key` / `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
-- The repo currently assumes `gpt-5-mini` pricing and recommends `gpt-5-mini` as the default deployment.
+- The repo's current screening cost assumptions are based on `gpt-5-mini`.
+- The completed repository screening run used `o4-mini`.
 - `llm-screen` writes resumable state to `05_screening/llm_screening_checkpoint.json`.
 - `llm-screen` writes audit logs to `05_screening/llm_screening_prompt_log.jsonl`.
 
@@ -105,7 +107,7 @@ python -m tools.slr_toolkit.cli fn-audit
 
 ### Step 4: Full-Text Decisions and Topic Coding
 
-Populate `05_screening/full_text_decisions.csv`, then run:
+Create and populate `05_screening/full_text_decisions.csv` from the template, then run:
 
 ```bash
 python -m tools.slr_toolkit.cli topic-code

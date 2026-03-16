@@ -1,8 +1,8 @@
-# Search Strategy Peer Review
+# Search Strategy Peer Review Template
 
-<!-- TODO: Complete this before thesis submission. Have your supervisor
-     review the Block 1 + Block 2 search terms, database selection,
-     and date limits. Document their feedback and any changes made. -->
+This file is a template for documenting supervisor or information-specialist
+review of the search strategy. It is not yet the finalized peer-review
+record for this project.
 
 ## Reviewer details
 
@@ -15,7 +15,7 @@
 ## Scope of review
 
 The search strategy (Block 1 + Block 2 Boolean terms, database selection,
-date limits) was reviewed by the thesis supervisor on [date].
+date limits) should be summarized here once the review has been completed.
 
 ## Feedback received
 
@@ -26,5 +26,5 @@ date limits) was reviewed by the thesis supervisor on [date].
 ## Limitations
 
 No formal librarian review was conducted; this is noted as a limitation
-in the thesis methods chapter. The university library's research support
-team was / was not consulted (update as appropriate).
+in the thesis methods chapter. Update this section to state explicitly
+whether the university library's research support team was consulted.

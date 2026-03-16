@@ -1,4 +1,7 @@
-# Screening Calibration Log
+# Screening Calibration Log Template
+
+This file is a template for recording calibration outcomes. It is not yet
+the finalized calibration record for the study.
 
 ## Calibration Round 1
 
@@ -28,3 +31,4 @@
 
 - If kappa is below `0.70`, discuss disagreements, clarify criteria, and run a second calibration round on a fresh 50-record sample.
 - Once kappa is at least `0.70`, proceed to split screening with `screening_reviewer_A.xlsx` and `screening_reviewer_B.xlsx`.
+- Replace the placeholders above when the finalized calibration record is written.

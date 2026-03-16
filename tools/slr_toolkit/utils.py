@@ -1,4 +1,4 @@
-"""Shared utilities — hashing, safe file writes, logging setup."""
+"""Shared utilities — hashing, safe file writes, logging setup, Excel styling."""
 
 from __future__ import annotations
 
@@ -9,7 +9,23 @@ import sys
 import time
 from pathlib import Path
 
+from openpyxl.styles import Alignment, Font, PatternFill
+
 from . import config
+
+# ── Shared Excel styling ─────────────────────────────────────────────────
+XLSX_HEADER_FONT = Font(bold=True, color="FFFFFF")
+XLSX_HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
+XLSX_HEADER_ALIGN = Alignment(wrap_text=True, vertical="top")
+
+
+def style_xlsx_header(ws, col_count: int) -> None:
+    """Apply bold-white-on-blue styling to the header row of an openpyxl worksheet."""
+    for col in range(1, col_count + 1):
+        cell = ws.cell(row=1, column=col)
+        cell.font = XLSX_HEADER_FONT
+        cell.fill = XLSX_HEADER_FILL
+        cell.alignment = XLSX_HEADER_ALIGN
 
 
 def configure_logging(level: int = logging.INFO) -> None:
@@ -179,3 +195,11 @@ def load_master_records(*, unique_only: bool = False) -> list[dict[str, str]]:
     if unique_only:
         return [row for row in rows if not row.get("duplicate_of", "").strip()]
     return rows
+
+
+def safe_float(value: object, default: float = 0.0) -> float:
+    """Convert *value* to float, returning *default* on failure."""
+    try:
+        return float(value)  # type: ignore[arg-type]
+    except (TypeError, ValueError):
+        return default

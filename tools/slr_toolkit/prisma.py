@@ -7,15 +7,18 @@ from pathlib import Path
 
 import pandas as pd
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
 
 from . import config
-from .utils import cohens_kappa, ensure_dir, percent_agreement
+from .utils import (
+    XLSX_HEADER_FILL,
+    XLSX_HEADER_FONT,
+    cohens_kappa,
+    ensure_dir,
+    percent_agreement,
+    style_xlsx_header,
+)
 
 log = logging.getLogger("slr_toolkit.prisma")
-
-_HEADER_FONT = Font(bold=True, color="FFFFFF")
-_HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
 
 _MISSING = "MISSING_INPUT"
 
@@ -208,11 +211,7 @@ def _write_prisma_xlsx(
     ws.title = "PRISMA Counts"
 
     ws.append(["Metric", "Count"])
-    for col in range(1, 3):
-        cell = ws.cell(row=1, column=col)
-        cell.font = _HEADER_FONT
-        cell.fill = _HEADER_FILL
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
+    style_xlsx_header(ws, 2)
     ws.freeze_panes = "A2"
 
     for metric, value in counts.items():
@@ -222,11 +221,7 @@ def _write_prisma_xlsx(
     if reason_counts:
         ws_reasons = wb.create_sheet("Exclusion Reasons")
         ws_reasons.append(["Exclusion Reason Code", "Count"])
-        for col in range(1, 3):
-            cell = ws_reasons.cell(row=1, column=col)
-            cell.font = _HEADER_FONT
-            cell.fill = _HEADER_FILL
-            cell.alignment = Alignment(wrap_text=True, vertical="top")
+        style_xlsx_header(ws_reasons, 2)
         ws_reasons.freeze_panes = "A2"
         for reason, n in sorted(reason_counts.items()):
             ws_reasons.append([reason, n])
@@ -237,11 +232,7 @@ def _write_prisma_xlsx(
     if calibration_metrics:
         ws_cal = wb.create_sheet("Calibration")
         ws_cal.append(["Metric", "Value"])
-        for col in range(1, 3):
-            cell = ws_cal.cell(row=1, column=col)
-            cell.font = _HEADER_FONT
-            cell.fill = _HEADER_FILL
-            cell.alignment = Alignment(wrap_text=True, vertical="top")
+        style_xlsx_header(ws_cal, 2)
         ws_cal.freeze_panes = "A2"
         for metric, value in calibration_metrics.items():
             ws_cal.append([metric, value])

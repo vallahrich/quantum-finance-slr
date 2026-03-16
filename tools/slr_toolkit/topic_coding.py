@@ -24,9 +24,8 @@ from .llm_screening import (
     _load_checkpoint,
     _save_checkpoint,
     _append_prompt_log,
-    _safe_float,
 )
-from .utils import atomic_write_text, ensure_dir
+from .utils import atomic_write_text, ensure_dir, safe_float
 
 log = logging.getLogger(__name__)
 
@@ -302,7 +301,7 @@ def _serialize_topic_row(record: dict[str, str], decision: dict[str, object]) ->
 
 def write_topic_coding_csv(path: Path, rows: list[dict[str, str]]) -> None:
     ensure_dir(path.parent)
-    sorted_rows = sorted(rows, key=lambda row: _safe_float(row.get("llm_confidence", "0"), 0.0), reverse=True)
+    sorted_rows = sorted(rows, key=lambda row: safe_float(row.get("llm_confidence", "0"), 0.0), reverse=True)
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=TOPIC_FIELDNAMES)
         writer.writeheader()

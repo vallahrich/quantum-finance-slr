@@ -15,7 +15,7 @@ A reproducible, local-first toolkit for running a systematic literature review (
 | Includes | Preprints, NISQ, and fault-tolerant studies |
 | Time window | 2016-01-01 to present |
 | Advantage framework | Tier-1 crossover target plus Tier-2 finance SLA reality check |
-| Protocol registration | OSF `<https://osf.io/XXXXX>` |
+| Protocol registration | Pending OSF registration update |
 
 ## Setup
 
@@ -146,14 +146,14 @@ python -m tools.slr_toolkit.cli compute-kappa
 
 4. Optionally run the AI safety-net workflow:
 
-- `export-asreview`
-- `run-asreview` or `llm-screen`
+- Preferred current workflow: `llm-screen`
+- Legacy / experimental workflow: `export-asreview` then `run-asreview`
 - `merge-screening`
 - `ai-discrepancies`
 - `ai-validation`
 - `fn-audit`
 
-5. Complete `full_text_decisions.csv` with final decisions, exclusion reasons, and `tier2_applicable`.
+5. Create and complete `05_screening/full_text_decisions.csv` from the template with final decisions, exclusion reasons, and `tier2_applicable`.
 
 6. Run topic coding for included studies:
 
@@ -169,9 +169,9 @@ Use `--input-file 05_screening/included_for_coding.csv` when you have an interim
 ## AI / LLM Notes
 
 - `llm-screen` and `topic-code` support either `--api-key` / `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
-- The toolkit's current default pricing assumptions are set to `gpt-4.1-mini`.
-- `o4-mini` is the recommended deployment for screening and topic coding.
-- Models tested: `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini` (o4-mini selected).
+- The toolkit's current screening cost assumptions in code are based on `gpt-5-mini`.
+- The completed repository screening run was performed with `o4-mini`.
+- Models trialed during evaluation included `gpt-4.1-mini`, `DeepSeek-V3.2`, and `o4-mini`.
 - `llm-screen` writes resumable progress to `05_screening/llm_screening_checkpoint.json`.
 - `llm-screen` writes a per-record audit log to `05_screening/llm_screening_prompt_log.jsonl`.
 - `import-ai-decisions` validates imported labels instead of silently treating unknown values as excludes.
@@ -190,12 +190,12 @@ Accepted imported AI labels include:
 |--------|--------|
 | `Identified` | Total rows in `master_records.csv` |
 | `DuplicatesRemoved` | Rows where `duplicate_of` is non-empty |
-| `ScreenedTitleAbstract` | Rows in `title_abstract_decisions.csv` |
-| `ExcludedTitleAbstract` | Rows with `final_decision == 'exclude'` |
-| `FullTextAssessed` | Rows in `full_text_decisions.csv` |
-| `ExcludedFullText` | Rows with `final_decision == 'exclude'` |
-| `IncludedTotal` | Rows with `final_decision == 'include'` |
-| `Tier2Applicable` | Included rows with `tier2_applicable == 'yes'` |
+| `ScreenedTitleAbstract` | Title/abstract decision file when a finalized screening-decision column is present |
+| `ExcludedTitleAbstract` | Finalized title/abstract exclusions when available |
+| `FullTextAssessed` | Rows in `full_text_decisions.csv` once that file has been created |
+| `ExcludedFullText` | Rows with `final_decision == 'exclude'` in `full_text_decisions.csv` |
+| `IncludedTotal` | Rows with `final_decision == 'include'` in `full_text_decisions.csv` |
+| `Tier2Applicable` | Included rows with `tier2_applicable == 'yes'` in `full_text_decisions.csv` |
 
 If required inputs are missing, counts are reported as `MISSING_INPUT`.
 
@@ -212,6 +212,7 @@ Coverage currently includes:
 - ingest parsing for RIS, BibTeX, and CSV
 - query-builder logic
 - AI-screening and topic-coding flows
+- shared utilities (hashing, kappa, safe I/O)
 
 ## Methodological Frameworks
 
@@ -228,18 +229,8 @@ This review is guided by:
 
 ## Citing This Work
 
-```bibtex
-@mastersthesis{wallerich2026quantum,
-  author  = {Wallerich, [First Name]},
-  title   = {Gate-Based Quantum Computing in Finance: A Systematic
-             Literature Review and Practical Advantage Assessment
-             Within a Mixed-Methods Research Design},
-  school  = {[University Name]},
-  year    = {2026},
-}
-```
+Citation metadata is still being finalized for the thesis submission package.
 
 ## Acknowledgements
 
-- Thesis supervisor: [Name]
-- [Any additional acknowledgements]
+Acknowledgements are pending final thesis submission details.

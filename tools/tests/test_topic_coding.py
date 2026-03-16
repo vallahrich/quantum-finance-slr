@@ -1,4 +1,4 @@
-"""Tests for LLM-assisted topic coding."""
+﻿"""Tests for LLM-assisted topic coding."""
 
 from __future__ import annotations
 
@@ -9,17 +9,7 @@ from pathlib import Path
 import pytest
 
 from tools.slr_toolkit import config
-
-
-def _make_master_csv(path: Path, records: list[dict]) -> Path:
-    cols = config.NORMALIZED_COLUMNS + ["duplicate_of"]
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=cols)
-        writer.writeheader()
-        for rec in records:
-            row = {c: rec.get(c, "") for c in cols}
-            writer.writerow(row)
-    return path
+from .conftest import make_master_csv
 
 
 def _make_full_text_csv(path: Path, rows: list[dict]) -> Path:
@@ -47,7 +37,7 @@ class TestLoadIncludedPapers:
                 {"paper_id": "p003", "final_decision": "include"},
             ],
         )
-        master = _make_master_csv(
+        master = make_master_csv(
             tmp_path / "master.csv",
             [
                 {"paper_id": "p001", "title": "Paper 1", "abstract": "A1", "venue": "V1", "year": "2024"},
@@ -183,7 +173,7 @@ class TestRunTopicCoding:
             tmp_path / "full_text.csv",
             [{"paper_id": "p001", "final_decision": "include"}],
         )
-        master = _make_master_csv(
+        master = make_master_csv(
             tmp_path / "master.csv",
             [{"paper_id": "p001", "title": "Paper 1", "abstract": "A1", "venue": "V1", "year": "2024"}],
         )
@@ -210,7 +200,7 @@ class TestRunTopicCoding:
             tmp_path / "full_text.csv",
             [{"paper_id": "p001", "final_decision": "include"}],
         )
-        master = _make_master_csv(
+        master = make_master_csv(
             tmp_path / "master.csv",
             [{"paper_id": "p001", "title": "Paper 1", "abstract": "A1", "venue": "V1", "year": "2024"}],
         )
@@ -232,7 +222,7 @@ class TestRunTopicCoding:
                 {"paper_id": "p002", "final_decision": "include"},
             ],
         )
-        master = _make_master_csv(
+        master = make_master_csv(
             tmp_path / "master.csv",
             [
                 {"paper_id": "p001", "title": "Paper 1", "abstract": "A1", "venue": "V1", "year": "2024"},

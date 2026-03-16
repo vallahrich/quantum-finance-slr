@@ -1,29 +1,14 @@
-"""Tests for AI-assisted screening pipeline (Protocol §8, Amendment A8)."""
+﻿"""Tests for AI-assisted screening pipeline (Protocol S8, Amendment A8)."""
 
 from __future__ import annotations
 
 import csv
-import textwrap
 from pathlib import Path
 
 import pytest
 
 from tools.slr_toolkit import config
-
-
-# ── Fixtures ──────────────────────────────────────────────────────────────
-
-
-def _make_master_csv(path: Path, records: list[dict]) -> Path:
-    """Write a minimal master_records.csv."""
-    cols = config.NORMALIZED_COLUMNS + ["duplicate_of"]
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=cols)
-        writer.writeheader()
-        for rec in records:
-            row = {c: rec.get(c, "") for c in cols}
-            writer.writerow(row)
-    return path
+from .conftest import SAMPLE_RECORDS, make_master_csv
 
 
 def _make_calibration_xlsx(path: Path, decisions: list[tuple[str, str, str, str]]) -> Path:
@@ -56,13 +41,6 @@ def _make_calibration_xlsx(path: Path, decisions: list[tuple[str, str, str, str]
     return path
 
 
-SAMPLE_RECORDS = [
-    {"paper_id": f"p{i:03d}", "title": f"Paper {i}", "authors": f"Author {i}",
-     "year": "2023", "abstract": f"Abstract for paper {i}", "source_db": "test"}
-    for i in range(20)
-]
-
-
 # ── Tests: export_asreview_dataset ────────────────────────────────────────
 
 
@@ -70,7 +48,7 @@ class TestExportASReviewDataset:
     def test_exports_all_unique_records(self, tmp_path, monkeypatch):
         from tools.slr_toolkit.screening import export_asreview_dataset
 
-        master = _make_master_csv(tmp_path / "master_records.csv", SAMPLE_RECORDS)
+        master = make_master_csv(tmp_path / "master_records.csv", SAMPLE_RECORDS)
         monkeypatch.setattr(config, "MASTER_RECORDS_CSV", master)
 
         out = export_asreview_dataset(output_path=tmp_path / "dataset.csv")
@@ -86,7 +64,7 @@ class TestExportASReviewDataset:
     def test_excludes_specified_ids(self, tmp_path, monkeypatch):
         from tools.slr_toolkit.screening import export_asreview_dataset
 
-        master = _make_master_csv(tmp_path / "master_records.csv", SAMPLE_RECORDS)
+        master = make_master_csv(tmp_path / "master_records.csv", SAMPLE_RECORDS)
         monkeypatch.setattr(config, "MASTER_RECORDS_CSV", master)
 
         out = export_asreview_dataset(
@@ -98,7 +76,7 @@ class TestExportASReviewDataset:
         assert len(reader) == 17
 
 
-# ── Tests: export_asreview_labels ─────────────────────────────────────────
+# â”€â”€ Tests: export_asreview_labels â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestExportASReviewLabels:
@@ -148,7 +126,7 @@ class TestScreeningWorkbookGeneration:
         wb.close()
 
 
-# ── Tests: import_ai_decisions ────────────────────────────────────────────
+# â”€â”€ Tests: import_ai_decisions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestImportAIDecisions:
@@ -231,7 +209,7 @@ class TestImportAIDecisions:
             import_ai_decisions(ai_csv, output_path=tmp_path / "out.csv")
 
 
-# ── Tests: find_discrepancies ─────────────────────────────────────────────
+# â”€â”€ Tests: find_discrepancies â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestFindDiscrepancies:
@@ -259,7 +237,7 @@ class TestFindDiscrepancies:
         )
 
         # Monkeypatch master for title lookup
-        master = _make_master_csv(
+        master = make_master_csv(
             tmp_path / "master.csv",
             [{"paper_id": f"p{i:03d}", "title": f"T{i}"} for i in range(1, 5)],
         )
@@ -279,7 +257,7 @@ class TestFindDiscrepancies:
         assert any(r["discrepancy_type"] == "ai_rescue" for r in rows)
 
 
-# ── Tests: generate_fn_audit ──────────────────────────────────────────────
+# â”€â”€ Tests: generate_fn_audit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestGenerateFNAudit:
@@ -307,7 +285,7 @@ class TestGenerateFNAudit:
         assert "audit_decision" in audit_rows[0]
 
 
-# ── Tests: compute_ai_validation ──────────────────────────────────────────
+# â”€â”€ Tests: compute_ai_validation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestComputeAIValidation:
@@ -356,7 +334,7 @@ class TestComputeAIValidation:
             ],
         )
 
-        # AI misses one include → recall = 0.5
+        # AI misses one include â†’ recall = 0.5
         ai_csv = tmp_path / "ai.csv"
         ai_csv.write_text(
             "paper_id,ai_decision,ai_confidence\n"

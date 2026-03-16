@@ -19,7 +19,6 @@ from pathlib import Path
 from typing import Any
 
 import pandas as pd
-from openpyxl import load_workbook
 
 from . import config
 from .ingest import _detect_preprint

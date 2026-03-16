@@ -24,7 +24,7 @@ from json import JSONDecodeError
 from pathlib import Path
 
 from . import config
-from .utils import atomic_write_text, ensure_dir, load_master_records
+from .utils import atomic_write_text, ensure_dir, load_master_records, safe_float
 
 log = logging.getLogger(__name__)
 
@@ -120,11 +120,8 @@ def _extract_message_content(content: object) -> str:
     return str(content or "")
 
 
-def _safe_float(value: object, default: float = 0.0) -> float:
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return default
+# Re-export for backward compatibility (topic_coding imports this)
+_safe_float = safe_float
 
 
 def _normalize_reason_code(value: object, decision: str) -> str:
@@ -679,11 +676,11 @@ def _screen_one_record(
                 raise
 
     # All retries exhausted — err toward recall
-    log.error("Failed to screen %s after 3 attempts: %s", paper_id, last_error)
+    log.error("Failed to screen %s after 5 attempts: %s", paper_id, last_error)
     return {
         "decision": "include",
         "confidence": 0.0,
         "reason_code": "ERR-LLM",
-        "reasoning": f"LLM screening failed after 3 attempts: {last_error}",
+        "reasoning": f"LLM screening failed after 5 attempts: {last_error}",
         "_usage": {},
     }

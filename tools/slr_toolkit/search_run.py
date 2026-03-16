@@ -8,15 +8,11 @@ from pathlib import Path
 
 import pandas as pd
 from openpyxl import Workbook, load_workbook
-from openpyxl.styles import Alignment, Font, PatternFill
 
 from . import config
-from .utils import ensure_dir
+from .utils import ensure_dir, style_xlsx_header
 
 log = logging.getLogger("slr_toolkit.search_run")
-
-_HEADER_FONT = Font(bold=True, color="FFFFFF")
-_HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
 
 
 def _ensure_search_log_xlsx() -> Path:
@@ -33,11 +29,7 @@ def _ensure_search_log_xlsx() -> Path:
     ws.append(config.SEARCH_LOG_COLUMNS)
 
     # Style header
-    for col_idx in range(1, len(config.SEARCH_LOG_COLUMNS) + 1):
-        cell = ws.cell(row=1, column=col_idx)
-        cell.font = _HEADER_FONT
-        cell.fill = _HEADER_FILL
-        cell.alignment = Alignment(wrap_text=True, vertical="top")
+    style_xlsx_header(ws, len(config.SEARCH_LOG_COLUMNS))
 
     # Column widths
     widths = {

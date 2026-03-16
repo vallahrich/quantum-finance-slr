@@ -7,10 +7,9 @@ import logging
 from pathlib import Path
 
 from openpyxl import Workbook
-from openpyxl.styles import Alignment, Font, PatternFill
 
 from . import config
-from .utils import ensure_dir, safe_write_bytes, safe_write_text
+from .utils import ensure_dir, safe_write_bytes, safe_write_text, style_xlsx_header
 
 log = logging.getLogger("slr_toolkit.templates")
 
@@ -129,20 +128,6 @@ _RUBRIC_COLUMNS: list[str] = [
     "q_end_to_end",               # End-to-end overhead included
 ]
 
-_HEADER_FONT = Font(bold=True, color="FFFFFF")
-_HEADER_FILL = PatternFill(start_color="4472C4", end_color="4472C4", fill_type="solid")
-_WRAP = Alignment(wrap_text=True, vertical="top")
-
-
-def _style_header(ws, ncols: int) -> None:  # type: ignore[no-untyped-def]
-    """Apply bold-white-on-blue header styling to the first row."""
-    for col in range(1, ncols + 1):
-        cell = ws.cell(row=1, column=col)
-        cell.font = _HEADER_FONT
-        cell.fill = _HEADER_FILL
-        cell.alignment = _WRAP
-    ws.freeze_panes = "A2"
-
 
 def create_extraction_template(*, force: bool = False) -> None:
     """Create the extraction XLSX with Codebook, Extraction, and Rubric sheets."""
@@ -158,7 +143,8 @@ def create_extraction_template(*, force: bool = False) -> None:
     assert ws_cb is not None
     ws_cb.title = "Codebook"
     ws_cb.append(["Column Name", "Definition", "Allowed Values"])
-    _style_header(ws_cb, 3)
+    style_xlsx_header(ws_cb, 3)
+    ws_cb.freeze_panes = "A2"
     for row in _CODEBOOK_ROWS:
         ws_cb.append(list(row))
     ws_cb.column_dimensions["A"].width = 22
@@ -168,14 +154,16 @@ def create_extraction_template(*, force: bool = False) -> None:
     # -- Extraction sheet --
     ws_ex = wb.create_sheet("Extraction")
     ws_ex.append(_EXTRACTION_COLUMNS)
-    _style_header(ws_ex, len(_EXTRACTION_COLUMNS))
+    style_xlsx_header(ws_ex, len(_EXTRACTION_COLUMNS))
+    ws_ex.freeze_panes = "A2"
     for i, col_name in enumerate(_EXTRACTION_COLUMNS, start=1):
         ws_ex.column_dimensions[ws_ex.cell(row=1, column=i).column_letter].width = 20
 
     # -- Rubric sheet --
     ws_rb = wb.create_sheet("Rubric")
     ws_rb.append(_RUBRIC_COLUMNS)
-    _style_header(ws_rb, len(_RUBRIC_COLUMNS))
+    style_xlsx_header(ws_rb, len(_RUBRIC_COLUMNS))
+    ws_rb.freeze_panes = "A2"
     for i, col_name in enumerate(_RUBRIC_COLUMNS, start=1):
         ws_rb.column_dimensions[ws_rb.cell(row=1, column=i).column_letter].width = 20
 

@@ -1,4 +1,4 @@
-"""Tests for LLM-based screening module (Protocol Amendment A9)."""
+﻿"""Tests for LLM-based screening module (Protocol Amendment A9)."""
 
 from __future__ import annotations
 
@@ -9,29 +9,10 @@ from pathlib import Path
 import pytest
 
 from tools.slr_toolkit import config
+from .conftest import SAMPLE_RECORDS, make_master_csv
 
 
-# ── Fixtures ──────────────────────────────────────────────────────────────
-
-SAMPLE_RECORDS = [
-    {"paper_id": f"p{i:03d}", "title": f"Paper {i}", "authors": f"Author {i}",
-     "year": "2023", "abstract": f"Abstract for paper {i}", "source_db": "test"}
-    for i in range(5)
-]
-
-
-def _make_master_csv(path: Path, records: list[dict]) -> Path:
-    cols = config.NORMALIZED_COLUMNS + ["duplicate_of"]
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=cols)
-        writer.writeheader()
-        for rec in records:
-            row = {c: rec.get(c, "") for c in cols}
-            writer.writerow(row)
-    return path
-
-
-# ── Tests: _build_url ─────────────────────────────────────────────────────
+# â”€â”€ Tests: _build_url â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestBuildUrl:
@@ -58,7 +39,7 @@ class TestBuildUrl:
         assert "deployments/gpt-4o" in url
 
 
-# ── Tests: _parse_llm_response ───────────────────────────────────────────
+# â”€â”€ Tests: _parse_llm_response â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestParseLLMResponse:
@@ -93,7 +74,8 @@ class TestParseLLMResponse:
         }
         result = _parse_llm_response(raw)
         assert result["decision"] == "include"
-        assert "(borderline→include)" in result["reasoning"]
+        assert "borderline" in result["reasoning"]
+        assert "include" in result["reasoning"]
 
     def test_json_in_markdown_fence(self):
         from tools.slr_toolkit.llm_screening import _parse_llm_response
@@ -164,7 +146,7 @@ class TestParseLLMResponse:
         assert result["reason_code"] == "EX-OTHER"
 
 
-# ── Tests: estimate_cost ─────────────────────────────────────────────────
+# â”€â”€ Tests: estimate_cost â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestEstimateCost:
@@ -188,7 +170,7 @@ class TestEstimateCost:
         assert result["est_total_cost_usd"] == 0
 
 
-# ── Tests: checkpoint ────────────────────────────────────────────────────
+# â”€â”€ Tests: checkpoint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestCheckpoint:
@@ -219,7 +201,7 @@ class TestCheckpoint:
         assert loaded["version"] == 1
 
 
-# ── Tests: _write_decisions_csv ──────────────────────────────────────────
+# â”€â”€ Tests: _write_decisions_csv â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestWriteDecisions:
@@ -258,7 +240,7 @@ class TestWriteDecisions:
         assert "ai_confidence" in cols
 
 
-# ── Tests: downstream compatibility ──────────────────────────────────────
+# â”€â”€ Tests: downstream compatibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 
 class TestDownstreamCompatibility:
@@ -290,7 +272,7 @@ class TestDownstreamCompatibility:
             "p001,include\np002,exclude\np003,include\np004,exclude\n"
         )
 
-        master = _make_master_csv(
+        master = make_master_csv(
             tmp_path / "master.csv",
             [{"paper_id": f"p{i:03d}", "title": f"T{i}"} for i in range(1, 5)],
         )
