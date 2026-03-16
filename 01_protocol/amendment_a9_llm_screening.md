@@ -14,17 +14,37 @@ The AI-assisted screening tool was changed from ASReview active learning to LLM-
 
 ## Rationale
 
-ASReview active learning did not discriminate effectively with the available calibration and validation labels. In practice, unlabeled records collapsed toward broad "include" predictions and did not provide a useful ranking or exclusion signal.
+ASReview active learning did not discriminate effectively with the available
+calibration and validation labels.  It required the 50 calibration + 100
+validation records as prior training labels (excluding them from the screening
+pool), yet still collapsed all remaining unlabelled records toward broad
+"include" predictions (~0.67 confidence), providing no useful ranking or
+exclusion signal.
 
-LLM-based classification does not require a training set. Each record is independently evaluated against the inclusion and exclusion criteria through a structured prompt that returns:
+LLM-based classification does not require a training set.  Each record is
+independently evaluated against the inclusion and exclusion criteria through a
+structured prompt.  Because the LLM needs no training data, it screens **all**
+unique records in the master library — including the calibration and validation
+subsets.  This has two advantages:
 
-- a binary decision
-- a confidence score
-- a reason code aligned with the exclusion taxonomy
-- a brief reasoning trace
+1. No records are excluded from AI screening (the calibration set is no longer
+   "consumed" as training data).
+2. The held-out validation subset receives both human consensus labels and
+   independent LLM decisions, enabling a direct recall/precision comparison
+   via the existing `ai-validation` command.
+
+Each LLM classification returns:
+
+- a binary decision (include / exclude)
+- a confidence score (0–1)
+- a reason code aligned with the protocol's exclusion taxonomy
+- a brief reasoning trace (one sentence)
 
 ## Current Implementation Notes
 
+- **Records screened**: 3,230 unique (non-duplicate) records from the master
+  library — all records including calibration (50) and validation (100) subsets.
+  ASReview would have excluded these 150 records as training data.
 - The screening was run with `o4-mini` (OpenAI reasoning model) after evaluating
   `gpt-4.1-mini`, `DeepSeek-V3.2`, and `o4-mini`.
 - `gpt-4.1-mini` was the first successful run (572 include, 17.7%).
