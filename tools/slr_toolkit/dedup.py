@@ -36,6 +36,25 @@ def deduplicate(df: pd.DataFrame, *, fuzzy: bool = True) -> pd.DataFrame:
     df = df.copy()
     df["duplicate_of"] = ""
 
+    # --- Pass 0: exact paper_id collisions ---------------------------------
+    # `paper_id` is the frozen screening key used by downstream manual review.
+    # If multiple rows share the same generated paper_id, they must collapse to
+    # a single canonical record before screening outputs can be joined safely.
+    df["_paper_id"] = df["paper_id"].astype(str).str.strip()
+    pid_groups = df[df["_paper_id"] != ""].groupby("_paper_id", sort=False)
+
+    pid_dupes = 0
+    for _paper_id, grp in pid_groups:
+        if len(grp) < 2:
+            continue
+        canonical = grp.index[0]
+        for idx in grp.index[1:]:
+            if df.at[idx, "duplicate_of"] == "":
+                df.at[idx, "duplicate_of"] = df.at[canonical, "paper_id"]
+                pid_dupes += 1
+
+    log.info("Pass 0 (paper_id): %d duplicate rows collapsed", pid_dupes)
+
     # --- Pass 1: DOI exact match (case-insensitive) -------------------------
     df["_doi_lower"] = df["doi"].astype(str).str.strip().str.lower()
     doi_groups = df[df["_doi_lower"] != ""].groupby("_doi_lower")

@@ -12,34 +12,36 @@ from tools.slr_toolkit import config
 from .conftest import SAMPLE_RECORDS, make_master_csv
 
 
-# â”€â”€ Tests: _build_url â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Tests: normalise_endpoint -------------------------------------------------
 
 
-class TestBuildUrl:
-    def test_standard_azure_endpoint(self):
-        from tools.slr_toolkit.llm_screening import _build_url
+class TestNormaliseEndpoint:
+    def test_bare_endpoint(self):
+        from tools.slr_toolkit.azure_client import normalise_endpoint
 
-        url = _build_url("https://myresource.openai.azure.com", "gpt-4o")
-        assert "deployments/gpt-4o" in url
-        assert "api-version=" in url
+        url = normalise_endpoint("https://myresource.openai.azure.com")
+        assert url == "https://myresource.openai.azure.com/openai/v1/"
 
-    def test_v1_compatible_endpoint(self):
-        from tools.slr_toolkit.llm_screening import _build_url
+    def test_trailing_slash(self):
+        from tools.slr_toolkit.azure_client import normalise_endpoint
 
-        url = _build_url(
-            "https://myresource.openai.azure.com/openai/v1/", "gpt-4o",
-        )
-        assert url.endswith("/chat/completions")
-        assert "deployments" not in url
+        url = normalise_endpoint("https://myresource.openai.azure.com/")
+        assert url == "https://myresource.openai.azure.com/openai/v1/"
 
-    def test_trailing_slash_stripped(self):
-        from tools.slr_toolkit.llm_screening import _build_url
+    def test_already_has_v1(self):
+        from tools.slr_toolkit.azure_client import normalise_endpoint
 
-        url = _build_url("https://myresource.openai.azure.com/", "gpt-4o")
-        assert "deployments/gpt-4o" in url
+        url = normalise_endpoint("https://myresource.openai.azure.com/openai/v1/")
+        assert url == "https://myresource.openai.azure.com/openai/v1/"
+
+    def test_v1_without_trailing_slash(self):
+        from tools.slr_toolkit.azure_client import normalise_endpoint
+
+        url = normalise_endpoint("https://myresource.openai.azure.com/openai/v1")
+        assert url == "https://myresource.openai.azure.com/openai/v1/"
 
 
-# â”€â”€ Tests: _parse_llm_response â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Tests: _parse_llm_response ------------------------------------------------
 
 
 class TestParseLLMResponse:
@@ -146,7 +148,7 @@ class TestParseLLMResponse:
         assert result["reason_code"] == "EX-OTHER"
 
 
-# â”€â”€ Tests: estimate_cost â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Tests: estimate_cost ------------------------------------------------------
 
 
 class TestEstimateCost:
@@ -170,7 +172,7 @@ class TestEstimateCost:
         assert result["est_total_cost_usd"] == 0
 
 
-# â”€â”€ Tests: checkpoint â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Tests: checkpoint ---------------------------------------------------------
 
 
 class TestCheckpoint:
@@ -201,7 +203,7 @@ class TestCheckpoint:
         assert loaded["version"] == 1
 
 
-# â”€â”€ Tests: _write_decisions_csv â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Tests: _write_decisions_csv -----------------------------------------------
 
 
 class TestWriteDecisions:
@@ -240,7 +242,7 @@ class TestWriteDecisions:
         assert "ai_confidence" in cols
 
 
-# â”€â”€ Tests: downstream compatibility â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# -- Tests: downstream compatibility -------------------------------------------
 
 
 class TestDownstreamCompatibility:
@@ -289,7 +291,6 @@ class TestDownstreamCompatibility:
         from tools.slr_toolkit.screening import compute_ai_validation
         from openpyxl import Workbook
 
-        # Validation workbook with known decisions
         val_path = tmp_path / "val.xlsx"
         wb = Workbook()
         ws = wb.active
@@ -298,26 +299,30 @@ class TestDownstreamCompatibility:
                                 "DOI", "Abstract", "Source",
                                 "Rev A", "Rev B", "Final", "Notes"], 1):
             ws.cell(row=1, column=i, value=h)
-        for idx, (pid, dec) in enumerate([
-            ("p001", "include"), ("p002", "include"),
-            ("p003", "exclude"), ("p004", "exclude"),
-        ], start=2):
-            ws.cell(row=idx, column=1, value=idx - 1)
-            ws.cell(row=idx, column=2, value=pid)
-            ws.cell(row=idx, column=3, value=f"Title {pid}")
-            ws.cell(row=idx, column=9, value=dec)
-            ws.cell(row=idx, column=11, value=dec)
+        ws.cell(row=2, column=2, value="p001")
+        ws.cell(row=2, column=3, value="T1")
+        ws.cell(row=2, column=11, value="include")
+        ws.cell(row=3, column=2, value="p002")
+        ws.cell(row=3, column=3, value="T2")
+        ws.cell(row=3, column=11, value="include")
+        ws.cell(row=4, column=2, value="p003")
+        ws.cell(row=4, column=3, value="T3")
+        ws.cell(row=4, column=11, value="exclude")
+        ws.cell(row=5, column=2, value="p004")
+        ws.cell(row=5, column=3, value="T4")
+        ws.cell(row=5, column=11, value="exclude")
         wb.save(val_path)
 
-        # LLM decisions CSV
         ai_csv = tmp_path / "ai.csv"
         self._write_llm_decisions(ai_csv)
 
         metrics = compute_ai_validation(val_path, ai_csv, tmp_path / "report.md")
-
-        assert metrics["n"] == 4
         assert "recall" in metrics
-        assert "pass" in metrics
+        assert metrics["recall"] == 1.0
+        assert metrics["pass"] is True
+
+
+# -- Tests: input validation ---------------------------------------------------
 
 
 class TestRunLLMScreeningValidation:
@@ -331,4 +336,4 @@ class TestRunLLMScreeningValidation:
         from tools.slr_toolkit.llm_screening import run_llm_screening
 
         with pytest.raises(ValueError, match="delay"):
-            run_llm_screening(delay=-0.1, estimate_only=True)
+            run_llm_screening(delay=-1, estimate_only=True)

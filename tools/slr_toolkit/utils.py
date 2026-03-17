@@ -193,7 +193,20 @@ def load_master_records(*, unique_only: bool = False) -> list[dict[str, str]]:
         rows = list(csv.DictReader(f))
 
     if unique_only:
-        return [row for row in rows if not row.get("duplicate_of", "").strip()]
+        unique_rows = [row for row in rows if not row.get("duplicate_of", "").strip()]
+
+        # Preserve the first canonical row for each paper_id so downstream
+        # screening/audit logic remains aligned with the fixed manual workbooks.
+        deduped_rows: list[dict[str, str]] = []
+        seen_paper_ids: set[str] = set()
+        for row in unique_rows:
+            paper_id = row.get("paper_id", "").strip()
+            if paper_id and paper_id in seen_paper_ids:
+                continue
+            if paper_id:
+                seen_paper_ids.add(paper_id)
+            deduped_rows.append(row)
+        return deduped_rows
     return rows
 
 

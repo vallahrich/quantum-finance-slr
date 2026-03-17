@@ -5,6 +5,7 @@ from __future__ import annotations
 import csv
 import logging
 import random
+import time
 from pathlib import Path
 
 from openpyxl import Workbook, load_workbook
@@ -67,6 +68,119 @@ _SPLIT_REVIEW_WIDTHS = {
 def _load_unique_records() -> list[dict[str, str]]:
     """Load non-duplicate records from master_records.csv."""
     return load_master_records(unique_only=True)
+
+
+def _normalize_screening_decision(value: object) -> str:
+    """Normalize workbook/CSV decision values to include/exclude/maybe/blank."""
+    text = str(value or "").strip().lower()
+    return text if text in {"include", "exclude", "maybe"} else ""
+
+
+def _infer_final_decision(
+    reviewer_a: str,
+    reviewer_b: str = "",
+    final_value: object = "",
+) -> str:
+    """Return the most defensible final decision available from workbook cells."""
+    final_decision = _normalize_screening_decision(final_value)
+    if final_decision:
+        return final_decision
+    if reviewer_a and reviewer_b and reviewer_a == reviewer_b:
+        return reviewer_a
+    if reviewer_a and not reviewer_b:
+        return reviewer_a
+    if reviewer_b and not reviewer_a:
+        return reviewer_b
+    if reviewer_a == "maybe" or reviewer_b == "maybe":
+        return "maybe"
+    return ""
+
+
+def _infer_conflict(reviewer_a: str, reviewer_b: str) -> str:
+    """Flag whether a dual-review row contains a reviewer disagreement."""
+    if reviewer_a and reviewer_b:
+        return "yes" if reviewer_a != reviewer_b else "no"
+    return ""
+
+
+def _workbook_screening_rows(
+    path: Path,
+    *,
+    dual_review: bool,
+    reviewer_label: str | None = None,
+) -> list[dict[str, str]]:
+    """Read screening workbook rows into the canonical title/abstract schema."""
+    if not path.exists():
+        log.warning("Screening workbook not found: %s", path)
+        return []
+
+    last_error: PermissionError | None = None
+    wb = None
+    for attempt in range(5):
+        try:
+            wb = load_workbook(path, read_only=True, data_only=True)
+            break
+        except PermissionError as exc:
+            last_error = exc
+            time.sleep(0.5 * (attempt + 1))
+    if wb is None:
+        raise RuntimeError(
+            f"Could not read screening workbook '{path.name}' because it is locked. "
+            "Close the Excel file and rerun the command."
+        ) from last_error
+    ws = wb["Screening"]
+    rows: list[dict[str, str]] = []
+
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if row[2] is None:
+            continue
+
+        reviewer_a = _normalize_screening_decision(row[8] if len(row) > 8 else "")
+        reviewer_b = _normalize_screening_decision(row[9] if len(row) > 9 else "")
+        final_cell = row[10] if len(row) > 10 else ""
+        notes = str(row[11] if dual_review and len(row) > 11 else row[9] if len(row) > 9 else "" or "")
+
+        if dual_review:
+            final_decision = _infer_final_decision(reviewer_a, reviewer_b, final_cell)
+            rows.append({
+                "paper_id": str(row[1] or ""),
+                "decision_reviewer_A": reviewer_a,
+                "decision_reviewer_B": reviewer_b,
+                "conflict": _infer_conflict(reviewer_a, reviewer_b),
+                "final_decision": final_decision,
+                "reason_code": "",
+                "notes": notes,
+            })
+            continue
+
+        split_decision = _normalize_screening_decision(row[8] if len(row) > 8 else "")
+        rows.append({
+            "paper_id": str(row[1] or ""),
+            "decision_reviewer_A": split_decision if reviewer_label == "A" else "",
+            "decision_reviewer_B": split_decision if reviewer_label == "B" else "",
+            "conflict": "no" if split_decision else "",
+            "final_decision": split_decision,
+            "reason_code": "",
+            "notes": notes,
+        })
+
+    wb.close()
+    return rows
+
+
+def _dual_review_labels_from_workbook(path: Path) -> list[dict[str, str]]:
+    """Read resolved include/exclude labels from a dual-review screening workbook."""
+    rows = _workbook_screening_rows(path, dual_review=True)
+    labels: list[dict[str, str]] = []
+    for row in rows:
+        decision = row["final_decision"]
+        if decision not in {"include", "exclude"}:
+            continue
+        labels.append({
+            "paper_id": row["paper_id"],
+            "label_included": "1" if decision == "include" else "0",
+        })
+    return labels
 
 
 def _make_decision_validation() -> DataValidation:
@@ -456,7 +570,11 @@ def merge_screening_results(
     reviewer_b_path: Path | None = None,
     output_path: Path | None = None,
 ) -> Path:
-    """Merge calibration + split screening results into one decisions CSV."""
+    """Merge calibration + split screening workbooks into one canonical CSV.
+
+    This preserves the fixed manual Excel workbooks and regenerates the
+    downstream CSV contract expected by templates and PRISMA calculations.
+    """
     if calibration_path is None:
         calibration_path = config.CALIBRATION_SCREENING_XLSX
     if reviewer_a_path is None:
@@ -466,45 +584,19 @@ def merge_screening_results(
     if output_path is None:
         output_path = config.TA_DECISIONS_FILE
 
-    rows: list[dict[str, str]] = []
+    rows = _workbook_screening_rows(calibration_path, dual_review=True)
+    rows.extend(_workbook_screening_rows(reviewer_a_path, dual_review=False, reviewer_label="A"))
+    rows.extend(_workbook_screening_rows(reviewer_b_path, dual_review=False, reviewer_label="B"))
 
-    # Calibration: use final_decision column
-    wb = load_workbook(calibration_path, read_only=True)
-    ws = wb["Screening"]
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if row[2] is None:
-            continue
-        decision = str(row[10] or row[8] or "").strip().lower()  # final > reviewer_a
-        rows.append({
-            "paper_id": str(row[1] or ""),
-            "title": str(row[2] or ""),
-            "decision": decision,
-            "reviewer": "calibration",
-            "notes": str(row[11] or ""),
-        })
-    wb.close()
-
-    # Reviewer A and B
-    for label, path in [("A", reviewer_a_path), ("B", reviewer_b_path)]:
-        if not path.exists():
-            log.warning("Reviewer %s file not found: %s", label, path)
-            continue
-        wb = load_workbook(path, read_only=True)
-        ws = wb["Screening"]
-        for row in ws.iter_rows(min_row=2, values_only=True):
-            if row[2] is None:
-                continue
-            decision = str(row[8] or "").strip().lower()
-            rows.append({
-                "paper_id": str(row[1] or ""),
-                "title": str(row[2] or ""),
-                "decision": decision,
-                "reviewer": f"reviewer_{label}",
-                "notes": str(row[9] or ""),
-            })
-        wb.close()
-
-    fieldnames = ["paper_id", "title", "decision", "reviewer", "notes"]
+    fieldnames = [
+        "paper_id",
+        "decision_reviewer_A",
+        "decision_reviewer_B",
+        "conflict",
+        "final_decision",
+        "reason_code",
+        "notes",
+    ]
     with open(output_path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writeheader()
@@ -586,42 +678,54 @@ def export_asreview_labels(
     """
     if calibration_path is None:
         calibration_path = config.CALIBRATION_SCREENING_XLSX
+    # Backward-compatible positional handling:
+    # export_asreview_labels(calibration_path, output_path)
+    if (
+        validation_path is not None
+        and output_path is None
+        and validation_path.suffix.lower() == ".csv"
+    ):
+        output_path = validation_path
+        validation_path = None
     if validation_path is None:
         validation_path = config.VALIDATION_SCREENING_XLSX
     if output_path is None:
         output_path = config.ASREVIEW_PRIOR_LABELS_CSV
 
-    from openpyxl import load_workbook as _load_wb
-
-    def _read_labels_from_workbook(path: Path) -> list[dict[str, str]]:
-        """Read labelled rows from an Excel screening workbook."""
-        wb = _load_wb(path, read_only=True)
+    def _label_metadata_map(path: Path) -> dict[str, dict[str, str]]:
+        if not path.exists():
+            return {}
+        wb = load_workbook(path, read_only=True, data_only=True)
         ws = wb["Screening"]
-        rows: list[dict[str, str]] = []
+        metadata: dict[str, dict[str, str]] = {}
         for row in ws.iter_rows(min_row=2, values_only=True):
             if row[2] is None:
                 continue
-            # final decision (col K=10) > reviewer A (col I=8) fallback
-            decision = str(row[10] or row[8] or "").strip().lower()
-            if decision not in ("include", "exclude"):
-                continue
-            rows.append({
-                "paper_id": str(row[1] or ""),
+            paper_id = str(row[1] or "")
+            metadata[paper_id] = {
                 "title": str(row[2] or ""),
                 "abstract": str(row[6] or ""),
                 "doi": str(row[5] or ""),
-                "label_included": "1" if decision == "include" else "0",
-            })
+            }
         wb.close()
-        return rows
+        return metadata
 
-    rows = _read_labels_from_workbook(calibration_path)
+    cal_labels = _dual_review_labels_from_workbook(calibration_path)
+    cal_meta = _label_metadata_map(calibration_path)
+    rows = [
+        {**label, **cal_meta.get(label["paper_id"], {"title": "", "abstract": "", "doi": ""})}
+        for label in cal_labels
+    ]
     cal_count = len(rows)
 
     val_count = 0
     if validation_path.exists():
         seen_ids = {r["paper_id"] for r in rows}
-        val_rows = _read_labels_from_workbook(validation_path)
+        val_meta = _label_metadata_map(validation_path)
+        val_rows = [
+            {**label, **val_meta.get(label["paper_id"], {"title": "", "abstract": "", "doi": ""})}
+            for label in _dual_review_labels_from_workbook(validation_path)
+        ]
         # Avoid duplicates if any paper appears in both workbooks
         for r in val_rows:
             if r["paper_id"] not in seen_ids:
@@ -788,6 +892,10 @@ def find_discrepancies(
     else:
         raise ValueError("Human decisions file must have 'final_decision' or 'decision' column.")
 
+    human_df = human_df[human_df["human_decision"].isin(["include", "exclude"])].copy()
+    ai_df["ai_decision"] = ai_df["ai_decision"].str.strip().str.lower()
+    ai_df = ai_df[ai_df["ai_decision"].isin(["include", "exclude"])].copy()
+
     merged = human_df[["paper_id", "human_decision"]].merge(
         ai_df[["paper_id", "ai_decision", "ai_confidence"]],
         on="paper_id",
@@ -899,21 +1007,19 @@ def compute_ai_validation(
         report_path = config.AI_VALIDATION_REPORT
 
     # Read human consensus from validation workbook
-    wb = _load_wb(validation_path, read_only=True)
-    ws = wb["Screening"]
-    human: dict[str, str] = {}
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if row[2] is None:
-            continue
-        pid = str(row[1] or "")
-        decision = str(row[10] or row[8] or "").strip().lower()
-        if decision in ("include", "exclude"):
-            human[pid] = decision
-    wb.close()
+    human = {
+        row["paper_id"]: row["final_decision"]
+        for row in _workbook_screening_rows(validation_path, dual_review=True)
+        if row["final_decision"] in {"include", "exclude"}
+    }
 
     # Read AI decisions
     ai_df = pd.read_csv(ai_decisions_path, dtype=str).fillna("")
-    ai_map: dict[str, str] = dict(zip(ai_df["paper_id"], ai_df["ai_decision"]))
+    ai_map: dict[str, str] = {
+        paper_id: decision
+        for paper_id, decision in zip(ai_df["paper_id"], ai_df["ai_decision"].str.strip().str.lower())
+        if decision in {"include", "exclude"}
+    }
 
     # Compute metrics on the intersection
     common_ids = sorted(set(human.keys()) & set(ai_map.keys()))

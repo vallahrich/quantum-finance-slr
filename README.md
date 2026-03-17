@@ -105,25 +105,34 @@ Outputs `02_search_logs/prisma_counts.xlsx` with flow counts, exclusion-reason b
 
 ```text
 quantum-finance-slr/
-|-- 01_protocol/
-|-- 02_search_logs/
-|-- 03_raw_exports/
-|-- 04_deduped_library/
-|-- 05_screening/
-|   |-- title_abstract_decisions_template.csv
-|   |-- full_text_decisions_template.csv
-|   |-- included_for_coding.csv
+|-- 01_protocol/           # Study protocol, amendments, PRISMA checklists
+|-- 02_search_logs/         # PRISMA-S search log, benchmark check, snowball log
+|-- 03_raw_exports/         # Raw API search results per source
+|-- 04_deduped_library/     # Deduplicated master_records.csv + master_library.bib
+|-- 05_screening/           # Screening workbooks, AI decisions, calibration log
+|   |-- calibration_screening.xlsx
+|   |-- validation_screening.xlsx
+|   |-- screening_reviewer_A.xlsx
+|   |-- screening_reviewer_B.xlsx
+|   |-- ai_screening_decisions.csv
 |   |-- llm_screening_checkpoint.json
 |   `-- llm_screening_prompt_log.jsonl
-|-- 06_extraction/
+|-- 06_extraction/          # Data extraction, topic coding, codebook
 |   |-- extraction_template.xlsx
 |   |-- codebook.md
+|   |-- topic_taxonomy.md
 |   |-- topic_coding.csv
 |   `-- topic_coding_summary.md
-|-- 07_figures/
+|-- 07_figures/             # Output figures
+|-- .env.example            # Environment variable template
 `-- tools/
-    |-- slr_toolkit/
-    `-- tests/
+    |-- slr_toolkit/        # Core Python package
+    |   |-- azure_client.py # Azure OpenAI SDK client
+    |   |-- cli.py          # CLI entry point
+    |   |-- llm_screening.py
+    |   |-- topic_coding.py
+    |   `-- ...             # config, dedup, ingest, screening, etc.
+    `-- tests/              # pytest test suite
 ```
 
 ## Screening Workflow
@@ -168,10 +177,40 @@ Use `--input-file 05_screening/included_for_coding.csv` when you have an interim
 
 ## AI / LLM Notes
 
+### Azure OpenAI Setup
+
+The toolkit connects to Azure OpenAI via the official `openai` SDK using the
+v1-compatible endpoint pattern (`/openai/v1/`).
+
+**Required environment variables** (or CLI flags):
+
+| Variable | CLI Flag | Description |
+|----------|----------|-------------|
+| `AZURE_OPENAI_ENDPOINT` | `--endpoint` | Azure resource URL, e.g. `https://myresource.openai.azure.com` |
+| `AZURE_OPENAI_DEPLOYMENT` | `--deployment` | Deployment name, e.g. `gpt-5-mini` |
+| `AZURE_OPENAI_API_KEY` | `--api-key` | API key *(or use `az login` for keyless auth)* |
+
+See [.env.example](.env.example) for a template.
+
+**Authentication options:**
+1. **API key**: set `AZURE_OPENAI_API_KEY` or pass `--api-key`
+2. **Azure AD (keyless)**: run `az login` — no API key needed
+
+**Smoke test** — verify your deployment works:
+
+```bash
+python -m tools.slr_toolkit.smoke_test \
+    --endpoint "https://myresource.openai.azure.com" \
+    --deployment gpt-5-mini
+```
+
+### Model Notes
+
 - `llm-screen` and `topic-code` support either `--api-key` / `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
+- The toolkit uses the OpenAI **Responses API** (`/openai/v1/responses`) with structured JSON output for reliable results.
 - The toolkit's current screening cost assumptions in code are based on `gpt-5-mini`.
-- The completed repository screening run was performed with `o4-mini`.
-- Models trialed during evaluation included `gpt-4.1-mini`, `DeepSeek-V3.2`, and `o4-mini`.
+- The completed repository screening run was performed with `gpt-5-mini`.
+- Models trialed during evaluation included `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini`, and `gpt-5-mini`.
 - `llm-screen` writes resumable progress to `05_screening/llm_screening_checkpoint.json`.
 - `llm-screen` writes a per-record audit log to `05_screening/llm_screening_prompt_log.jsonl`.
 - `import-ai-decisions` validates imported labels instead of silently treating unknown values as excludes.
@@ -183,6 +222,29 @@ Accepted imported AI labels include:
 - `yes` / `no`
 - `include` / `exclude`
 - `relevant` / `irrelevant`
+
+## Current Screening Results (gpt-5-mini)
+
+| Metric | Count | % |
+|--------|-------|---|
+| Total unique records | 6,232 ingested, 3,222 duplicates removed | |
+| **Screened** | **3,010** | 100% |
+| Include | 651 | 21.6% |
+| Exclude | 2,359 | 78.4% |
+| ERR-LLM (fallback to include) | 33 | 1.1% |
+
+**Top exclusion reasons:**
+
+| Code | Count | Description |
+|------|-------|-------------|
+| EX-NONFIN | 1,014 | Not a finance application |
+| EX-NOMETHOD | 667 | Survey/review, no original method |
+| EX-TOOSHORT | 312 | Insufficient methodological detail |
+| EX-PARADIGM | 284 | Annealing only / quantum-inspired |
+| EX-OTHER | 76 | Miscellaneous |
+| EX-NOTEN | 6 | Non-English |
+
+**Calibration**: Cohen's kappa = 0.849 (PASS, threshold 0.70). See [calibration_log.md](05_screening/calibration_log.md).
 
 ## How PRISMA Counts Are Computed
 
@@ -207,12 +269,14 @@ pytest tools/tests -v
 
 Coverage currently includes:
 
+- Azure OpenAI endpoint normalisation
 - DOI-exact deduplication
 - fuzzy-title deduplication
 - ingest parsing for RIS, BibTeX, and CSV
-- query-builder logic
+- query-builder logic for all 4 APIs
+- LLM response parsing and structured output validation
 - AI-screening and topic-coding flows
-- shared utilities (hashing, kappa, safe I/O)
+- shared utilities (hashing, kappa, safe I/O, atomic writes)
 
 ## Methodological Frameworks
 

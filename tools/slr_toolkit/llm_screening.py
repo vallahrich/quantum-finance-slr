@@ -1,7 +1,7 @@
 """LLM-based title/abstract screening via Azure OpenAI.
 
 Replaces ASReview active-learning step (Protocol Amendment A9).
-Uses only stdlib (urllib + json) — no additional dependencies.
+Uses the ``openai`` SDK for Azure OpenAI connectivity.
 
 Output is backward-compatible with the existing downstream pipeline:
 ``ai_screening_decisions.csv`` with columns ``paper_id``, ``ai_decision``,
@@ -15,18 +15,26 @@ import json
 import logging
 import os
 import re
-import ssl
-import subprocess
 import time
-import urllib.error
-import urllib.request
 from json import JSONDecodeError
 from pathlib import Path
 
 from . import config
+from .azure_client import (
+    AzureAPIError,
+    AzureOpenAIClient,
+    chat_completion,
+    create_client,
+    get_azure_ad_token,
+    _refresh_ad_token,
+)
 from .utils import atomic_write_text, ensure_dir, load_master_records, safe_float
 
 log = logging.getLogger(__name__)
+
+# Backward-compat aliases used by topic_coding
+_AzureAPIError = AzureAPIError
+_get_azure_ad_token = get_azure_ad_token
 
 # ── Azure OpenAI pricing (USD per 1 K tokens) ───────────────────────────
 # Default: gpt-5-mini pricing as of 2026-03-14. Adjust these for your deployment.
@@ -75,52 +83,36 @@ SYSTEM_PROMPT: str = (
     "}"
 )
 
+# ── Structured output schema for screening decisions ─────────────────────
+
+SCREENING_RESPONSE_SCHEMA: dict = {
+    "name": "screening_decision",
+    "strict": True,
+    "schema": {
+        "type": "object",
+        "properties": {
+            "decision": {"type": "string", "enum": ["include", "exclude"]},
+            "confidence": {"type": "number"},
+            "reason_code": {"type": "string"},
+            "reasoning": {"type": "string"},
+        },
+        "required": ["decision", "confidence", "reason_code", "reasoning"],
+        "additionalProperties": False,
+    },
+}
+
 
 # ── Helpers ──────────────────────────────────────────────────────────────
-
-class _AzureAPIError(Exception):
-    """Azure OpenAI API error carrying the HTTP status code."""
-
-    def __init__(self, message: str, status_code: int | None = None):
-        super().__init__(message)
-        self.status_code = status_code
-
 
 def _build_user_prompt(title: str, abstract: str, paper_id: str) -> str:
     abstract_text = abstract.strip() if abstract.strip() else "(no abstract available)"
     return f"Paper ID: {paper_id}\nTitle: {title}\nAbstract: {abstract_text}"
 
 
-def _build_url(endpoint: str, deployment: str) -> str:
-    """Build the Azure OpenAI / AI Services chat completions URL.
-
-    Supports three endpoint styles:
-    - ``https://RESOURCE.openai.azure.com/openai/v1/``  (OpenAI-compatible)
-    - ``https://RESOURCE.openai.azure.com``              (standard Azure OpenAI)
-    - ``https://RESOURCE.cognitiveservices.azure.com``   (AI Services / MaaS)
-    """
-    endpoint = endpoint.rstrip("/")
-    if "/openai/v1" in endpoint:
-        return f"{endpoint}/chat/completions"
-    return (
-        f"{endpoint}/openai/deployments/{deployment}"
-        f"/chat/completions?api-version=2025-01-01-preview"
-    )
-
-
-def _extract_message_content(content: object) -> str:
-    if isinstance(content, str):
-        return content
-    if isinstance(content, list):
-        text_parts = []
-        for part in content:
-            if isinstance(part, dict) and part.get("type") == "text":
-                text_parts.append(str(part.get("text", "")))
-        return "".join(text_parts)
-    return str(content or "")
-
-
-# Re-export for backward compatibility (topic_coding imports this)
+# Backward-compat aliases for topic_coding imports
+_build_url = None  # no longer used; topic_coding will be updated
+_call_azure_openai = None  # no longer used
+_extract_message_content = None  # no longer used
 _safe_float = safe_float
 
 
@@ -131,136 +123,6 @@ def _normalize_reason_code(value: object, decision: str) -> str:
     return "INCLUDE" if decision == "include" else "EX-OTHER"
 
 
-# ── Azure AD token helper ────────────────────────────────────────────────
-
-_cached_ad_token: dict | None = None  # {"token": str, "expires_on": float}
-
-
-def _get_azure_ad_token() -> str:
-    """Obtain a bearer token via ``az account get-access-token``.
-
-    Uses the caller's existing ``az login`` session — no stored secrets.
-    Tokens are cached until 2 minutes before expiry.
-    """
-    global _cached_ad_token  # noqa: PLW0603
-    now = time.time()
-    if _cached_ad_token and _cached_ad_token["expires_on"] - now > 120:
-        return _cached_ad_token["token"]
-
-    import shutil
-    az_cmd = shutil.which("az") or shutil.which("az.cmd") or "az"
-
-    try:
-        result = subprocess.run(  # noqa: S603
-            [az_cmd, "account", "get-access-token",
-             "--resource", "https://cognitiveservices.azure.com",
-             "-o", "json"],
-            capture_output=True, text=True, timeout=30,
-            check=True,
-        )
-    except FileNotFoundError:
-        raise RuntimeError(
-            "Azure CLI ('az') not found. Install it or provide --api-key."
-        )
-    except subprocess.CalledProcessError as exc:
-        raise RuntimeError(
-            f"'az account get-access-token' failed.\n"
-            f"Run 'az login' first.\n{exc.stderr.strip()}"
-        )
-
-    try:
-        token_data = json.loads(result.stdout)
-        token = token_data["accessToken"]
-        # expires_on is a Unix timestamp (int/float)
-        expires_on = float(token_data.get("expires_on", now + 3300))
-    except (json.JSONDecodeError, KeyError) as exc:
-        raise RuntimeError(
-            f"Failed to parse 'az account get-access-token' output: {exc}"
-        )
-    if not token:
-        raise RuntimeError(
-            "Azure CLI returned an empty token.  Run 'az login' and retry."
-        )
-
-    # Cache with real expiry from az CLI
-    _cached_ad_token = {"token": token, "expires_on": expires_on}
-    log.info("Acquired Azure AD token via 'az account get-access-token'")
-    return token
-
-
-# ── Azure OpenAI client (stdlib only) ────────────────────────────────────
-
-def _call_azure_openai(
-    url: str,
-    api_key: str,
-    deployment: str,
-    system_prompt: str,
-    user_prompt: str,
-    *,
-    temperature: float = 0.0,
-    max_tokens: int = 256,
-    timeout: int = 120,
-    use_ad_token: bool = False,
-) -> dict:
-    """Send a chat-completion request and return the parsed JSON response."""
-    is_reasoning = "o1" in deployment or "o3" in deployment or "o4" in deployment
-    
-    if is_reasoning:
-        body: dict = {
-            "messages": [
-                {"role": "developer", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            "max_completion_tokens": max_tokens * 4,
-        }
-    else:
-        body = {
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt},
-            ],
-            "temperature": temperature,
-            "max_tokens": max_tokens,
-            "response_format": {"type": "json_object"},
-        }
-    if "/openai/v1" in url:
-        body["model"] = deployment
-
-    data = json.dumps(body).encode("utf-8")
-    if use_ad_token:
-        token = _get_azure_ad_token()
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {token}",
-        }
-    else:
-        headers = {
-            "Content-Type": "application/json",
-            "api-key": api_key,
-        }
-
-    req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-    ctx = ssl.create_default_context()
-
-    try:
-        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except urllib.error.HTTPError as exc:
-        body_text = ""
-        try:
-            body_text = exc.read().decode("utf-8", errors="replace")
-        except Exception:
-            pass
-        raise _AzureAPIError(
-            f"HTTP {exc.code}: {exc.reason}\n{body_text}",
-            status_code=exc.code,
-        ) from exc
-    except urllib.error.URLError as exc:
-        raise _AzureAPIError(f"Connection error: {exc.reason}") from exc
-    except (TimeoutError, OSError) as exc:
-        raise _AzureAPIError(f"Timeout/connection error: {exc}") from exc
-
-
 # ── Response parsing ─────────────────────────────────────────────────────
 
 def _parse_llm_response(raw_response: dict) -> dict:
@@ -269,7 +131,16 @@ def _parse_llm_response(raw_response: dict) -> dict:
     if not choices:
         raise ValueError("No choices in API response")
 
-    content = _extract_message_content(choices[0].get("message", {}).get("content", ""))
+    message = choices[0].get("message", {})
+    content = str(message.get("content") or "").strip()
+
+    # gpt-5 models may use refusal field or return content differently
+    if not content and message.get("refusal"):
+        raise ValueError(f"Model refused: {message['refusal']}")
+    if not content:
+        log.warning("Empty content in message: %s", json.dumps(message, default=str)[:500])
+        raise ValueError(f"Cannot parse JSON from model output: {content!r}")
+
     usage = raw_response.get("usage", {})
 
     try:
@@ -532,33 +403,8 @@ def run_llm_screening(
     if estimate_only or dry_run:
         return estimate_cost(pending)
 
-    # ── Validate credentials ─────────────────────────────────────────────
-    use_ad_token = False
-    if not api_key:
-        # Try Azure AD auth via 'az login' session (keyless)
-        try:
-            _get_azure_ad_token()
-            use_ad_token = True
-            log.info("Using Azure AD token auth (no API key needed)")
-        except RuntimeError:
-            raise RuntimeError(
-                "No API key and Azure AD auth unavailable. "
-                "Either set AZURE_OPENAI_API_KEY / pass --api-key, "
-                "or run 'az login' for keyless auth."
-            )
-    if not endpoint:
-        raise RuntimeError(
-            "Azure OpenAI endpoint not set. "
-            "Set AZURE_OPENAI_ENDPOINT or pass --endpoint."
-        )
-    if not deployment:
-        raise RuntimeError(
-            "Azure OpenAI deployment not set. "
-            "Set AZURE_OPENAI_DEPLOYMENT or pass --deployment."
-        )
-
-    url = _build_url(endpoint, deployment)
-    log.info("Azure OpenAI URL: %s", url)
+    # ── Create SDK client ────────────────────────────────────────────────
+    client = create_client(endpoint=endpoint, api_key=api_key, deployment=deployment)
 
     # ── Screen in batches ────────────────────────────────────────────────
     total_prompt_tokens = 0
@@ -574,10 +420,7 @@ def run_llm_screening(
                 rec.get("title", ""), rec.get("abstract", ""), pid,
             )
 
-            decision = _screen_one_record(
-                url, api_key, deployment, user_prompt, pid,
-                use_ad_token=use_ad_token,
-            )
+            decision = _screen_one_record(client, user_prompt, pid)
 
             usage = decision.pop("_usage", {})
             total_prompt_tokens += usage.get("prompt_tokens", 0)
@@ -632,17 +475,21 @@ def run_llm_screening(
 
 
 def _screen_one_record(
-    url: str, api_key: str, deployment: str, user_prompt: str, paper_id: str,
-    *, use_ad_token: bool = False,
+    client: AzureOpenAIClient,
+    user_prompt: str,
+    paper_id: str,
 ) -> dict:
     """Call the API with retries and return a parsed decision dict."""
     last_error: Exception | None = None
 
     for attempt in range(5):
         try:
-            raw = _call_azure_openai(
-                url, api_key, deployment, SYSTEM_PROMPT, user_prompt,
-                use_ad_token=use_ad_token,
+            raw = chat_completion(
+                client,
+                system_prompt=SYSTEM_PROMPT,
+                user_prompt=user_prompt,
+                max_tokens=512,
+                response_schema=SCREENING_RESPONSE_SCHEMA,
             )
             return _parse_llm_response(raw)
 
@@ -651,13 +498,11 @@ def _screen_one_record(
             log.warning("Parse error for %s (attempt %d/5): %s", paper_id, attempt + 1, exc)
             time.sleep(2)
 
-        except _AzureAPIError as exc:
+        except AzureAPIError as exc:
             last_error = exc
             code = exc.status_code or 0
-            if code == 401 and use_ad_token:
-                # Token expired — force refresh and retry
-                global _cached_ad_token  # noqa: PLW0603
-                _cached_ad_token = None
+            if code == 401 and client.use_ad_token:
+                _refresh_ad_token()
                 log.warning("Token expired for %s, refreshing and retrying", paper_id)
                 time.sleep(1)
             elif code == 429:

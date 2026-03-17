@@ -10,6 +10,7 @@ from tools.slr_toolkit.utils import (
     atomic_write_text,
     cohens_kappa,
     generate_paper_id,
+    load_master_records,
     percent_agreement,
     safe_float,
     safe_write_text,
@@ -116,3 +117,22 @@ class TestSafeWriteText:
         result = safe_write_text(path, "overwrite", force=True)
         assert result is True
         assert path.read_text(encoding="utf-8") == "overwrite"
+
+
+class TestLoadMasterRecords:
+    def test_unique_only_collapses_reused_paper_ids(self, tmp_path: Path, monkeypatch) -> None:
+        from tools.slr_toolkit import config
+
+        path = tmp_path / "master.csv"
+        path.write_text(
+            "paper_id,title,duplicate_of\n"
+            "p001,Paper 1,\n"
+            "p001,Paper 1 variant,\n"
+            "p002,Paper 2,p001\n"
+            "p003,Paper 3,\n",
+            encoding="utf-8",
+        )
+        monkeypatch.setattr(config, "MASTER_RECORDS_CSV", path)
+
+        rows = load_master_records(unique_only=True)
+        assert [row["paper_id"] for row in rows] == ["p001", "p003"]

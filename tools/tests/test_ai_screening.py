@@ -100,6 +100,17 @@ class TestExportASReviewLabels:
         assert rows[0]["label_included"] == "1"
         assert rows[1]["label_included"] == "0"
 
+    def test_supports_second_positional_argument_as_output_path(self, tmp_path):
+        from tools.slr_toolkit.screening import export_asreview_labels
+
+        cal = _make_calibration_xlsx(
+            tmp_path / "cal.xlsx",
+            [("p001", "Paper 1", "include", "include")],
+        )
+        out = export_asreview_labels(cal, tmp_path / "labels.csv")
+        assert out == tmp_path / "labels.csv"
+        assert out.exists()
+
 
 class TestScreeningWorkbookGeneration:
     def test_validation_workbook_progress_formulas_reference_screening_sheet(self, tmp_path):
@@ -127,6 +138,56 @@ class TestScreeningWorkbookGeneration:
 
 
 # â”€â”€ Tests: import_ai_decisions â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+
+class TestMergeScreeningResults:
+    def test_writes_template_compatible_schema(self, tmp_path):
+        from openpyxl import Workbook
+        from tools.slr_toolkit.screening import merge_screening_results
+
+        cal = _make_calibration_xlsx(
+            tmp_path / "cal.xlsx",
+            [("p001", "Paper 1", "include", "include")],
+        )
+
+        reviewer_a = tmp_path / "reviewer_a.xlsx"
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Screening"
+        headers = ["#", "Paper ID", "Title", "Authors", "Year", "DOI", "Abstract", "Source", "Decision", "Notes"]
+        for i, header in enumerate(headers, 1):
+            ws.cell(row=1, column=i, value=header)
+        ws.cell(row=2, column=1, value=1)
+        ws.cell(row=2, column=2, value="p002")
+        ws.cell(row=2, column=3, value="Paper 2")
+        ws.cell(row=2, column=9, value="exclude")
+        wb.save(reviewer_a)
+
+        reviewer_b = tmp_path / "reviewer_b.xlsx"
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Screening"
+        for i, header in enumerate(headers, 1):
+            ws.cell(row=1, column=i, value=header)
+        ws.cell(row=2, column=1, value=1)
+        ws.cell(row=2, column=2, value="p003")
+        ws.cell(row=2, column=3, value="Paper 3")
+        ws.cell(row=2, column=9, value="include")
+        wb.save(reviewer_b)
+
+        out = merge_screening_results(cal, reviewer_a, reviewer_b, tmp_path / "merged.csv")
+        with open(out, encoding="utf-8") as f:
+            rows = list(csv.DictReader(f))
+
+        assert set(rows[0].keys()) == {
+            "paper_id", "decision_reviewer_A", "decision_reviewer_B",
+            "conflict", "final_decision", "reason_code", "notes",
+        }
+        assert rows[0]["final_decision"] == "include"
+        assert rows[1]["decision_reviewer_A"] == "exclude"
+        assert rows[1]["final_decision"] == "exclude"
+        assert rows[2]["decision_reviewer_B"] == "include"
+        assert rows[2]["final_decision"] == "include"
 
 
 class TestImportAIDecisions:
@@ -255,6 +316,30 @@ class TestFindDiscrepancies:
             rows = list(csv.DictReader(f))
         assert len(rows) == 4
         assert any(r["discrepancy_type"] == "ai_rescue" for r in rows)
+
+    def test_ignores_blank_human_decisions(self, tmp_path, monkeypatch):
+        from tools.slr_toolkit.screening import find_discrepancies
+
+        human_csv = tmp_path / "human.csv"
+        human_csv.write_text(
+            "paper_id,final_decision\n"
+            "p001,include\n"
+            "p002,\n"
+        )
+        ai_csv = tmp_path / "ai.csv"
+        ai_csv.write_text(
+            "paper_id,ai_decision,ai_confidence\n"
+            "p001,include,0.9\n"
+            "p002,exclude,0.1\n"
+        )
+        master = make_master_csv(
+            tmp_path / "master.csv",
+            [{"paper_id": "p001", "title": "T1"}, {"paper_id": "p002", "title": "T2"}],
+        )
+        monkeypatch.setattr(config, "MASTER_RECORDS_CSV", master)
+
+        counts = find_discrepancies(human_csv, ai_csv, tmp_path / "disc.csv")
+        assert counts == {"agree_include": 1}
 
 
 # â”€â”€ Tests: generate_fn_audit â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

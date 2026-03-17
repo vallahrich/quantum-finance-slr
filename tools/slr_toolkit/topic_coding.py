@@ -13,14 +13,17 @@ from json import JSONDecodeError
 from pathlib import Path
 
 from . import config
+from .azure_client import (
+    AzureAPIError,
+    AzureOpenAIClient,
+    chat_completion,
+    create_client,
+    _refresh_ad_token,
+)
 from .llm_screening import (
     INPUT_COST_PER_1K,
     OUTPUT_COST_PER_1K,
-    _AzureAPIError,
-    _build_url,
-    _call_azure_openai,
     _estimate_tokens,
-    _extract_message_content,
     _load_checkpoint,
     _save_checkpoint,
     _append_prompt_log,
@@ -139,7 +142,7 @@ def _parse_topic_response(raw_response: dict) -> dict[str, object]:
     if not choices:
         raise ValueError("No choices in API response")
 
-    content = _extract_message_content(choices[0].get("message", {}).get("content", ""))
+    content = str(choices[0].get("message", {}).get("content") or "").strip()
     usage = raw_response.get("usage", {})
 
     try:
@@ -421,32 +424,26 @@ def generate_topic_summary(
 
 
 def _screen_one_record(
-    url: str,
-    api_key: str,
-    deployment: str,
+    client: AzureOpenAIClient,
     record: dict[str, str],
-    *,
-    use_ad_token: bool = False,
 ) -> dict[str, object]:
     user_prompt = _build_user_prompt(record)
     last_error: Exception | None = None
 
     for attempt in range(3):
         try:
-            raw = _call_azure_openai(
-                url,
-                api_key,
-                deployment,
-                SYSTEM_PROMPT,
-                user_prompt,
-                use_ad_token=use_ad_token,
+            raw = chat_completion(
+                client,
+                system_prompt=SYSTEM_PROMPT,
+                user_prompt=user_prompt,
+                max_tokens=256,
             )
             return _parse_topic_response(raw)
         except (ValueError, JSONDecodeError) as exc:
             last_error = exc
             log.warning("Topic parse error for %s (attempt %d/3): %s", record.get("paper_id", ""), attempt + 1, exc)
             time.sleep(2)
-        except _AzureAPIError as exc:
+        except AzureAPIError as exc:
             last_error = exc
             code = exc.status_code or 0
             if code == 429:
@@ -504,26 +501,9 @@ def run_topic_coding(
     if estimate_only or dry_run:
         return estimate_topic_coding_cost(records)
 
-    if not endpoint:
-        raise RuntimeError("Azure OpenAI endpoint not set. Set AZURE_OPENAI_ENDPOINT or pass --endpoint.")
-    if not deployment:
-        raise RuntimeError("Azure OpenAI deployment not set. Set AZURE_OPENAI_DEPLOYMENT or pass --deployment.")
+    # ── Create SDK client ────────────────────────────────────────────────
+    client = create_client(endpoint=endpoint, api_key=api_key, deployment=deployment)
 
-    use_ad_token = False
-    if not api_key:
-        from .llm_screening import _get_azure_ad_token
-        try:
-            _get_azure_ad_token()
-            use_ad_token = True
-            log.info("Using Azure AD token auth (no API key needed)")
-        except RuntimeError:
-            raise RuntimeError(
-                "No API key and Azure AD auth unavailable. "
-                "Either set AZURE_OPENAI_API_KEY / pass --api-key, "
-                "or run 'az login' for keyless auth."
-            )
-
-    url = _build_url(endpoint, deployment)
     checkpoint = _load_checkpoint(checkpoint_path)
     screened_set = set(checkpoint.get("screened_ids", []))
     results = [row for row in _load_existing_rows(output_path) if row.get("paper_id") in screened_set]
@@ -532,7 +512,7 @@ def run_topic_coding(
     for batch_start in range(0, len(pending), batch_size):
         batch = pending[batch_start : batch_start + batch_size]
         for record in batch:
-            decision = _screen_one_record(url, api_key, deployment, record, use_ad_token=use_ad_token)
+            decision = _screen_one_record(client, record)
             usage = decision.pop("_usage", {})
             row = _serialize_topic_row(record, decision)
             results.append(row)

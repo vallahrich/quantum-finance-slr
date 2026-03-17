@@ -60,9 +60,22 @@ def generate_prisma_counts() -> dict[str, str | int]:
 
     # --- Title / abstract screening -----------------------------------------
     ta_df = _read_csv_safe(config.TA_DECISIONS_FILE)
-    if ta_df is not None and "final_decision" in ta_df.columns:
-        screened_ta = len(ta_df)
-        excluded_ta = (ta_df["final_decision"].str.strip().str.lower() == "exclude").sum()
+    if ta_df is not None:
+        decision_col = None
+        if "final_decision" in ta_df.columns:
+            decision_col = "final_decision"
+        elif "decision" in ta_df.columns:
+            decision_col = "decision"
+
+        if decision_col is not None:
+            valid_decisions = ta_df[decision_col].str.strip().str.lower().isin(["include", "exclude"])
+            screened_ta = int(valid_decisions.sum())
+            excluded_ta = int(
+                (ta_df[decision_col].str.strip().str.lower() == "exclude").sum()
+            )
+        else:
+            screened_ta = after_dedup if isinstance(after_dedup, int) else _MISSING
+            excluded_ta = _MISSING
     else:
         screened_ta = after_dedup if isinstance(after_dedup, int) else _MISSING
         excluded_ta = _MISSING
@@ -152,9 +165,20 @@ def generate_prisma_counts() -> dict[str, str | int]:
     calibration_metrics: dict[str, str | float | int] | None = None
     cal_df = _read_csv_safe(config.CALIBRATION_DECISIONS_CSV)
     if cal_df is not None and len(cal_df) > 0:
-        # Support both legacy (decision_A/B) and new (decision_reviewer_A/B) headers
-        col_a = "decision_reviewer_A" if "decision_reviewer_A" in cal_df.columns else "decision_A"
-        col_b = "decision_reviewer_B" if "decision_reviewer_B" in cal_df.columns else "decision_B"
+        # Support legacy and current calibration CSV headers.
+        if "decision_reviewer_A" in cal_df.columns:
+            col_a = "decision_reviewer_A"
+        elif "reviewer_a_decision" in cal_df.columns:
+            col_a = "reviewer_a_decision"
+        else:
+            col_a = "decision_A"
+
+        if "decision_reviewer_B" in cal_df.columns:
+            col_b = "decision_reviewer_B"
+        elif "reviewer_b_decision" in cal_df.columns:
+            col_b = "reviewer_b_decision"
+        else:
+            col_b = "decision_B"
         if col_a in cal_df.columns and col_b in cal_df.columns:
             valid = cal_df[
                 (cal_df[col_a].str.strip() != "")
@@ -175,6 +199,25 @@ def generate_prisma_counts() -> dict[str, str | int]:
                     "Calibration: n=%d, agreement=%.1f%%, kappa=%.3f",
                     len(valid), pct, kappa,
                 )
+    elif config.CALIBRATION_SCREENING_XLSX.exists():
+        from .screening import _workbook_screening_rows
+
+        cal_rows = _workbook_screening_rows(config.CALIBRATION_SCREENING_XLSX, dual_review=True)
+        valid = [
+            row for row in cal_rows
+            if row["decision_reviewer_A"] and row["decision_reviewer_B"]
+        ]
+        if valid:
+            dec_a = [row["decision_reviewer_A"] for row in valid]
+            dec_b = [row["decision_reviewer_B"] for row in valid]
+            kappa = cohens_kappa(dec_a, dec_b)
+            pct = percent_agreement(dec_a, dec_b)
+            calibration_metrics = {
+                "Sample size": len(valid),
+                "Percent agreement": round(pct, 1),
+                "Cohen's kappa": round(kappa, 3),
+                "Target met (kappa >= 0.70)": "Yes" if kappa >= 0.70 else "No",
+            }
 
     # --- Write XLSX ---------------------------------------------------------
     _write_prisma_xlsx(counts, reason_counts, calibration_metrics)

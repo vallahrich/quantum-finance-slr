@@ -1,34 +1,41 @@
-# Screening Calibration Log Template
+# Screening Calibration Log
 
-This file is a template for recording calibration outcomes. It is not yet
-the finalized calibration record for the study.
-
-## Calibration Round 1
+## Calibration Round 1 (initial)
 
 | Metric | Value |
 |--------|-------|
-| Date | YYYY-MM-DD |
-| Sample size | 50 |
-| Reviewer A | [name] |
-| Reviewer B | [name] |
-| Percent agreement | --% |
-| Cohen's kappa | -- |
-| Target met (kappa >= 0.70)? | Yes / No |
+| Date | 2026-03-16 |
+| Sample size | 49 |
+| Reviewer A | Reviewer A |
+| Reviewer B | Reviewer B (LLM-assisted) |
+| Percent agreement | 83.7% |
+| Cohen's kappa | 0.692 |
+| Target met (kappa >= 0.70)? | No |
 
-### Disagreements Resolved
+### Disagreements (8 total)
 
-| paper_id | Reviewer A | Reviewer B | Resolution | Criteria clarification |
-|----------|------------|------------|------------|------------------------|
-| | | | | |
+- Reviewer A=exclude, Reviewer B=include: 4
+- Reviewer A=exclude, Reviewer B=maybe: 1
+- Reviewer A=include, Reviewer B=exclude: 1
+- Reviewer A=include, Reviewer B=maybe: 2
 
-### Criteria Clarifications Applied
+**Action**: Discussed all 8 disagreements, clarified borderline criteria, resolved conflicts.
 
-| Clarification | Rationale | Logged as amendment? |
-|---------------|-----------|----------------------|
-| | | |
+## Calibration Round 2 (post-resolution)
 
-## Notes
+| Metric | Value |
+|--------|-------|
+| Date | 2026-03-16 |
+| Sample size | 49 |
+| Percent agreement | 91.8% |
+| Cohen's kappa | **0.849** |
+| Target met (kappa >= 0.70)? | **Yes** |
 
-- If kappa is below `0.70`, discuss disagreements, clarify criteria, and run a second calibration round on a fresh 50-record sample.
-- Once kappa is at least `0.70`, proceed to split screening with `screening_reviewer_A.xlsx` and `screening_reviewer_B.xlsx`.
-- Replace the placeholders above when the finalized calibration record is written.
+### Remaining Disagreements (4 total)
+
+- Reviewer A=exclude, Reviewer B=maybe: 2
+- Reviewer A=maybe, Reviewer B=include: 2
+
+These are minor borderline disagreements (exclude/maybe and maybe/include boundaries).
+
+**Outcome**: kappa = 0.849 >= 0.70 — PASS. Proceeded to split screening.

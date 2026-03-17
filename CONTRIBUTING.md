@@ -78,7 +78,8 @@ Notes:
 
 - `llm-screen` supports `--api-key` / `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
 - The repo's current screening cost assumptions are based on `gpt-5-mini`.
-- The completed repository screening run used `o4-mini`.
+- The completed repository screening run used `gpt-5-mini` via the OpenAI Responses API.
+- Models trialed during evaluation included `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini`, and `gpt-5-mini`.
 - `llm-screen` writes resumable state to `05_screening/llm_screening_checkpoint.json`.
 - `llm-screen` writes audit logs to `05_screening/llm_screening_prompt_log.jsonl`.
 
@@ -149,3 +150,36 @@ pytest tools/tests -v
 - Raw exports and screening artifacts are intentionally kept in the repository for auditability.
 - Generated AI logs and checkpoints are useful for traceability but may be regenerated if you restart a run.
 - Prefer non-destructive updates to screening and extraction outputs so the review trail remains inspectable.
+
+## Azure OpenAI Configuration
+
+The toolkit uses the official `openai` SDK with the OpenAI Responses API.
+
+**Required** (env vars or CLI flags):
+
+| Variable | CLI Flag | Example |
+|----------|----------|---------|
+| `AZURE_OPENAI_ENDPOINT` | `--endpoint` | `https://qfre-openai.openai.azure.com` |
+| `AZURE_OPENAI_DEPLOYMENT` | `--deployment` | `gpt-5-mini` |
+| `AZURE_OPENAI_API_KEY` | `--api-key` | *(or use `az login` for keyless auth)* |
+
+Smoke test:
+
+```bash
+python -m tools.slr_toolkit.smoke_test --endpoint https://qfre-openai.openai.azure.com --deployment gpt-5-mini
+```
+
+See [.env.example](.env.example) for a template.
+
+## Current Study Numbers
+
+| Metric | Value |
+|--------|-------|
+| Total ingested | 6,232 |
+| Duplicates removed | 3,222 |
+| Unique records screened | 3,010 |
+| AI include decisions | 651 (21.6%) |
+| AI exclude decisions | 2,359 (78.4%) |
+| Calibration kappa | 0.849 (PASS) |
+| Screening model | gpt-5-mini (Responses API) |
+| Screening workbooks | Cal: 50, Val: 100, A: 1,475, B: 1,499 |

@@ -22,6 +22,15 @@ def _make_df(records: list[dict]) -> pd.DataFrame:
 class TestDOIDedup:
     """Pass-1 DOI exact-match deduplication."""
 
+    def test_same_paper_id_marks_duplicate_even_without_doi(self) -> None:
+        df = _make_df([
+            {"paper_id": "aaa111", "doi": "", "title": "Paper A", "year": "2023", "authors": "Smith"},
+            {"paper_id": "aaa111", "doi": "", "title": "Paper A", "year": "2023", "authors": "Smith"},
+        ])
+        result = deduplicate(df, fuzzy=False)
+        assert result.at[0, "duplicate_of"] == ""
+        assert result.at[1, "duplicate_of"] == "aaa111"
+
     def test_same_doi_marks_duplicate(self) -> None:
         df = _make_df([
             {"paper_id": "aaa111", "doi": "10.1234/abc", "title": "Paper A", "year": "2023", "authors": "Smith"},
