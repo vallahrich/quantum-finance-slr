@@ -12,7 +12,7 @@ the authoritative audit trail.
 Protocol versioned in this repository with amendments tracked in the
 authoritative log `amendments_log.csv`.
 
-**Protocol version:** 3.5 (2026-03-13)
+**Protocol version:** 3.7 (2026-03-17)
 
 This SLR constitutes Phase 1a of a larger exploratory sequential
 mixed-methods study (Creswell & Creswell, 2018). The full study also
@@ -642,16 +642,16 @@ in the thesis discussion chapter.
 
 | Parameter | Value |
 |-----------|-------|
-| **Tool** | Custom `llm-screen` workflow implemented in `tools/slr_toolkit/llm_screening.py`, using Azure OpenAI chat-completions |
-| **Model / deployment** | Azure OpenAI deployment specified at runtime via `AZURE_OPENAI_DEPLOYMENT` or `--deployment`; exact deployment used for the study run must be reported in the thesis methods and run notes |
+| **Tool** | Custom `llm-screen` workflow implemented in `tools/slr_toolkit/llm_screening.py`, using the official `openai` SDK against the Azure OpenAI Responses API |
+| **Model / deployment** | Azure OpenAI deployment specified at runtime via `AZURE_OPENAI_DEPLOYMENT` or `--deployment`; the current completed repository screening run used `gpt-5-mini` |
 | **Input to AI** | Title, abstract, and `paper_id` for each record |
 | **Output schema** | `decision` (include/exclude), `confidence` (0–1), `reason_code`, and one-sentence `reasoning` |
 | **Prompting approach** | Single-record criterion-based classification against the protocol eligibility rules; prompt text frozen before the main run |
 | **Training data** | None required |
 | **Stopping rule** | Screen all pending unique records; interrupted runs resume from `05_screening/llm_screening_checkpoint.json` |
 | **Authentication** | Azure OpenAI API key or keyless Azure AD authentication via `az login` |
-| **Date of completed screening run in current repository artifacts** | 2026-03-15 (`ai_screening_decisions.csv` and prompt-log timestamps) |
-| **Current completed run size** | 3,230 AI-classified records in `05_screening/ai_screening_decisions.csv` |
+| **Date of completed screening run in current repository artifacts** | 2026-03-16 (`ai_screening_decisions.csv` and prompt-log timestamps) |
+| **Current completed run size** | 3,010 AI-classified unique records in `05_screening/ai_screening_decisions.csv` |
 | **Reproducibility artifacts** | `05_screening/ai_screening_decisions.csv`, `05_screening/llm_screening_checkpoint.json`, and `05_screening/llm_screening_prompt_log.jsonl` |
 
 The exact Azure OpenAI deployment name, endpoint family, and any
@@ -659,6 +659,11 @@ pricing assumptions are operational settings rather than methodological
 design choices. They must therefore be reported with the executed run,
 but the workflow itself remains deployment-agnostic as long as the same
 screening prompt and output schema are preserved.
+
+Models trialed during implementation included `gpt-4.1-mini`,
+`DeepSeek-V3.2`, `o4-mini`, and `gpt-5-mini`. The current completed
+repository screening run uses `gpt-5-mini`; prior trial runs are retained
+only for provenance.
 
 ### Validation design
 
@@ -923,7 +928,7 @@ for AI-flagged records per the PRISMA-trAIce flow diagram template.
 | Phase | Target |
 |-------|--------|
 | Protocol finalisation | Complete |
-| Database searches | Complete for the current active runs (6,232 raw records in the 2026-03-14-v5 source exports; current master library contains 3,879 canonical records and 2,353 duplicates) |
+| Database searches | Complete for the current active runs (6,232 raw records in the 2026-03-14-v5 source exports; current master library contains 3,010 canonical records and 3,222 duplicates) |
 | Screening (title/abstract) | — |
 | Screening (full-text) | — |
 | Data extraction | — |
