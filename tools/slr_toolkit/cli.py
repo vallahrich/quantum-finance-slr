@@ -313,6 +313,21 @@ def _cmd_ai_validation(args: argparse.Namespace) -> None:
     print(f"\n  Full report: 05_screening/ai_validation_report.md")
 
 
+def _cmd_download_pdfs(args: argparse.Namespace) -> None:
+    """Download open-access PDFs for final included papers."""
+    from .pdf_download import download_pdfs
+
+    log_path = download_pdfs(
+        email=args.email,
+        s2_key=args.s2_key,
+        max_papers=args.max_papers,
+        delay=args.delay,
+        skip_existing=not args.force,
+        input_file=Path(args.input_file) if args.input_file else None,
+    )
+    print(f"\n[ok] Download log: {log_path}")
+
+
 def _cmd_topic_code(args: argparse.Namespace) -> None:
     """Run LLM-assisted thematic coding on final included papers."""
     from .topic_coding import generate_topic_summary, run_topic_coding
@@ -698,6 +713,38 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print token/cost estimate and exit.",
     )
     p_ls.set_defaults(func=_cmd_llm_screen)
+
+    # -- download-pdfs ------------------------------------------------------
+    p_dp = sub.add_parser(
+        "download-pdfs",
+        help="Download open-access PDFs for final included papers.",
+    )
+    p_dp.add_argument(
+        "--email", default=None,
+        help="Contact email for Unpaywall polite pool (also: UNPAYWALL_EMAIL env var). "
+             "If not provided, Unpaywall source is skipped.",
+    )
+    p_dp.add_argument(
+        "--s2-key", default=None,
+        help="Semantic Scholar API key for higher rate limits (also: S2_API_KEY env var).",
+    )
+    p_dp.add_argument(
+        "--max-papers", type=int, default=None,
+        help="Maximum number of papers to attempt (default: all included).",
+    )
+    p_dp.add_argument(
+        "--delay", type=float, default=3.5,
+        help="Seconds between API requests (default: 3.5 for S2 free tier).",
+    )
+    p_dp.add_argument(
+        "--force", action="store_true",
+        help="Re-download papers that were already successfully fetched.",
+    )
+    p_dp.add_argument(
+        "--input-file", default=None,
+        help="Override the included-papers CSV (default: 05_screening/included_for_coding.csv).",
+    )
+    p_dp.set_defaults(func=_cmd_download_pdfs)
 
     # -- topic-code ---------------------------------------------------------
     p_tc = sub.add_parser(

@@ -17,6 +17,7 @@ DEDUPED_DIR       = ROOT_DIR / "04_deduped_library"
 SCREENING_DIR     = ROOT_DIR / "05_screening"
 EXTRACTION_DIR    = ROOT_DIR / "06_extraction"
 FIGURES_DIR       = ROOT_DIR / "07_figures"
+FULL_TEXTS_DIR    = ROOT_DIR / "08_full_texts"
 
 ALL_DIRS: list[Path] = [
     PROTOCOL_DIR,
@@ -26,6 +27,7 @@ ALL_DIRS: list[Path] = [
     SCREENING_DIR,
     EXTRACTION_DIR,
     FIGURES_DIR,
+    FULL_TEXTS_DIR,
 ]
 
 # ---------------------------------------------------------------------------
@@ -71,6 +73,10 @@ TOPIC_CODING_CHECKPOINT = EXTRACTION_DIR / "topic_coding_checkpoint.json"
 TOPIC_CODING_PROMPT_LOG = EXTRACTION_DIR / "topic_coding_prompt_log.jsonl"
 PROTOCOL_MD           = PROTOCOL_DIR / "protocol.md"
 AMENDMENTS_CSV        = PROTOCOL_DIR / "amendments_log.csv"
+
+# Full-text PDFs (§ post-screening download)
+INCLUDED_FOR_CODING   = SCREENING_DIR / "included_for_coding.csv"
+DOWNLOAD_LOG_CSV      = FULL_TEXTS_DIR / "download_log.csv"
 
 # ---------------------------------------------------------------------------
 # Column definitions
