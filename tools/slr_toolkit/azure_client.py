@@ -25,6 +25,25 @@ from typing import Any
 
 from openai import APIConnectionError, APIStatusError, APITimeoutError, OpenAI
 
+# Load .env from parent repo (quantum-finance/.env) or local .env
+try:
+    from dotenv import load_dotenv
+
+    _this_dir = os.path.dirname(os.path.abspath(__file__))
+    _parent_env = os.path.normpath(os.path.join(_this_dir, "..", "..", "..", ".env"))
+    _local_env = os.path.normpath(os.path.join(_this_dir, "..", "..", ".env"))
+    load_dotenv(_parent_env if os.path.isfile(_parent_env) else _local_env)
+
+    # Normalize: accept AZURE_ENDPOINT / AZURE_API_KEY as fallbacks
+    if not os.getenv("AZURE_OPENAI_ENDPOINT") and os.getenv("AZURE_ENDPOINT"):
+        os.environ["AZURE_OPENAI_ENDPOINT"] = os.environ["AZURE_ENDPOINT"]
+    if not os.getenv("AZURE_OPENAI_API_KEY") and os.getenv("AZURE_API_KEY"):
+        os.environ["AZURE_OPENAI_API_KEY"] = os.environ["AZURE_API_KEY"]
+    if not os.getenv("AZURE_OPENAI_DEPLOYMENT") and os.getenv("AZURE_DEPLOYMENT"):
+        os.environ["AZURE_OPENAI_DEPLOYMENT"] = os.environ["AZURE_DEPLOYMENT"]
+except ImportError:
+    pass  # python-dotenv not installed; rely on shell env vars
+
 log = logging.getLogger(__name__)
 
 
