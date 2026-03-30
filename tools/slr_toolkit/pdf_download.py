@@ -83,6 +83,8 @@ def _fetch_json(url: str, *, timeout: int = 30, headers: dict | None = None) -> 
 def _download_pdf(url: str, dest: Path, *, timeout: int = 60) -> bool:
     """Download a PDF from *url* to *dest*. Returns True on success."""
     try:
+        # Encode spaces and other unsafe chars in the URL path/query
+        url = urllib.parse.quote(url, safe=":/?#[]@!$&'()*+,;=-._~%")
         req = urllib.request.Request(url, headers={
             "User-Agent": _USER_AGENT.format(email="slr@example.com"),
             "Accept": "application/pdf",

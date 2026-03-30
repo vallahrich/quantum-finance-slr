@@ -1,0 +1,656 @@
+paper_id,title,year,venue,doi,doi_url,has_doi
+00e181896bba,Pioneering Quantum Computing in Financial Services,2025,,10.4018/979-8-3373-2893-5.ch013,https://doi.org/10.4018/979-8-3373-2893-5.ch013,yes
+01a1ecaddb94,Optimized Stock Price Forecasting: A Deep Learning Approach Using QCTO Based GRU Network,2025,International Conference on Computing Intelligence and Application Ciacon 2025,10.1109/CIACON65473.2025.11189776,https://doi.org/10.1109/CIACON65473.2025.11189776,yes
+01e7ba36bcfc,Analysis of a hybrid quantum network for classification tasks,2021,IET Quantum Communication,10.1049/qtc2.12017,https://doi.org/10.1049/qtc2.12017,yes
+02db829631f9,Quantum Optimization for Portfolio Management in Financial Services Using the Variational Quantum Eigensolver (VQE) Algorithm,2025,2025 Second International Conference on Networks and Soft Computing (ICNSoC),10.1109/ICNSoC66817.2025.00113,https://doi.org/10.1109/ICNSoC66817.2025.00113,yes
+04326473e1bb,Quantum Algorithms for Solving Large-Scale Optimization Problems: Challenges and Breakthroughs,2025,2025 3rd International Conference on Intelligent Cyber Physical Systems and Internet of Things (ICoICI),10.1109/ICoICI65217.2025.11254519,https://doi.org/10.1109/ICoICI65217.2025.11254519,yes
+045306ad1a16,CVaR-Based Variational Quantum Optimization for User Association in Handoff-Aware Vehicular Networks,2025,ICC 2025 - IEEE International Conference on Communications,10.1109/ICC52391.2025.11161596,https://doi.org/10.1109/ICC52391.2025.11161596,yes
+0525be4c60fb,Application of quantum computing in healthcare billing - USA,2025,International Journal of Science and Research Archive,10.30574/ijsra.2025.14.1.0102,https://doi.org/10.30574/ijsra.2025.14.1.0102,yes
+060ebc7a91c0,Empirical Analysis of Quantum Compution using Qiskit Framework,2023,2023 9th International Conference on Advanced Computing and Communication Systems (ICACCS),10.1109/ICACCS57279.2023.10112866,https://doi.org/10.1109/ICACCS57279.2023.10112866,yes
+06c5f405d529,Quantum Computing For Health And Financial Decision-Making: Empowering Employees To Improve Life And Finance,2025,SSRN Electronic Journal,10.2139/ssrn.5071354,https://doi.org/10.2139/ssrn.5071354,yes
+06db2582a06a,Introduction to Quantum Computing,2026,Auerbach Publications eBooks,10.1201/9781003674566-1,https://doi.org/10.1201/9781003674566-1,yes
+06fdf18c23c4,A Hybrid Quantum-Classical Model for Stock Price Prediction Using Quantum-Enhanced Long Short-Term Memory,2024,Entropy,10.3390/e26110954,https://doi.org/10.3390/e26110954,yes
+0801deffcfa4,Harnessing Quantum Computing for Predictive Analysis,2026,Auerbach Publications eBooks,10.1201/9781003587835-4,https://doi.org/10.1201/9781003587835-4,yes
+082f292f8c48,Hybrid Encoding-based Quantum Self Attention for Financial Time Series Analysis,2025,,10.1109/icasspw65056.2025.11011079,https://doi.org/10.1109/icasspw65056.2025.11011079,yes
+0ab110ae249c,Coherence-Gated Dimensional Access: Derivation and Physical Validation of D_eff = D_max × Φ(C),2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18839366,https://doi.org/10.5281/zenodo.18839366,yes
+0ab4724fd60f,Risk management strategies: Navigating volatility in complex financial market environments,2025,World Journal of Advanced Research and Reviews,10.30574/wjarr.2025.25.1.0057,https://doi.org/10.30574/wjarr.2025.25.1.0057,yes
+0b40a3e55edc,QAMOO: Quantum Approximate Multi-Objective Optimization for Portfolio Management,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18353289,https://doi.org/10.5281/zenodo.18353289,yes
+0b549647c8e5,Scaling Analysis of Quantum Amplitude Estimation for Tokenized Asset Option Pricing: Validation and Barriers to Practical Advantage,2026,,10.13140/rg.2.2.18561.31849,https://doi.org/10.13140/rg.2.2.18561.31849,yes
+0d70169cb87f,A Comparative Study of Classical and Quantum Machine Learning for Large-Scale Financial Forecasting,2024,"Robotics, Autonomous, Machine Learning, and Artificial intelligence Journal",10.64206/h26qc363,https://doi.org/10.64206/h26qc363,yes
+0e18f027f93b,Quantum-Assisted Optimal Rebalancing with Uncorrelated Asset Selection for Algorithmic Trading Walk-Forward QUBO Scheduling via QAOA,2026,,10.13140/rg.2.2.25392.62728,https://doi.org/10.13140/rg.2.2.25392.62728,yes
+0e2942155b17,Classical optimization with imaginary time block encoding on quantum computers: The MaxCut problem,2024,Physical Review A,10.1103/gtq3-j37b,https://doi.org/10.1103/gtq3-j37b,yes
+0f3a64e9e3ed,Quantitative Analysis and Forecasting Techniques in Financial Markets: A 2022 Review,2022,Financial Economics Insights,10.70088/wfwcn555,https://doi.org/10.70088/wfwcn555,yes
+0fb8e2505865,Designing an AIOps (Artificial Intelligent Operations) Framework for Energy-Efficient IT Operations: A Case Study on Cloud Computing Environment,2025,2025 IEEE International Symposium on Future Telecommunication Technologies (SOFTT),10.1109/SOFTT67007.2025.11213027,https://doi.org/10.1109/SOFTT67007.2025.11213027,yes
+10832c99e683,Cost Savings Through Quantum AI-Driven Optimizations,2026,Advances in computational intelligence and robotics book series,10.4018/979-8-3373-4347-1.ch004,https://doi.org/10.4018/979-8-3373-4347-1.ch004,yes
+109c9406f3df,"Quantum Graph Neural Networks for Portfolio Optimization in Complex Financial Markets, A Novel Approach",2024,2024 International Conference on Trends in Quantum Computing and Emerging Business Technologies,10.1109/TQCEBT59414.2024.10545170,https://doi.org/10.1109/TQCEBT59414.2024.10545170,yes
+10a2f644907f,Quantum-inspired evolutionary algorithms,2025,,10.1201/9781003612858-2,https://doi.org/10.1201/9781003612858-2,yes
+10be86fe1795,A Comparative Analysis of Hybrid Quantum Neural Networks in Binary Credit Defaulting Tasks,2023,,10.1109/urtc60662.2023.10535032,https://doi.org/10.1109/urtc60662.2023.10535032,yes
+115e509ec529,Hybrid Quantum Market State Inference for Ultra-Short-Horizon Financial Prediction,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.17924888,https://doi.org/10.5281/zenodo.17924888,yes
+119578338c9e,Quantum Finance: Revolutionizing Financial Markets with Quantum Computing,2025,Auerbach Publications eBooks,10.1201/9781003482154-6,https://doi.org/10.1201/9781003482154-6,yes
+1292782ed153,CryptoQNet: Leveraging Quantum Computing for Enhanced Cryptocurrency Market Analysis,2025,2025 International Conference on Emerging Smart Computing and Informatics (ESCI),10.1109/ESCI63694.2025.10988262,https://doi.org/10.1109/ESCI63694.2025.10988262,yes
+13544c1e7414,Quantum Machine Learning for Stock Price Movement Prediction,2025,Uncertainty and operations research,10.1007/978-981-95-2429-7_7,https://doi.org/10.1007/978-981-95-2429-7_7,yes
+135bf0e19b10,Performance evaluation of post quantum digital signature algorithms over WDM optical communication system,2025,Journal of Optical Communications,10.1515/joc-2025-0104,https://doi.org/10.1515/joc-2025-0104,yes
+14777484b99d,Quantum Algorithm for Unsupervised Anomaly Detection,2023,SSRN Electronic Journal,10.2139/ssrn.4435630,https://doi.org/10.2139/ssrn.4435630,yes
+1502fad8d8ac,Applying Quantum Computing to the Renewable Energy Stock Exchange to Reduce the Risk of Investment,2024,Lecture Notes in Networks and Systems,10.1007/978-981-99-8346-9_38,https://doi.org/10.1007/978-981-99-8346-9_38,yes
+157054b518f8,Quantum computing research: An in-depth exploration,2025,Advances in computers,10.1016/bs.adcom.2025.02.005,https://doi.org/10.1016/bs.adcom.2025.02.005,yes
+163d8d584a33,Hybrid QLSTM Framework for Time Series Forecasting in Dynamic Financial Markets,2025,International Conference on Innovative Mechanisms for Industry Applications,10.1109/ICIMIA67127.2025.11200988,https://doi.org/10.1109/ICIMIA67127.2025.11200988,yes
+16d418f1da92,A More General Quantum Credit Risk Analysis Framework,2023,Entropy,10.3390/e25040593,https://doi.org/10.3390/e25040593,yes
+173cd12aee6b,A Quantum Algorithm for Pricing Asian Options on Valuation Trees,2022,Risks,10.3390/risks10120221,https://doi.org/10.3390/risks10120221,yes
+1760158c7e1b,Option Pricing using Quantum Computers,2019,Repository for Publications and Research Data (ETH Zurich),10.3929/ethz-b-000428448,https://doi.org/10.3929/ethz-b-000428448,yes
+176f4217cb91,Explainable hybrid quantum neural networks for analyzing the influence of tweets on stock price prediction,2024,Computers & electrical engineering,10.1016/j.compeleceng.2024.109302,https://doi.org/10.1016/j.compeleceng.2024.109302,yes
+1858371f4c44,Autonomous Quantum Agents for Portfolio Optimization: Orchestrating QAOA Workflows on Cloud Quantum Simulators,2026,,10.13140/rg.2.2.10881.31842,https://doi.org/10.13140/rg.2.2.10881.31842,yes
+1961129130d1,Exploring the Versatility of QAOA: A Comprehensive Review,2024,International Conference on Computing Communication and Networking Technologies,10.1109/ICCCNT61001.2024.10725610,https://doi.org/10.1109/ICCCNT61001.2024.10725610,yes
+1a05f3c9e973,Leveraging quantum computing business applications: a B-SLR approach and future research directions,2026,EPJ Quantum Technology,10.1140/epjqt/s40507-026-00475-1,https://doi.org/10.1140/epjqt/s40507-026-00475-1,yes
+1b554a506320,"A Study on Quantum and Classical Simulations for Molecular Systems, Materials Science and Financial Modeling",2025,2025 IEEE Pune Section International Conference (PuneCon),10.1109/PuneCon67554.2025.11379349,https://doi.org/10.1109/PuneCon67554.2025.11379349,yes
+1bf5fc02b95b,QEA-FAD: Quantum Enhanced Autoencoders for Anomaly Detection in Finance and Healthcare,2025,2025 International Conference on Networks and Cryptology (NETCRYPT),10.1109/NETCRYPT65877.2025.11102801,https://doi.org/10.1109/NETCRYPT65877.2025.11102801,yes
+1c4934de7d9a,The Application of Quantum Approximation Optimization Algorithm in Portfolio Optimization,2023,Dianzi Keji Daxue Xuebao Journal of the University of Electronic Science and Technology of China,10.12178/1001-0548.2022019,https://doi.org/10.12178/1001-0548.2022019,yes
+1d49f2843829,Quantum Computing Applications in Financial Modeling and Portfolio Optimization,2025,International Journal For Multidisciplinary Research,10.36948/ijfmr.2025.v07i06.62036,https://doi.org/10.36948/ijfmr.2025.v07i06.62036,yes
+1dc251ce8c53,Extrapolation method to optimize linear-ramp quantum approximate optimization algorithm parameters: dataset,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18302992,https://doi.org/10.5281/zenodo.18302992,yes
+1de0ca5e8cf2,Quantum Machine Learning Based on K-Means to Optimize Cross-Border Intelligent Payment Supervision,2024,ICBAR,10.1145/3718751.3718859,https://doi.org/10.1145/3718751.3718859,yes
+20063e119947,Quantum Walk–Inspired Fourier Operators for Markovian Dynamics and Modular Structure Detection,2025,2025 6th International Conference on Machine Learning and Computer Application (ICMLCA),10.1109/ICMLCA66850.2025.11336551,https://doi.org/10.1109/ICMLCA66850.2025.11336551,yes
+205f3d35d4be,Analyzing the Financial Impact of Corporate Social Responsibility Using Quantum Neural Transformer Models,2025,,10.1109/icctdc64446.2025.11158042,https://doi.org/10.1109/icctdc64446.2025.11158042,yes
+20c7e1972b0b,Optimizing Mutual Fund Portfolio Management through the Application of Advanced Soft Computing Techniques,2024,,10.1109/iceeict61591.2024.10718611,https://doi.org/10.1109/iceeict61591.2024.10718611,yes
+2291b049d70f,Application of Quantum Computing in Discrete Portfolio Optimization,2022,SSRN Electronic Journal,10.2139/ssrn.4130879,https://doi.org/10.2139/ssrn.4130879,yes
+23311f65fe2a,Solving Feature Selection Problem by Quantum Optimization Algorithm,2023,Lecture notes on data engineering and communications technologies,10.1007/978-3-031-46573-4_18,https://doi.org/10.1007/978-3-031-46573-4_18,yes
+235183650ee0,Quantum Neural Network for Time Series Forecasting: Harnessing Quantum Computing's Potential in Predictive Modeling,2023,2023 2nd International Conference on Futuristic Technologies (INCOFT),10.1109/INCOFT60753.2023.10425465,https://doi.org/10.1109/INCOFT60753.2023.10425465,yes
+23e03dc57b20,Computational Results for a Quantum Computing Application in Real-Life Finance,2023,,10.1109/qce57702.2023.00054,https://doi.org/10.1109/qce57702.2023.00054,yes
+246963801530,A Systematic Literature Review of Classical and Quantum Machine Learning Approaches for Mutual Fund Portfolio Optimization,2023,,10.1109/punecon58714.2023.10450063,https://doi.org/10.1109/punecon58714.2023.10450063,yes
+24ca4814e7f2,Quantum Algorithms for Optimization Problems,2026,Lecture Notes in Computer Science,10.1007/978-3-031-95296-8_17,https://doi.org/10.1007/978-3-031-95296-8_17,yes
+250a9d44ef66,Quantum Computing: Algorithms and Applications in Optimization Problems,2024,Journal of Quantum Science and Technology.,10.36676/jqst.v1.i2.11,https://doi.org/10.36676/jqst.v1.i2.11,yes
+251a3166cf94,hgribeirogeo/qaoa-carbon-cerrado: v1.0 - Initial Release for Quantum Journal Submission,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18418054,https://doi.org/10.5281/zenodo.18418054,yes
+258cef4e076f,Navigating optimization and security challenges in the AI-driven digital economy: from classical limits to quantum solutions,2025,IET conference proceedings.,10.1049/icp.2025.2981,https://doi.org/10.1049/icp.2025.2981,yes
+26668f5bb362,Quantum-Enhanced AI and Machine Learning: Transforming Predictive Analytics,2025,Recent Advances in Electrical &amp; Electronic Engineering (Formerly Recent Patents on Electrical &amp; Electronic Engineering),10.2174/0123520965377470250225062938,https://doi.org/10.2174/0123520965377470250225062938,yes
+26d9ab80fc82,Research on Financial Stock Market Prediction Based on the Hidden Quantum Markov Model,2025,Mathematics,10.3390/math13152505,https://doi.org/10.3390/math13152505,yes
+270d264b98f3,Quantum Option Profit and Loss Encoding for Risk Assessment,2025,IEEE Transactions on Emerging Topics in Computational Intelligence,10.1109/tetci.2025.3593781,https://doi.org/10.1109/tetci.2025.3593781,yes
+2896abff2596,Hybrid Quantum-Classical Transfer Learning Model for Credit Risk Assessment with Reduced Quantum Overhead and Enhanced Minority Class Prediction,2025,International Conference on Quantum Computing and Engineering,10.1109/QCE65121.2025.10374,https://doi.org/10.1109/QCE65121.2025.10374,yes
+28ab67c2d22a,Experimental Demonstration of Fermionic QAOA with One-Dimensional Cyclic Driver Hamiltonian,2023,,10.1109/qce57702.2023.00041,https://doi.org/10.1109/qce57702.2023.00041,yes
+291abba8a19e,QuanFraud: Quantum State Verification Scheme for Fraud Detection in IoT-Assisted Quantum-Blockchain Networks,2025,IEEE Transactions on Services Computing,10.1109/tsc.2025.3635525,https://doi.org/10.1109/tsc.2025.3635525,yes
+29f1f2555efe,A Technical Review of Quantum Computing Use-Cases for Finance and Economics,2025,Preprints.org,10.20944/preprints202511.1802.v1,https://doi.org/10.20944/preprints202511.1802.v1,yes
+2a5efc7b8178,Design of a Blockchain-Driven Quantum Identity Model Using QHA-AC FQET and RL-QIDA Methods in Cloud Microservices,2025,2025 First International Conference on Intelligent Computing and Systems at the Edge (ICEdge),10.1109/ICEdge67252.2025.11412890,https://doi.org/10.1109/ICEdge67252.2025.11412890,yes
+2a646809136c,Hybrid Quantum-Classical Method for Bank Account Fraud Detection using Quantum Encoding and Quantum Machine Learning,2024,2024 IEEE MIT Undergraduate Research Technology Conference (URTC),10.1109/URTC65039.2024.10937533,https://doi.org/10.1109/URTC65039.2024.10937533,yes
+2a9cd8a96604,Quantum support vector data description for anomaly detection,2024,Machine Learning Science and Technology,10.1088/2632-2153/ad6be8,https://doi.org/10.1088/2632-2153/ad6be8,yes
+2abf80ef91e3,Optimizing Hybrid Quantum-Classical Models Using Parameterized Quantum Circuits for Time-Series Forecasting,2025,,10.36227/techrxiv.175295886.67877890/v1,https://doi.org/10.36227/techrxiv.175295886.67877890/v1,yes
+2ae3455aa47b,Variational Quantum Algorithms: From Theory to NISQ-Era Applications Challenges and Opportunities,2025,Preprints.org,10.20944/preprints202508.1482.v1,https://doi.org/10.20944/preprints202508.1482.v1,yes
+2b34eb642f89,Quantum Bridge Analytics II: Network Optimization and Combinatorial Chaining for Asset Exchange,2019,arXiv (Cornell University),10.13140/rg.2.2.33981.00480,https://doi.org/10.13140/rg.2.2.33981.00480,yes
+2b4dc3c2ba75,Quantum Algorithms for Stochastic Differential Equations: Achieving Polynomial and Super-Polynomial Speedups for High-Dimensional Systems,2026,,10.22541/au.176764501.12582212/v1,https://doi.org/10.22541/au.176764501.12582212/v1,yes
+2c1bf46ead5a,"Quantum-Enhanced Anomaly Detection in Subsea Well Sensors: A Comparative Study of Variational Quantum, Hybrid, and Classical Approaches.",2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18644525,https://doi.org/10.5281/zenodo.18644525,yes
+2dd59afb46ba,Qutrit-Based Quantum-Inspired Optimization Model on Real-World Portfolio Optimization,2024,,10.1109/qce60285.2024.10403,https://doi.org/10.1109/qce60285.2024.10403,yes
+2e35d78fa802,Solving Subset Sum Problems using Binary Optimization with Applications in Auditing and Financial Data Analysis,2022,,10.36227/techrxiv.18994160,https://doi.org/10.36227/techrxiv.18994160,yes
+2f0fa544425a,Quantum Blockchain: A Theoretical Framework and Applications in Cryptocurrency,2025,International Journal of Financial Studies,10.3390/ijfs13040220,https://doi.org/10.3390/ijfs13040220,yes
+30582038a7ba,Periodic Unitary Encoding for Quantum Anomaly Detection of Temporal Series,2025,IQSOFT,10.5220/0013537800004525,https://doi.org/10.5220/0013537800004525,yes
+30afc00e8912,Integration of parameterized quantum circuits within classical neural network for financial time-series prediction,2025,Quantum Machine Intelligence,10.1007/s42484-025-00265-5,https://doi.org/10.1007/s42484-025-00265-5,yes
+30c35313cb34,"Quantum computing in financial portfolio optimization: Case-based insights into efficiency, risk management, and market impact",2025,International Journal of Advanced Academic Studies,10.33545/27068919.2025.v7.i3a.1570,https://doi.org/10.33545/27068919.2025.v7.i3a.1570,yes
+311bac170c43,Application of Quantum Computing in Optimization Problems,2024,Modeling Control and Information Technologies,10.31713/mcit.2024.033,https://doi.org/10.31713/mcit.2024.033,yes
+313a1d740d27,Quantum Kernel methods for anomaly detection in high-velocity data streams,2025,World Journal of Advanced Engineering Technology and Sciences,10.30574/wjaets.2025.15.2.0694,https://doi.org/10.30574/wjaets.2025.15.2.0694,yes
+323683ff9874,Time Series Forecasting Using Quantum Machine Learning Algorithms,2025,Algorithms for intelligent systems,10.1007/978-981-97-6957-5_16,https://doi.org/10.1007/978-981-97-6957-5_16,yes
+32f23740c07f,hgribeirogeo/qaoa-carbon-cerrado: v2.0 - Seven-Run Validation Study,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18418053,https://doi.org/10.5281/zenodo.18418053,yes
+32f6aa86e556,Quantum Finance Optimization Qubits (QFOQ): An Approach to Accelerate Financial Model Testing,2025,SSRN Electronic Journal,10.2139/ssrn.5007468,https://doi.org/10.2139/ssrn.5007468,yes
+3318d42b7459,Quantum Computing Strategy,2025,,10.1201/9781003302674,https://doi.org/10.1201/9781003302674,yes
+3432da9937d2,A Variable-Angle-Distance Quantum Evolutionary Algorithm for 2D HP Model,2018,"International Conference on Communication, Computing & Security",10.1007/978-3-030-00021-9_30,https://doi.org/10.1007/978-3-030-00021-9_30,yes
+3453ddc0d7db,Numerical solution of boundary value problems using quantum computing system,2025,International Journal of System of Systems Engineering,10.1504/ijsse.2025.151321,https://doi.org/10.1504/ijsse.2025.151321,yes
+34a99682d20c,QEKLR: quantum-enhanced kernel logistic regression for classification,2025,The Journal of Supercomputing,10.1007/s11227-025-07266-y,https://doi.org/10.1007/s11227-025-07266-y,yes
+3506790b2a7a,HQRNN-FD: A Hybrid Quantum Recurrent Neural Network for Fraud Detection,2025,Entropy,10.3390/e27090906,https://doi.org/10.3390/e27090906,yes
+35505140af55,Quantum Computing for Fraud Detection in Real-Time Payment Systems,2025,,10.1109/icctdc64446.2025.11158810,https://doi.org/10.1109/icctdc64446.2025.11158810,yes
+35c7b4d830d5,Market informed portfolio optimization methods with hybrid quantum computing,2024,Review of Financial Economics,10.1002/rfe.1219,https://doi.org/10.1002/rfe.1219,yes
+36cd7ccae10c,AI-Powered Risk Modeling in Quantum Finance : Redefining Enterprise Decision Systems,2022,International Journal of Scientific Research in Science Engineering and Technology,10.32628/ijsrset221656,https://doi.org/10.32628/ijsrset221656,yes
+37f43983f4d2,Quantum Computing: <i>Implications for Portfolio Managers</i>,2016,The Journal of Investing,10.3905/joi.2016.25.3.081,https://doi.org/10.3905/joi.2016.25.3.081,yes
+394db2cbf8da,Quantum Approximate Optimization Algorithm for Portfolio Selection: A Comparative Study with Classical Markowitz Optimization,2026,SSRN Electronic Journal,10.2139/ssrn.5793303,https://doi.org/10.2139/ssrn.5793303,yes
+3adb18321a79,Quantum Quantitative Trading: High-Frequency Statistical Arbitrage Algorithm,2021,arXiv,10.1088/1367-2630/ac7f26,https://doi.org/10.1088/1367-2630/ac7f26,yes
+3bd0da5c69ac,"PREreview of ""The Inverse Born Rule Fallacy: On the Informational Limits of Phase-Locked Amplitude Encoding""",2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18793265,https://doi.org/10.5281/zenodo.18793265,yes
+3d6d6393f792,A Comparison on Constrain Encoding Methods for Quantum Approximate Optimization Algorithm,2024,International Conference on Computer Aided Design,10.1145/3676536.3697126,https://doi.org/10.1145/3676536.3697126,yes
+3f4c5ad6749d,Quantum unary approach to option pricing,2019,Physical Review A,10.1103/PHYSREVA.103.032414,https://doi.org/10.1103/PHYSREVA.103.032414,yes
+3f8ab7317ca4,Extrapolation method to optimize linear-ramp quantum approximate optimization algorithm parameters: Evaluation of runtime scaling,2026,"Physical review. A/Physical review, A",10.1103/l5r4-zcqv,https://doi.org/10.1103/l5r4-zcqv,yes
+3fb78ea9b31b,Quantum beetle antennae search: a novel technique for the constrained portfolio optimization problem,2021,Science China Information Sciences,10.1007/s11432-020-2894-9,https://doi.org/10.1007/s11432-020-2894-9,yes
+3fe2b056b181,Research on the optimization of credit score card for solving the QUBO model based on annealing algorithm and quantum computer,2023,"International Conferences on Computers, Information Processing and Advanced Education",10.1109/CIPAE60493.2023.00120,https://doi.org/10.1109/CIPAE60493.2023.00120,yes
+3fe31dea1f88,Quantum Risk Analysis: Beyond (Conditional) Value-at-Risk,2022,Quantum Economics and Finance,10.1177/29767032251377083,https://doi.org/10.1177/29767032251377083,yes
+40ca827d69b9,FRAUD DETECTION USING RESTRICTED BOLTZMANN MACHINES ASSISTED BY QUANTUM COMPUTING,2025,,10.17771/pucrio.acad.73105,https://doi.org/10.17771/pucrio.acad.73105,yes
+40e4c7fdd4ac,Dynamic Portfolio Optimization with Real Datasets Using Quantum Processors and Quantum-Inspired Tensor Networks,2020,Physical Review Research,10.1103/PhysRevResearch.4.013006,https://doi.org/10.1103/PhysRevResearch.4.013006,yes
+413125f4264b,Derivative Pricing and Credit Risk in a Regime Switching Economy Using Quantum Amplitude Estimation,2024,,10.1109/qce60285.2024.00067,https://doi.org/10.1109/qce60285.2024.00067,yes
+41c620c565b5,Solving Multiple Discretization Portfolio Optimization Problem with Quantum-Classical Hybrid Algorithms,2025,Computational Economics,10.1007/s10614-025-11061-5,https://doi.org/10.1007/s10614-025-11061-5,yes
+41d2d7bb257a,Enhancing Credit Risk Prediction Through Co-Trained Hybrid Quantum Transfer Learning Model,2025,2025 IEEE International Conference on Quantum Artificial Intelligence (QAI),10.1109/QAI63978.2025.00021,https://doi.org/10.1109/QAI63978.2025.00021,yes
+4244a7279692,Scheduling Process of Quantum Circuits to Optimize Tasks Execution on Quantum Computers,2024,,10.1109/qce60285.2024.10275,https://doi.org/10.1109/qce60285.2024.10275,yes
+4255cabe0f56,Quantum Algorithm for Option Pricing,2023,,10.1007/978-981-19-7517-2_14,https://doi.org/10.1007/978-981-19-7517-2_14,yes
+439a750eda8c,Quantum-inspired variational algorithms for partial differential equations: application to financial derivative pricing,2022,Quantitative finance (Print),10.1080/14697688.2023.2259954,https://doi.org/10.1080/14697688.2023.2259954,yes
+455f0fa41521,Research on the Design of Financial Data Analysis Platform with Joint PSO-HQCNN and RPA Robot Visualization Technology,2024,IEIE Transactions on Smart Processing and Computing,10.5573/ieiespc.2024.10.13.5.472,https://doi.org/10.5573/ieiespc.2024.10.13.5.472,yes
+45bb659a6bb7,The Quantum Future of Finance Applications,2025,,10.4018/979-8-3373-2893-5.ch003,https://doi.org/10.4018/979-8-3373-2893-5.ch003,yes
+45e4cb39dba8,Applications of quantum computing to optimization,2021,"2021 IEEE CHILEAN Conference on Electrical, Electronics Engineering, Information and Communication Technologies (CHILECON)",10.1109/chilecon54041.2021.9703081,https://doi.org/10.1109/chilecon54041.2021.9703081,yes
+464916b2b572,Improving the Sequence Alignment Method by Quantum Multi-Pattern Recognition,2018,Hellenic Conference on Artificial Intelligence,10.1145/3200947.3201041,https://doi.org/10.1145/3200947.3201041,yes
+468c3327bdef,Quantum Computing in US Banking: The Future of Fraud Prevention and Financial Crime Detection,2025,Global Journal of Emerging AI and Computing,10.70445/gjeac.1.2.2025.31-50,https://doi.org/10.70445/gjeac.1.2.2025.31-50,yes
+46e6281cc0ea,A quantum feature selection framework via ground state preparation,2023,Physica Scripta,10.1088/1402-4896/ad0184,https://doi.org/10.1088/1402-4896/ad0184,yes
+4715aa3cb8e4,A Quantum Neural Network for Fraud Detection Using a Data-Driven Priority Entanglement Scheme,2025,,10.21203/rs.3.rs-7991330/v1,https://doi.org/10.21203/rs.3.rs-7991330/v1,yes
+479092dfcc1c,Minimizing estimation runtime on noisy quantum computers,2020,arXiv,10.1103/PRXQuantum.2.010346,https://doi.org/10.1103/PRXQuantum.2.010346,yes
+4798a3b70dd2,Quantum Computing Solutions: Solving Real-World Problems Using Quantum Computing and Algorithms,2020,Quantum Computing Solutions Solving Real World Problems Using Quantum Computing and Algorithms,10.1007/978-1-4842-6516-1,https://doi.org/10.1007/978-1-4842-6516-1,yes
+48fad011ea47,QADQN: Quantum Attention Deep Q-Network for Financial Market Prediction,2024,International Conference on Quantum Computing and Engineering,10.1109/QCE60285.2024.10303,https://doi.org/10.1109/QCE60285.2024.10303,yes
+49aaab8109ac,Quantum Monte Carlo Integration: The Full Advantage in Minimal Circuit Depth,2021,arXiv,10.22331/q-2022-09-29-823,https://doi.org/10.22331/q-2022-09-29-823,yes
+4adb16a5e179,Distributed quantum computing models: Study of architectures and models for the distribution of quantum computing tasks across multiple quantum nodes,2024,International Journal of Science and Research Archive,10.30574/ijsra.2024.13.2.2602,https://doi.org/10.30574/ijsra.2024.13.2.2602,yes
+4d0406b8b736,Advanced frameworks for fraud detection leveraging quantum machine learning and data science in fintech ecosystems,2024,World Journal of Advanced Engineering Technology and Sciences,10.30574/wjaets.2024.12.1.0057,https://doi.org/10.30574/wjaets.2024.12.1.0057,yes
+4d07c1a00ccf,A Quantum Algorithm for Linear PDEs Arising in Finance,2019,SSRN Electronic Journal,10.2139/ssrn.3499134,https://doi.org/10.2139/ssrn.3499134,yes
+4dbaf2b286bf,A Noisy Optimization mechanism for variational quantum classifiers,2026,Knowledge-Based Systems,10.1016/j.knosys.2026.115659,https://doi.org/10.1016/j.knosys.2026.115659,yes
+4e492b86e6c7,Computer-Aided Quantum Algorithms for Real-Time Energy Market Trading,2025,IEEE Access,10.1109/ACCESS.2025.3553369,https://doi.org/10.1109/ACCESS.2025.3553369,yes
+4eb84ca51d29,Quantum Amplitude Estimation in Practice: A Case Study in Option Pricing,2026,Communications in computer and information science,10.1007/978-3-032-13852-1_35,https://doi.org/10.1007/978-3-032-13852-1_35,yes
+5087f7c0e2a3,Quantum Computing for Supply Chain Finance,2021,IEEE International Conference on Services Computing,10.1109/scc53864.2021.00066,https://doi.org/10.1109/scc53864.2021.00066,yes
+50989fdc9ad1,Statistics-informed parameterized quantum circuit: towards practical quantum state preparation and learning via maximum entropy principle,2026,npj Quantum Information,10.1038/s41534-026-01191-5,https://doi.org/10.1038/s41534-026-01191-5,yes
+52b1d7c50b82,"Variational quantum Monte Carlo study of two-dimensional Wigner crystals: exchange, correlation, and magnetic field effects",1995,arXiv,10.1103/PhysRevB.52.5863,https://doi.org/10.1103/PhysRevB.52.5863,yes
+53a6837ae00d,Quantum-Enhanced Artificial Intelligence: Framework for Hybrid Computing and Natural Language Processing,2025,International Journal For Multidisciplinary Research,10.36948/ijfmr.2025.v07i05.69408,https://doi.org/10.36948/ijfmr.2025.v07i05.69408,yes
+53a718c11ea8,Quantum machine learning for quantum anomaly detection,2018,"Physical review. A/Physical review, A",10.1103/physreva.97.042315,https://doi.org/10.1103/physreva.97.042315,yes
+53cdbb737343,Portfolio Optimization using Accelerated Quantum Simulation,2024,2024 International Conference on Trends in Quantum Computing and Emerging Business Technologies,10.1109/TQCEBT59414.2024.10545076,https://doi.org/10.1109/TQCEBT59414.2024.10545076,yes
+53d70155ce82,Chapter 5 From evolution to revolution: the contemporary development of quantum computing,2023,,10.1515/9783110791402-005,https://doi.org/10.1515/9783110791402-005,yes
+5413b7728054,Quantum Machine Learning: Harnessing Quantum Algorithms for Supervised and Unsupervised Learning,2022,International Journal of Innovative Research in Science Engineering and Technology,10.15680/ijirset.2022.1109004,https://doi.org/10.15680/ijirset.2022.1109004,yes
+55025d58c227,Recursive Quantum Decoherence and Classical Emergence Simulator,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18978473,https://doi.org/10.5281/zenodo.18978473,yes
+55400536a64e,Optimized Quantum Neural Networks for Anomaly Detection in Securities Transactions,2025,,10.48047/jocaaa.31.4.1430,https://doi.org/10.48047/jocaaa.31.4.1430,yes
+55496bcdeaa7,Variational quantum algorithm for unconstrained black box binary optimization: Application to feature selection,2022,Quantum,10.22331/q-2023-01-26-909,https://doi.org/10.22331/q-2023-01-26-909,yes
+559b94bd12c0,Unveiling the Quantum Realm: A Comprehensive Analysis of Quantum Computing,2025,,10.1109/ic-ftai67960.2025.11384159,https://doi.org/10.1109/ic-ftai67960.2025.11384159,yes
+56176dc5f8a2,Quantum Relaxation for Solving Multiple Knapsack Problems,2024,International Conference on Quantum Computing and Engineering,10.1109/QCE60285.2024.00086,https://doi.org/10.1109/QCE60285.2024.00086,yes
+567b25a75e80,Portfolio Optimization Based on Quantum HHL Algorithm,2022,Lecture notes in computer science,10.1007/978-3-031-06788-4_8,https://doi.org/10.1007/978-3-031-06788-4_8,yes
+57294220386e,Challenges and opportunities of quantum computing and its transformative potential to revolutionise various sectors and industries,2024,"Journal of AI, Robotics &amp; Workplace Automation",10.69554/gvbf3244,https://doi.org/10.69554/gvbf3244,yes
+5761d4b2accf,An improved QFT-based quantum comparator and extended modular arithmetic using one ancilla qubit,2023,New Journal of Physics,10.1088/1367-2630/acfd52,https://doi.org/10.1088/1367-2630/acfd52,yes
+57a58ac6ea72,Mathematical Foundations of Quantum Linear Regression: A Proof of Concept via Variational Hamiltonian Formulation,2025,,10.36227/techrxiv.175099726.66124047/v1,https://doi.org/10.36227/techrxiv.175099726.66124047/v1,yes
+57ed01f77bc6,Comparative Study between Quantum and Classical Methods: Few Observations from Portfolio Optimization Problem,2022,,10.1109/tqcebt54229.2022.10041475,https://doi.org/10.1109/tqcebt54229.2022.10041475,yes
+58470ab028ef,Quantum Autoencoder for Enhanced Fraud Detection in Imbalanced Credit Card Dataset,2024,IEEE Access,10.1109/ACCESS.2024.3496901,https://doi.org/10.1109/ACCESS.2024.3496901,yes
+58a29f9f57a7,Hybrid Quantum-Classical Models and Optimization Techniques for Financial Fraud Detection,2025,2025 6th International Conference on IoT Based Control Networks and Intelligent Systems (ICICNIS),10.1109/ICICNIS66685.2025.11315779,https://doi.org/10.1109/ICICNIS66685.2025.11315779,yes
+58e7ea9324df,D5.4 Evaluation of quantum algorithms for pricing and computation of VaR,2022,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.7149256,https://doi.org/10.5281/zenodo.7149256,yes
+590bb868b4e0,Frequency-domain enhanced bi-directional recurrent quantum network for stock price trend prediction,2023,Multimedia tools and applications,10.1007/s11042-023-17620-y,https://doi.org/10.1007/s11042-023-17620-y,yes
+5a14221c82c6,A Comprehensive Exploration of Quantum Calculus: Extending Classical Calculus to Discrete Frameworks,2025,Journal of Physical Mathematics &amp; its Applications,10.47363/jpma/2025(3)141,https://doi.org/10.47363/jpma/2025(3)141,yes
+5a37fc259055,Quantum Optimization for Network Capacity Expansion of Microgrid Models via Grover-Enhanced QAOA,2026,2026 IEEE 23rd Mediterranean Electrotechnical Conference (MELECON),10.1109/MELECON64486.2026.11418844,https://doi.org/10.1109/MELECON64486.2026.11418844,yes
+5a3e1c66be6e,Smart Vault Security in Banks: A Quantum AI-Enabled Intrusion Detection System,2025,2025 International Conference on Engineering Innovations and Technologies (ICoEIT),10.1109/ICoEIT63558.2025.11211817,https://doi.org/10.1109/ICoEIT63558.2025.11211817,yes
+5a5bcd7b5e90,Algorithmic approach to adiabatic quantum optimization,2011,arXiv,10.1103/PhysRevA.85.032303,https://doi.org/10.1103/PhysRevA.85.032303,yes
+5b3485ced673,"Investment Risk Assessment: Quantum Computing and Communications - 2029 Fault-Tolerant Milestone Dependency, PQC Market Elimination, and Helium Supply Analysis",2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.17635287,https://doi.org/10.5281/zenodo.17635287,yes
+5b6f77b75bb0,Hybrid Quantum–Classical Learning Approaches for Scalable Optimization Beyond NISQ Limitations,2026,International Journal of Advanced Research in Science Communication and Technology,10.48175/ijarsct-31116,https://doi.org/10.48175/ijarsct-31116,yes
+5bb38201b7ae,QML Algorithm for Market Pattern Detection in High-Frequency Trading for Banking,2025,,10.1109/cises66934.2025.11265399,https://doi.org/10.1109/cises66934.2025.11265399,yes
+5beb1712456c,Using Quantum Monte Carlo Simulation to Price Complicated Derivatives In the Big Data Environment,2023,,10.1145/3651640.3651650,https://doi.org/10.1145/3651640.3651650,yes
+5cd21914c8a3,Enhancing quantum approximate optimization with CNN-CVaR integration,2025,Quantum Information Processing,10.1007/s11128-025-04655-3,https://doi.org/10.1007/s11128-025-04655-3,yes
+5cf59c9d0438,An Effective QUBO Formulation for Knapsack Problems,2025,2025 IEEE International Conference on Quantum Artificial Intelligence (QAI),10.1109/QAI63978.2025.00039,https://doi.org/10.1109/QAI63978.2025.00039,yes
+5f0d1c12d9b5,The Prospects for Applications of Quantum Computing in the Financial Sector,2025,Productivity Press eBooks,10.4324/9781003501947-7,https://doi.org/10.4324/9781003501947-7,yes
+5f1b1731f44b,Quantum Financial Modeling on Noisy Intermediate-Scale Quantum Hardware: Random Walks using Approximate Quantum Counting,2023,arXiv,10.1177/29767032231217444,https://doi.org/10.1177/29767032231217444,yes
+5f5133229f76,Spectral Graph Compression in Deploying Recommender Algorithms on Quantum Simulators,2025,De Computis,10.3390/computers14080310,https://doi.org/10.3390/computers14080310,yes
+61102309a95a,Enhancing Quantum Machine Learning Algorithms for Optimized Financial Portfolio Management,2024,,10.1109/incos59338.2024.10527612,https://doi.org/10.1109/incos59338.2024.10527612,yes
+6128be5df2e0,Cost optimization in hybrid cloud environments,2025,,10.70593/978-81-984306-5-6_7,https://doi.org/10.70593/978-81-984306-5-6_7,yes
+615067f0066c,Hybrid Quantum-Classical Portfolio Optimization Leveraging Counterdiabatic Annealing and Quantum Risk Factors,2025,,10.36227/techrxiv.175795525.59311374/v1,https://doi.org/10.36227/techrxiv.175795525.59311374/v1,yes
+618a035e5260,BLS-QLSTM: a novel hybrid quantum neural network for stock index forecasting,2025,Humanities and Social Sciences Communications,10.1057/s41599-025-05348-z,https://doi.org/10.1057/s41599-025-05348-z,yes
+620d7dc5208d,Quantum Computing in Finance: The Intesa Sanpaolo Experience,2024,IEEE Engineering Management Review,10.1109/EMR.2024.3373796,https://doi.org/10.1109/EMR.2024.3373796,yes
+624a4d090c3e,An efficient confidentiality scheme based on quadratic chaotic map and Fibonacci sequence,2024,AIMS Mathematics,10.3934/math.20241323,https://doi.org/10.3934/math.20241323,yes
+6257d900d3ef,Hybrid Quantum Classical Model for Enhanced Cross Border Financial Fraud Detection,2025,International Research Journal on Advanced Engineering and Management (IRJAEM),10.47392/irjaem.2025.0508,https://doi.org/10.47392/irjaem.2025.0508,yes
+6278f0d22ba5,Predictive Techniques for Stock Price Movement Using Quantum-Classical Approach: A Comprehensive Review,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.17961937,https://doi.org/10.5281/zenodo.17961937,yes
+62e5c8b6b617,"Integration of Hybrid Quantum–Neuromorphic AI With Cloud, Edge, and High-Performance Computing Environments",2026,Advances in computational intelligence and robotics book series,10.4018/979-8-3373-7779-7.ch007,https://doi.org/10.4018/979-8-3373-7779-7.ch007,yes
+63287a0e96b2,Time Series Forecasting with Quantum Machine Learning Architectures,2022,Lecture notes in computer science,10.1007/978-3-031-19493-1_6,https://doi.org/10.1007/978-3-031-19493-1_6,yes
+63af985e2b4e,"Quantum-enhanced stock market prediction: Integrating AI, sentiment analysis, and multimodal data fusion",2025,,10.1201/9781003685876-7,https://doi.org/10.1201/9781003685876-7,yes
+64111b3b5d61,AI &amp; Quantum Computing for Finance &amp; Insurance,2019,Singapore University of Social Sciences - World Scientific future economy series,10.1142/11371,https://doi.org/10.1142/11371,yes
+64522483ae83,Guest editorial: Selected extended papers from the Quantum Software Architecture Workshop at IEEE International Conference on Software Architecture 2021 (ICSA 2021),2021,IET Quantum Communication,10.1049/qtc2.12031,https://doi.org/10.1049/qtc2.12031,yes
+646bd6bbd935,Accelerated quantum Monte Carlo with mitigated error on noisy quantum computer,2021,arXiv,10.1103/PRXQuantum.2.040361,https://doi.org/10.1103/PRXQuantum.2.040361,yes
+64a4167a442c,Quantum Machine Learning for Advanced Data Processing in Business Analytics: A Path Toward Next-Generation Solutions,2024,Advanced International Journal of Multidisciplinary Research,10.62127/aijmr.2024.v02i05.1107,https://doi.org/10.62127/aijmr.2024.v02i05.1107,yes
+64bdec61d4fd,Quantum Portfolio Rebalancing Algorithm (QPRA): An Integrating Quantum Computing and AI for Dynamic Portfolio Optimization,2025,SSRN Electronic Journal,10.2139/ssrn.5004146,https://doi.org/10.2139/ssrn.5004146,yes
+64beee021f17,Hybrid Quantum Network for classification of finance and MNIST data,2021,2021 IEEE 18th International Conference on Software Architecture Companion (ICSA-C),10.1109/ICSA-C52384.2021.00027,https://doi.org/10.1109/ICSA-C52384.2021.00027,yes
+65172a2ed058,Quantum-inspired Computing: Entanglement-enhanced Technique for Short Portfolio in Global Markets,2023,,10.1109/nano58406.2023.10231234,https://doi.org/10.1109/nano58406.2023.10231234,yes
+6534fbda7b00,Quantum-Enhanced Deep Reinforcement Learning for Central Bank Digital Currency (CBDC) Liquidity Management,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18666884,https://doi.org/10.5281/zenodo.18666884,yes
+661640f62940,Quantum Computing for Optimization With Ising Machine,2024,IEEE Nanotechnology Magazine,10.1109/MNANO.2024.3378485,https://doi.org/10.1109/MNANO.2024.3378485,yes
+66b4a51889c0,Quantum 2-Player Games and Realizations with Circuits,2024,Research,10.34133/research.0480,https://doi.org/10.34133/research.0480,yes
+66f18ee7b813,An efficient quantum algorithm for independent component analysis,2024,New Journal of Physics,10.1088/1367-2630/ad5e16,https://doi.org/10.1088/1367-2630/ad5e16,yes
+66f43397ba83,Intermediate Qutrit-based improved quantum arithmetic operations with application on financial derivative pricing,2025,International Journal of Quantum Information,10.1142/s0219749925500364,https://doi.org/10.1142/s0219749925500364,yes
+674c681a57d0,D5.7 Update of review of state-of-the-art for Pricing and Computation of VaR,2023,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.8208690,https://doi.org/10.5281/zenodo.8208690,yes
+67d46e29ec7f,Gaussian Boson Sampling for Binary Optimization,2023,International Conference on Quantum Computing and Engineering,10.1109/QCE57702.2023.10268,https://doi.org/10.1109/QCE57702.2023.10268,yes
+67ef832f18a2,Quantum Computing Applications in Financial Modeling and Portfolio Optimization,2025,"2025 First International Conference on Advances in Computer Science, Electrical, Electronics, and Communication Technologies (CE2CT)",10.1109/CE2CT64011.2025.10939675,https://doi.org/10.1109/CE2CT64011.2025.10939675,yes
+68a06e2534e1,"Quantum Computing: Algorithms, Architectures, and Applications by Dr. Animoni Nagaraju, Gurunadham R, Dr. Komati Sathish, K. Anusha ,Dr. Thota Siva Ratna Sai",2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18811726,https://doi.org/10.5281/zenodo.18811726,yes
+68d02a109ffd,"High-Dimensional Signal Processing using Classical-Quantum Machine Learning Pipelines with the TensorFlow Stack, Cirq-NISQ, and Vertica",2022,International Conference on Quantum Computing and Engineering,10.1109/QCE53715.2022.00121,https://doi.org/10.1109/QCE53715.2022.00121,yes
+69b8b36d8aad,"A Quantum Risk Management Framework (QRMF): Quantum Amplitude Estimation for VaR/CVaR, Entanglement-Based Systemic Risk Analytics, and Variational Risk Optimization",2025,Preprints.org,10.20944/preprints202510.0505.v1,https://doi.org/10.20944/preprints202510.0505.v1,yes
+6b2b4f6ba298,"&lt;div&gt; Multiplicative-Weights Methods and Gibbs-State Preparation for Conic Portfolio Optimization:&amp;nbsp;&lt;/div&gt;&lt;div&gt; A Mathematical Framework Connecting Quantum Algorithms, Jordan Algebras, and Quantitative Finance&lt;/div&gt;",2026,SSRN Electronic Journal,10.2139/ssrn.6103666,https://doi.org/10.2139/ssrn.6103666,yes
+6bbc4a2d4a89,Quantum Computing Applications,2025,Auerbach Publications eBooks,10.1201/9781003499459-3,https://doi.org/10.1201/9781003499459-3,yes
+6cb502a2896a,Continuous Variables Quantum Algorithm for Solving Ordinary Differential Equations,2023,International Conference on Quantum Computing and Engineering,10.1109/QCE57702.2023.10183,https://doi.org/10.1109/QCE57702.2023.10183,yes
+6df543f1353b,Variational quantum Monte Carlo simulations with tensor-network states,2007,arXiv,10.1103/PhysRevLett.99.220602,https://doi.org/10.1103/PhysRevLett.99.220602,yes
+6eb61c248ea7,Decoherence in adiabatic quantum computation,2015,arXiv,10.1103/PhysRevA.91.062320,https://doi.org/10.1103/PhysRevA.91.062320,yes
+6fe2aeb67e66,Quantum Computing,2022,,10.1002/9781119777465.ch4,https://doi.org/10.1002/9781119777465.ch4,yes
+7055fc9f6caf,Quantum algorithm for unsupervised anomaly detection,2023,Physica A: Statistical Mechanics and its Applications,10.1016/j.physa.2023.129018,https://doi.org/10.1016/j.physa.2023.129018,yes
+71966c8a9dc7,"Big Data in Financial Risk Management: Predictive Modeling, Real-Time Assessment and Emerging Challenges",2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.17799618,https://doi.org/10.5281/zenodo.17799618,yes
+71dc25d5ac6a,Leveraging Quantum Computing and Optimization to Estimate Financial Crashes in Small and Medium-Sized Enterprises,2024,,10.1109/ubmk63289.2024.10773505,https://doi.org/10.1109/ubmk63289.2024.10773505,yes
+71e349feba65,Quantum Machine Learning for Multi-Criteria Decision-Making in Industrial Project Portfolio Management,2025,Next Generation Journal for The Young Researchers,10.62802/km136t27,https://doi.org/10.62802/km136t27,yes
+71ed62112b8d,Exploring the Revolutionary Potential of Quantum Technologies in the Fintech Industry,2025,Frontiers in Engineering and Informatics,10.63949/crinfo.v1i3.004,https://doi.org/10.63949/crinfo.v1i3.004,yes
+7301808f6d01,Emerging Technologies in Financial Process Optimization and Risk Management,2025,IGI Global eBooks,10.4018/979-8-3693-4369-2.ch002,https://doi.org/10.4018/979-8-3693-4369-2.ch002,yes
+732f54a585cf,Enhanced Ransomware Detection using a Hybrid Quantum-Classical Convolutional Neural Network with Boosted Sooty Tern Optimization,2025,,10.1109/icsadl65848.2025.10933393,https://doi.org/10.1109/icsadl65848.2025.10933393,yes
+73f3adac41d9,Solving Portfolio Optimization Problems using Adiabatic Quantum Computing,2025,,10.21203/rs.3.rs-6986668/v1,https://doi.org/10.21203/rs.3.rs-6986668/v1,yes
+740ccc3ae6f8,advanced_quantum_monte_carlo.py — Quantum Amplitude Estimation Classical Benchmark for Finance,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18079567,https://doi.org/10.5281/zenodo.18079567,yes
+7540346e79ad,algorithmic_trading_vqe.py — Disruptive VQE-Inspired Trading Strategy Optimizer,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18015135,https://doi.org/10.5281/zenodo.18015135,yes
+75c40280653d,Automating Financial Analysis with QML Algorithm: A Banking Industry Perspective,2025,,10.1109/netcrypt65877.2025.11102448,https://doi.org/10.1109/netcrypt65877.2025.11102448,yes
+75d6acf76068,ML-Driven Quantum Portfolio Optimization: Hybrid CNN-LSTM Architecture with Adaptive Zero-Noise Extrapolation on NISQ Devices,2025,,10.21203/rs.3.rs-8423464/v1,https://doi.org/10.21203/rs.3.rs-8423464/v1,yes
+75eee58caf3a,Contextual quantum neural networks for stock price prediction,2025,Scientific Reports,10.1038/s41598-025-34413-5,https://doi.org/10.1038/s41598-025-34413-5,yes
+7600a952f76a,Shallow and Robust QAOA: Improving Feasibility and Hardware Performance via Linear-Chain and Ramp Schedules,2026,,10.21203/rs.3.rs-8297477/v1,https://doi.org/10.21203/rs.3.rs-8297477/v1,yes
+76a87207ec32,Quantum Principal Component Analysis for Financial Fraud Detection,2025,2025 IEEE International Conference on Quantum Artificial Intelligence (QAI),10.1109/QAI63978.2025.00014,https://doi.org/10.1109/QAI63978.2025.00014,yes
+76bf72482fcf,A Comparative Analysis of Classical and Quantum Machine Learning Models for Financial Fraud Detection,2023,Computer Fraud & Security,10.52710/cfs.895,https://doi.org/10.52710/cfs.895,yes
+76ee9fd77e4e,Quantum alternating operator ansatz with PSO optimizer for portfolio optimization problem,2025,Applied Soft Computing,10.1016/j.asoc.2025.113419,https://doi.org/10.1016/j.asoc.2025.113419,yes
+775d4b298ecd,Quantum Machine Learning for Anomaly Detection in Consumer Electronics,2024,IEEE Computer Society Annual Symposium on VLSI,10.1109/ISVLSI61997.2024.00104,https://doi.org/10.1109/ISVLSI61997.2024.00104,yes
+778a06edc7f8,Quantum Interference Effects in Social Decision-Making,2025,Quantum Social Science,10.6914/qss.010102,https://doi.org/10.6914/qss.010102,yes
+78b97b2dbd8e,Quantum Gated Recurrent Neural Networks,2024,IEEE Transactions on Pattern Analysis and Machine Intelligence,10.1109/TPAMI.2024.3519605,https://doi.org/10.1109/TPAMI.2024.3519605,yes
+7a159ec77866,Quantum Computing in High Frequency Trading and Fraud Detection,2021,Engineering International,10.18034/EI.V9I2.549,https://doi.org/10.18034/EI.V9I2.549,yes
+7b4855a804c1,Quantum Computations and Option Pricing,2022,Looking Beyond the Frontiers of Science Dedicated to the 80th Birthday of K K Phua,10.1142/9789811263699_0027,https://doi.org/10.1142/9789811263699_0027,yes
+7b4b01100661,"Encoding trade-offs and design toolkits in quantum algorithms for discrete optimization: coloring, routing, scheduling, and other problems",2022,arXiv,10.22331/q-2023-09-14-1111,https://doi.org/10.22331/q-2023-09-14-1111,yes
+7bdb6593ec48,Advancing Bi-Objective Weighted Portfolio Optimization Across International Markets via Quantum Annealing,2025,,10.1109/qce65121.2025.00245,https://doi.org/10.1109/qce65121.2025.00245,yes
+7c2e539656f7,Neural networks for estimating Macro Asset Pricing model in football clubs,2023,"Intelligent systems in accounting, finance and management/Intelligent systems in accounting, finance & management",10.1002/isaf.1532,https://doi.org/10.1002/isaf.1532,yes
+7cc9ce4dad7d,Detecting Financial Fraud: A Comparative Study of Quantum-Based Supervised Learning Algorithms,2026,Lecture notes in networks and systems,10.1007/978-981-96-9184-5_12,https://doi.org/10.1007/978-981-96-9184-5_12,yes
+7cfdb2957f6c,Demonstration of quantum linear equation solver on the IBM qiskit platform,2020,,10.1109/dcabes50732.2020.00086,https://doi.org/10.1109/dcabes50732.2020.00086,yes
+7e22c616ae62,Portfolio Optimization: Applications in Quantum Computing,2016,,10.1002/9781118593486.ch4,https://doi.org/10.1002/9781118593486.ch4,yes
+7e3bc9e2594c,mRNA Secondary Structure Prediction Using Utility-Scale Quantum Computers,2024,International Conference on Quantum Computing and Engineering,10.1109/QCE60285.2024.00064,https://doi.org/10.1109/QCE60285.2024.00064,yes
+7ea4faff382d,Quantum Enabled-Algorithms and Market Prediction and Execution for Ultra-Low-Latency High-Frequency Trading in Global Markets,2026,,10.25397/f3ys-jj93,https://doi.org/10.25397/f3ys-jj93,yes
+7efbd5b186f9,HAT v30.2: The Unified Theory of Structural Time and the Lag Horizon,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18161677,https://doi.org/10.5281/zenodo.18161677,yes
+7f0f52d2eab9,A brief review of portfolio optimization techniques,2023,Artificial Intelligence Review,10.1007/s10462-022-10273-7,https://doi.org/10.1007/s10462-022-10273-7,yes
+80690e1e30a0,Real-Time Threat Mitigation in Financial IT Infrastructures Using Quantum Computing,2025,International Journal of Electronics and Telecommunications,10.24425/ijet.2025.153578,https://doi.org/10.24425/ijet.2025.153578,yes
+80db1bf3c910,Quantum Machine Learning for Credit Scoring,2024,Mathematics,10.3390/math12091391,https://doi.org/10.3390/math12091391,yes
+81146d2c9f2a,Quantum-Enhanced Smart Computing Framework for Sustainable Credit Risk Decision Communication,2025,,10.4018/979-8-3373-3541-4.ch013,https://doi.org/10.4018/979-8-3373-3541-4.ch013,yes
+814040fcfdb1,Financial Portfolio Optimization Method Based on the Quantum Linear Discriminant Analysis,2023,Dianzi Keji Daxue Xuebao Journal of the University of Electronic Science and Technology of China,10.12178/1001-0548.2022109,https://doi.org/10.12178/1001-0548.2022109,yes
+8154d6cc12dd,Prediction of Stocks Index Price using Quantum GANs,2025,Proceedings of the AAAI Symposium Series,10.1609/aaaiss.v7i1.36904,https://doi.org/10.1609/aaaiss.v7i1.36904,yes
+81f92de64876,Quantum-Enhanced Simulation-Based Optimization,2020,International Conference on Quantum Computing and Engineering,10.1109/QCE49297.2020.00017,https://doi.org/10.1109/QCE49297.2020.00017,yes
+82475e54c193,Quantum Encoding and Analysis on Continuous Time Stochastic Process with Financial Applications,2022,Quantum,10.22331/q-2023-10-03-1127,https://doi.org/10.22331/q-2023-10-03-1127,yes
+8273c874208a,Alternative pipeline for option pricing using quantum computers,2025,EPJ Quantum Technology,10.1140/epjqt/s40507-025-00328-3,https://doi.org/10.1140/epjqt/s40507-025-00328-3,yes
+83317aae0ec0,Hybrid quantum investment optimization with minimal holding period,2020,Scientific Reports,10.1038/s41598-021-98297-x,https://doi.org/10.1038/s41598-021-98297-x,yes
+858a41cdb5b2,Quantum Arithmetic for Directly Embedded Arrays,2021,Engineering Proceedings,10.3390/engproc2021007045,https://doi.org/10.3390/engproc2021007045,yes
+85fbbb9f2a42,A Preprocessing Perspective for Quantum Machine Learning Classification Advantage in Finance Using NISQ Algorithms,2022,Entropy,10.3390/e24111656,https://doi.org/10.3390/e24111656,yes
+862fc759b55d,Alternative sampling for variational quantum Monte Carlo,2009,arXiv,10.1103/PhysRevE.77.016704,https://doi.org/10.1103/PhysRevE.77.016704,yes
+86891f250a78,Quantum machine learning on near-term quantum devices: Current state of supervised and unsupervised techniques for real-world applications,2024,Physical Review Applied,10.1103/physrevapplied.21.067001,https://doi.org/10.1103/physrevapplied.21.067001,yes
+86fa1780f8fe,QUANTUM-ENHANCED RISK ASSESSMENT FOR SECURING BLOCKCHAIN-ENABLED FINANCIAL SYSTEMS AND INTERCONNECTED CYBER NETWORKS,2023,,10.34218/ijcs_01_01_006,https://doi.org/10.34218/ijcs_01_01_006,yes
+871c63b61487,Extracting a function encoded in amplitudes of a quantum state by tensor network and orthogonal function expansion,2022,Quantum Information Processing,10.1007/s11128-023-03937-y,https://doi.org/10.1007/s11128-023-03937-y,yes
+872cedb13e27,Noise-Robust Quantum Generative Models for Distribution Learning and Efficient Data Loading,2025,,10.21203/rs.3.rs-8001093/v1,https://doi.org/10.21203/rs.3.rs-8001093/v1,yes
+87ac65c206bd,Predict and Conquer: Navigating Algorithm Trade-offs with Quantum Design Automation,2025,arXiv,10.1109/QCE65121.2025.00071,https://doi.org/10.1109/QCE65121.2025.00071,yes
+881dd9b94148,Optimized QUBO formulation methods for quantum computing,2024,Quantum Science and Technology,10.1088/2058-9565/ae3b70,https://doi.org/10.1088/2058-9565/ae3b70,yes
+885002fa235e,Exploring Quantum Challenges and Opportunities of Quantum Machine Learning Adoption in Finance,2025,"Advances in finance, accounting, and economics book series",10.4018/979-8-3693-8186-1.ch017,https://doi.org/10.4018/979-8-3693-8186-1.ch017,yes
+88e1fac438e9,A Quantum Computing-Based System for Portfolio Optimization Using Future Asset Values and Automatic Reduction of the Investment Universe,2024,Lecture notes in networks and systems,10.1007/978-981-97-3556-3_16,https://doi.org/10.1007/978-981-97-3556-3_16,yes
+88e7d870aeb0,Quantum-Driven Reinforcement Learning for Financial Market Prediction and Risk Management,2025,2025 5th International Conference of Science and Information Technology in Smart Administration (ICSINTESA),10.1109/ICSINTESA68165.2025.11413728,https://doi.org/10.1109/ICSINTESA68165.2025.11413728,yes
+8908fea924fc,Efficient State Preparation for Quantum Amplitude Estimation,2020,Physical Review Applied,10.1103/PHYSREVAPPLIED.15.034027,https://doi.org/10.1103/PHYSREVAPPLIED.15.034027,yes
+89a54b4268bd,qaoa_portfolio_optimization.py — QAOA Benchmark for Cardinality-Constrained Portfolio Selection,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18079636,https://doi.org/10.5281/zenodo.18079636,yes
+8a2a16ffc826,FORECASTING STOCK MARKET CRASHES VIA REAL-TIME RECESSION PROBABILITIES: A QUANTUM COMPUTING APPROACH,2022,Fractals,10.1142/s0218348x22401624,https://doi.org/10.1142/s0218348x22401624,yes
+8a2ce0575ff1,Quantum Reinforcement Learning Trading Agent for Sector Rotation in the Taiwan Stock Market,2025,International Conference on Quantum Computing and Engineering,10.1109/QCE65121.2025.10322,https://doi.org/10.1109/QCE65121.2025.10322,yes
+8d58112a9617,portfolio_optimizer.py — Disruptive Quantum-Inspired Portfolio Optimizer,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18013468,https://doi.org/10.5281/zenodo.18013468,yes
+8d9fbaf6510b,A time-Series Model Based on Quanntum Walk in terms of Quantum Bernoulli Noise,2018,International Journal of Engineering and Applied Sciences (IJEAS),10.31873/ijeas.5.10.17,https://doi.org/10.31873/ijeas.5.10.17,yes
+8dad17700137,"Best practices for portfolio optimization by quantum computing, experimented on real quantum devices",2023,Research Square (Research Square),10.21203/rs.3.rs-2601946/v1,https://doi.org/10.21203/rs.3.rs-2601946/v1,yes
+8e2194183afe,Robustness of Quantum Algorithms Against Approximate Data Representations,2023,International Conference on Quantum Computing and Engineering,10.1109/QCE57702.2023.10269,https://doi.org/10.1109/QCE57702.2023.10269,yes
+8e431c2a2616,BQ-Bank: A Quantum Software for Finance and Banking,2023,Quantum Engineering,10.1155/2023/7810974,https://doi.org/10.1155/2023/7810974,yes
+8e52ff85234f,Hybrid Quantum-Classical Framework for Multi-Objective Weighted Portfolio Optimization,2025,,10.1109/qce65121.2025.10383,https://doi.org/10.1109/qce65121.2025.10383,yes
+8eecae794ba6,Pengembangan Algoritma Kuantum Terinspirasi untuk Penyelesaian Masalah Optimasi Kompleks dalam Ilmu Komputasi,2023,Journal of New Trends in Sciences,10.59031/jnts.v1i2.773,https://doi.org/10.59031/jnts.v1i2.773,yes
+8fccc6cb2db6,Quantum on the money [quantum computing in financial services sector],2019,Engineering & Technology,10.1049/et.2019.0401,https://doi.org/10.1049/et.2019.0401,yes
+8feb8231bb32,ntegrating Quantum-Inspired Principles into Financial Data Science: Optimizing Reservoir Computing Models,2024,INTERANTIONAL JOURNAL OF SCIENTIFIC RESEARCH IN ENGINEERING AND MANAGEMENT,10.55041/ijsrem36112,https://doi.org/10.55041/ijsrem36112,yes
+8fec8d839e47,Q-DTN: A Quantum-Enhanced Framework for Secure Financial Risk Management,2025,Computer Assisted Radiology and Surgery - International Congress and Exhibition,10.1109/CARS67163.2025.11337656,https://doi.org/10.1109/CARS67163.2025.11337656,yes
+90c55cffbb52,Hybrid quantum–cloud framework for nonlinear clustering optimization and intelligent resource management,2025,Results in Nonlinear Analysis,10.31838/rna/2025.08.03.007,https://doi.org/10.31838/rna/2025.08.03.007,yes
+910eaf0e9de4,Federated Learning in Quantum Computing for Privacy-Preserving and Distributed Quantum Model Training,2025,2025 6th International Conference on Data Intelligence and Cognitive Informatics (ICDICI),10.1109/ICDICI66477.2025.11135329,https://doi.org/10.1109/ICDICI66477.2025.11135329,yes
+9125f8ceaddc,Grover search algorithm with Rydberg-blockaded atoms: Quantum Monte Carlo simulations,2015,arXiv,10.1088/0953-4075/49/9/094004,https://doi.org/10.1088/0953-4075/49/9/094004,yes
+91e1bc2b1a72,Quantum Computing for Refinery Feedstock Optimization and Beyond,2026,IPTC Summit on AI for the Energy Industry,10.2523/iptc-25262-ms,https://doi.org/10.2523/iptc-25262-ms,yes
+9242f9c3e9d3,Deep Learning with Quantum Computing Leveraging risk assessment financial optimization and detection of frauds,2025,2025 International Conference on Computational Innovations and Engineering Sustainability (ICCIES),10.1109/ICCIES63851.2025.11033124,https://doi.org/10.1109/ICCIES63851.2025.11033124,yes
+924cd91fefd6,Implementing Quantum Machine Learning in Credit Card Fraud Detection,2025,2025 International Conference on Networks and Cryptology (NETCRYPT),10.1109/NETCRYPT65877.2025.11102604,https://doi.org/10.1109/NETCRYPT65877.2025.11102604,yes
+92b5369078cd,Variational Quantum Factorization (VQF) using Different Variations of Quantum Approximate Optimization Algorithm (QAOA),2025,International Conference on Communication Systems and Networks,10.1109/COMSNETS63942.2025.10885675,https://doi.org/10.1109/COMSNETS63942.2025.10885675,yes
+9352e26d9232,An Implementation of Quantum Machine Learning Technique to Determine Insurance Claim Fraud,2022,"2022 10th International Conference on Reliability, Infocom Technologies and Optimization (Trends and Future Directions) (ICRITO)",10.1109/ICRITO56286.2022.9964828,https://doi.org/10.1109/ICRITO56286.2022.9964828,yes
+946a6e1b2725,Synergizing Quantum Computing and Machine Learning: A Pathway Toward Quantum-Enhanced Intelligence,2025,Journal of Multiscale Materials Informatics,10.62411/jimat.v2i1.12947,https://doi.org/10.62411/jimat.v2i1.12947,yes
+953d9d489a99,Python-Integrated Quantum–Classical Computing Framework for Intelligent Time-Series Prediction,2025,,10.1109/icacrs67045.2025.11324310,https://doi.org/10.1109/icacrs67045.2025.11324310,yes
+95a7b64bceac,Quantum Computing for Advanced Market Forecasting and Risk Management in Financial Services,2025,,10.1109/icmctc62214.2025.11196584,https://doi.org/10.1109/icmctc62214.2025.11196584,yes
+963ca4c12a61,Quantum Risk Modeling Redefining Actuarial Science with Quantum Algorithms,2024,"Journal of Science, Technology and Engineering Research",10.64206/9pden248,https://doi.org/10.64206/9pden248,yes
+96baad0b46a9,Quantum computational finance: Monte Carlo pricing of financial derivatives,2018,"Physical review. A/Physical review, A",10.1103/physreva.98.022321,https://doi.org/10.1103/physreva.98.022321,yes
+9700e75505fd,Hybrid Quantum-Classical Algorithms for Loan-Collection Optimization with Loan-Loss Provisions,2023,Physical Review Applied,10.1103/physrevapplied.19.064001,https://doi.org/10.1103/physrevapplied.19.064001,yes
+970f45895147,Empirical Analysis of Classical and Quantum Algorithms for Portfolio Optimization: Enhancing Financial Decision-Making Through Quantum Computing,2024,2024 International Conference on Sustainable Communication Networks and Application (ICSCNA),10.1109/icscna63714.2024.10864082,https://doi.org/10.1109/icscna63714.2024.10864082,yes
+975be2b38005,Comparative Study of Quantum Computing Tools and Frameworks,2025,Communications in computer and information science,10.1007/978-3-031-80842-5_8,https://doi.org/10.1007/978-3-031-80842-5_8,yes
+976207a6400b,From Theory to Reality: Tracing the Milestones of Quantum Information Systems,2024,,10.1145/3723178.3723269,https://doi.org/10.1145/3723178.3723269,yes
+980d054544f5,Model Analysis and Application of Quantum Computers in Credit Scoring Card Combination Optimization,2024,2024 IEEE 13th Data Driven Control and Learning Systems Conference (DDCLS),10.1109/DDCLS61622.2024.10606854,https://doi.org/10.1109/DDCLS61622.2024.10606854,yes
+993b4e035b55,Hybrid Quantum–Classical Machine Learning Architectures for Scalable Pattern Recognition in High-Dimensional and Noisy Data Environments,2026,Human-Computer Interaction,10.62802/sptecp98,https://doi.org/10.62802/sptecp98,yes
+99b07636e459,Experimental implementation of quantum-walk-based portfolio optimization,2024,Quantum Science and Technology,10.1088/2058-9565/ad27e9,https://doi.org/10.1088/2058-9565/ad27e9,yes
+99e391ee5e85,Toward Quantum Utility in Finance: A Robust Data-Driven Algorithm for Asset Clustering,2025,arXiv.org,10.1007/978-3-032-13855-2_2,https://doi.org/10.1007/978-3-032-13855-2_2,yes
+9a4ba980a229,Quantum Approaches to NP-Hard Combinatorial Optimization Problems: A Review,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18194156,https://doi.org/10.5281/zenodo.18194156,yes
+9a926e905d18,A New Stock Forecasting Model by Hidden Quantum Markov Models,2022,Lecture notes in computer science,10.1007/978-3-031-06788-4_37,https://doi.org/10.1007/978-3-031-06788-4_37,yes
+9aa8ee9654b4,Quantum Differential Machine Learning,2025,Quantum Economics and Finance,10.1177/29767032251334589,https://doi.org/10.1177/29767032251334589,yes
+9abc38e76aec,Quantum Computing and Its Implications for Theoretical and Applied Economics: From Shor’s Algorithm to Models of Uncertainty,2025,International Journal of Digital Research,10.63711/ijdr.net20250401,https://doi.org/10.63711/ijdr.net20250401,yes
+9ac554cf64c4,Research on Quantum Computing Technology and Application,2019,"Proceedings of the 2019 International Conference on Modeling, Analysis, Simulation Technologies and Applications (MASTA 2019)",10.2991/MASTA-19.2019.30,https://doi.org/10.2991/MASTA-19.2019.30,yes
+9b277c9234e8,A variational quantum algorithm for the Feynman-Kac formula,2021,arXiv,10.22331/q-2022-06-07-730,https://doi.org/10.22331/q-2022-06-07-730,yes
+9b55a2fa0cd5,Research and Application of Quantum Computing Algorithm for Asset Portfolio Optimization,2024,"2024 3rd International Conference on Data Analytics, Computing and Artificial Intelligence (ICDACAI)",10.1109/ICDACAI65086.2024.00042,https://doi.org/10.1109/ICDACAI65086.2024.00042,yes
+9bd4d4752519,Rasengan: A Transition Hamiltonian-based Approximation Algorithm for Solving Constrained Binary Optimization Problems,2025,Proceedings of the Annual International Symposium on Microarchitecture Micro,10.1145/3725843.3756107,https://doi.org/10.1145/3725843.3756107,yes
+9be7c1fe15c2,Advancing Stock Price Prediction and Algorithmic Trading: Quantum Machine Learning for High-Frequency Optimization,2026,International Research Journal of Multidisciplinary Technovation,10.54392/irjmt26114,https://doi.org/10.54392/irjmt26114,yes
+9c09c81b2a12,AI-Enhanced DevOps Integration in Quantum Computing Environments: Optimizing Serverless Application Performance for Retail Systems,2025,2025 IEEE Madhya Pradesh Section Conference (MPCON),10.1109/MPCON66082.2025.11256734,https://doi.org/10.1109/MPCON66082.2025.11256734,yes
+9c8acfa3bc72,Hybrid Quantum-Classical Support Vector Machines for Financial Regime Detection: Performance and Efficiency Evaluation,2025,SSRN Electronic Journal,10.2139/ssrn.5707104,https://doi.org/10.2139/ssrn.5707104,yes
+9ea18a0e8bfd,Quantum Graph Partitioning Delays Cascade Failure Phase Transition in Financial Networks,2021,SSRN Electronic Journal,10.2139/ssrn.3968261,https://doi.org/10.2139/ssrn.3968261,yes
+9ecabb9df454,Quantum Risk Modeling: Theoretical Frameworks for Financial Uncertainty Quantification,2025,,10.26434/chemrxiv-2025-52tpl,https://doi.org/10.26434/chemrxiv-2025-52tpl,yes
+9ece39a58632,Quantum Computing for Sustainable Energy: Optimising SDG-7 Through Smart Energy Management and Financial Planning,2025,2025 International Conference on Modern Sustainable Systems (CMSS),10.1109/CMSS66566.2025.11182548,https://doi.org/10.1109/CMSS66566.2025.11182548,yes
+9ee4aaf0f745,Quantum advantage for multi-option portfolio pricing and valuation adjustments,2026,Quantitative Finance,10.1080/14697688.2026.2614573,https://doi.org/10.1080/14697688.2026.2614573,yes
+9f2d4ce48167,Financial fraud detection with entropy quantum optimization versus classical machine learning,2025,,10.1117/12.3066304,https://doi.org/10.1117/12.3066304,yes
+9f6ab6f7c9d8,TransGuard-QNet: A Hybrid Quantum Machine Learning Framework for Financial Transaction Risk Assessment and Fraud Detection With Linear Programming Optimization,2025,Computational Economics,10.1007/s10614-025-11127-4,https://doi.org/10.1007/s10614-025-11127-4,yes
+9fd619b02b3e,Quantum computational insurance and actuarial science,2024,Science China Information Sciences,10.1007/s11432-024-4411-8,https://doi.org/10.1007/s11432-024-4411-8,yes
+a01f6e902e50,Design and Implementation of a Quantum Computing-Based Financial Portfolio Optimization System,2025,Social Science Research Network,10.2139/ssrn.5086647,https://doi.org/10.2139/ssrn.5086647,yes
+a052f266d945,Carbon market risk estimation using quantum conditional generative adversarial network and amplitude estimation,2024,Energy Conversion and Economics,10.1049/enc2.12122,https://doi.org/10.1049/enc2.12122,yes
+a0bb411d1801,On the potential of quantum walks for modeling financial return distributions,2024,Physica A: Statistical Mechanics and its Applications,10.1016/j.physa.2024.130215,https://doi.org/10.1016/j.physa.2024.130215,yes
+a0d2cf9e49bf,Leveraging Distributed Quantum Computing for Effective Optimization Solutions,2024,International Conference on Computing Communication and Networking Technologies,10.1109/ICCCNT61001.2024.10724468,https://doi.org/10.1109/ICCCNT61001.2024.10724468,yes
+a143717759af,Reverse Stress Testing in Banking,2021,,10.1515/9783110647907,https://doi.org/10.1515/9783110647907,yes
+a19de5d705c8,Quantum walk option pricing model based on binary tree,2024,Physica A: Statistical Mechanics and its Applications,10.1016/j.physa.2024.130205,https://doi.org/10.1016/j.physa.2024.130205,yes
+a254eea1f1d3,A novel approach for quantum financial simulation and quantum state preparation,2023,Quantum Machine Intelligence,10.1007/s42484-024-00160-5,https://doi.org/10.1007/s42484-024-00160-5,yes
+a2b17048118b,Quantum Machine Learning Technique for Insurance Claim Fraud Detection with Quantum Feature Selection,2025,Journal of Information Systems Engineering & Management,10.52783/jisem.v10i8s.1193,https://doi.org/10.52783/jisem.v10i8s.1193,yes
+a326ebb75ee1,Quantum Ensemble Optimisation: Revolutionizing Investment Portfolio Management with QAOA and VQE Integration,2024,,10.53555/kuey.v30i1.6903,https://doi.org/10.53555/kuey.v30i1.6903,yes
+a426a8634e23,Analyzing Perceptron Algorithm for Global Gold Price Prediction using Quantum Computing Approach,2025,Kinetik,10.22219/kinetik.v10i1.2024,https://doi.org/10.22219/kinetik.v10i1.2024,yes
+a46c5a11b5dd,Variational quantum simulations of stochastic differential equations,2020,arXiv,10.1103/PhysRevA.103.052425,https://doi.org/10.1103/PhysRevA.103.052425,yes
+a4777ce71497,Quantum Amplitude Loading for Rainbow Options Pricing,2024,International Conference on Quantum Computing and Engineering,10.1109/QCE60285.2024.00034,https://doi.org/10.1109/QCE60285.2024.00034,yes
+a4c29a22413b,Quantum Circuit Learning to Compute Option Prices and Their Sensitivities,2021,SSRN Electronic Journal,10.2139/ssrn.3922040,https://doi.org/10.2139/ssrn.3922040,yes
+a538cd2dc13c,Continuous-variable quantum Boltzmann machine,2024,Quantum Machine Intelligence,10.1007/s42484-025-00259-3,https://doi.org/10.1007/s42484-025-00259-3,yes
+a5b68f8e6d90,Financial Fraud Detection: A Comparative Study of Quantum Machine Learning Models,2023,International Journal of Quantum Information,10.1142/S0219749923500442,https://doi.org/10.1142/S0219749923500442,yes
+a603e283e0cf,Empowering Sustainable Finance Through Education and Awareness: Fostering Responsible AI and Quantum Computing Usage for Enhanced ESG Analysis,2025,Adaptive Artificial Intelligence Fundamentals Challenges and Applications,10.1002/9781394389070.ch16,https://doi.org/10.1002/9781394389070.ch16,yes
+a64e9d084306,Study on Quantum Finance Algorithm: Quantum Monte Carlo Algorithm based on European Option Pricing,2022,Journal of quantum computing,10.32604/jqc.2022.027683,https://doi.org/10.32604/jqc.2022.027683,yes
+a75f8f16f267,"Quantum Machine Learning for Financial Forecasting and Portfolio Optimization: Algorithms, Applications, and Future Prospects",2025,International Journal for Sciences and Technology,10.71097/ijsat.v16.i4.9033,https://doi.org/10.71097/ijsat.v16.i4.9033,yes
+a7b3e49448d1,A Comprehensive Review of the Convergence of Quantum Computing and Finance,2025,2025 2nd Global AI Summit - International Conference on Artificial Intelligence and Emerging Technology (AI Summit),10.1109/AISummit66170.2025.11411648,https://doi.org/10.1109/AISummit66170.2025.11411648,yes
+a801ca3560e0,Quantum Machine Learning: An Application of Quantum Support Vector Machines for Financial Data Classification,2025,SSRN Electronic Journal,10.2139/ssrn.5172167,https://doi.org/10.2139/ssrn.5172167,yes
+a82edc88ba8d,A Practical Quantum Solver for Multidimensional Partial Differential Equations,2025,"SC25-W: Workshops of the International Conference for High Performance Computing, Networking, Storage and Analysis",10.1145/3731599.3767550,https://doi.org/10.1145/3731599.3767550,yes
+a8b9f6b19702,A Comprehensive Survey of Modern Portfolio Optimization: From Traditional Risk Analysis to Advanced Analytics and Machine Learning Approaches,2025,Advances in Economics Management and Political Sciences,10.54254/2754-1169/2025.21140,https://doi.org/10.54254/2754-1169/2025.21140,yes
+a934c86420c1,Applying quantum autoencoders for time series anomaly detection,2025,Quantum Machine Intelligence,10.1007/s42484-025-00285-1,https://doi.org/10.1007/s42484-025-00285-1,yes
+a9e4b00c1fae,QLSTM4FM: Quantum Assisted Long Short-Term Memory Framework for Financial Market Trend Forecasting,2024,2024 International Conference on Intelligent Computing and Sustainable Innovations in Technology (IC-SIT),10.1109/IC-SIT63503.2024.10862667,https://doi.org/10.1109/IC-SIT63503.2024.10862667,yes
+a9e56ea93735,Benchmarking Highly Precise Quantum Linear Systems Algorithms,2025,International Conference on Quantum Computing and Engineering,10.1109/QCE65121.2025.10491,https://doi.org/10.1109/QCE65121.2025.10491,yes
+a9fb068595f2,Call Option Pricing Using Quantum Amplitude Estimation: A Comparative Study with Monte Carlo Simulation,2025,International Computer Science and Engineering Conference,10.1109/ICSEC67360.2025.11298113,https://doi.org/10.1109/ICSEC67360.2025.11298113,yes
+aa0f8200d68f,A Hybrid Quantum-Classical Framework for Solving Np-Hard Optimization Problems,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18087324,https://doi.org/10.5281/zenodo.18087324,yes
+aa5b834c3a1d,Antifragile Quantum-Semantic Systems via CVaR-POVM &amp; Riemannian Memory Manifolds,2025,,10.22541/au.176599457.78410478/v1,https://doi.org/10.22541/au.176599457.78410478/v1,yes
+aa6714606396,Quantum Computing and Industry Transformation,2026,Auerbach Publications eBooks,10.1201/9781003587835-12,https://doi.org/10.1201/9781003587835-12,yes
+aa910c409f87,Quantum Algorithms for Solving Dynamic Problems,2025,Lecture notes in networks and systems,10.1007/978-3-031-94273-0_1,https://doi.org/10.1007/978-3-031-94273-0_1,yes
+ab43aaeed4af,Impact of quantum computing on current technologies,2022,Iberian Conference on Information Systems and Technologies,10.23919/cisti54924.2022.9820248,https://doi.org/10.23919/cisti54924.2022.9820248,yes
+ab8ec0885239,A Hybrid Quantum-Classical Simulation Architecture for Catastrophe Tail Risk and Reinsurance Portfolio Optimization&amp;nbsp;,2026,SSRN Electronic Journal,10.2139/ssrn.6295999,https://doi.org/10.2139/ssrn.6295999,yes
+ac9a031452bb,Hybrid Quantum Classical Intelligence for Business: A Reference Architecture for Predictive Analytics and Decision Optimization,2025,JOURNAL OF ADVANCE AND FUTURE RESEARCH,10.56975/jaafr.v3i12.501605,https://doi.org/10.56975/jaafr.v3i12.501605,yes
+acc55c7d6a2a,Quantum Computing Approaches to Portfolio Optimization Under Risk and Market Uncertainty,2026,Next Generation Journal for The Young Researchers,10.62802/h0w3vm29,https://doi.org/10.62802/h0w3vm29,yes
+ad79bfb0cfd8,Quantum Machine Learning for Secure Financial Forecasting: Mitigating Data Breaches and Adversarial Exploits,2025,Asian Journal of Research in Computer Science,10.9734/ajrcos/2025/v18i4613,https://doi.org/10.9734/ajrcos/2025/v18i4613,yes
+add09b8c5e11,Q-PORT: Quantum Portfolio Optimization with Resource-Efficient Encoding and Scalability Analysis,2026,Communications in computer and information science,10.1007/978-3-032-13852-1_34,https://doi.org/10.1007/978-3-032-13852-1_34,yes
+ae4cc7b70669,Artificial Intelligence and Quantum Computing Techniques for Stock Market Predictions,2024,,10.1002/9781394214334.ch5,https://doi.org/10.1002/9781394214334.ch5,yes
+ae6ef4dd0465,Quantum Computing and Algorithms in Financial Applications,2025,,10.4018/979-8-3373-2893-5.ch008,https://doi.org/10.4018/979-8-3373-2893-5.ch008,yes
+ae8a2fcc480d,Improved approximation algorithms for bounded-degree local Hamiltonians,2021,Physical Review Letters,10.1103/PhysRevLett.127.250502,https://doi.org/10.1103/PhysRevLett.127.250502,yes
+af45ea1743f6,A Hybrid Quantum Wasserstein GAN with Applications to Option Pricing,2023,SSRN Electronic Journal,10.2139/ssrn.4514510,https://doi.org/10.2139/ssrn.4514510,yes
+af5d5a990937,Optimized Quantum Circuit Implementation of Payoff Function,2023,IEEE/IFIP International Conference on Very Large Scale Integration of System-on-Chip,10.1109/VLSI-SoC57769.2023.10321843,https://doi.org/10.1109/VLSI-SoC57769.2023.10321843,yes
+afa84e1d94cf,Quantum Architecture Search for Quantum Monte Carlo Integration via Conditional Parameterized Circuits with Application to Finance,2023,International Conference on Quantum Computing and Engineering,10.1109/QCE57702.2023.00070,https://doi.org/10.1109/QCE57702.2023.00070,yes
+b0f18b08964e,Quantum computing and financial risk management: A theoretical review and implications,2024,Computer Science &amp; IT Research Journal,10.51594/csitrj.v5i6.1194,https://doi.org/10.51594/csitrj.v5i6.1194,yes
+b10591681791,Enhancing Knapsack-Based Financial Portfolio Optimization Using Quantum Approximate Optimization Algorithm,2024,IEEE Access,10.1109/ACCESS.2024.3506981,https://doi.org/10.1109/ACCESS.2024.3506981,yes
+b1450afbccd7,Quantum-Driven Financial Decision-Making Models for Management Science and Strategic Planning,2026,Next Generation Journal for The Young Researchers,10.62802/xeqr0963,https://doi.org/10.62802/xeqr0963,yes
+b17e753ba135,Quantum Computing in Community Detection for Anti-Fraud Applications,2024,Entropy,10.3390/e26121026,https://doi.org/10.3390/e26121026,yes
+b193d72aab07,Towards an Efficiently Simulated Quantum Approximate Optimisation,2025,,10.1109/fuzz62266.2025.11152265,https://doi.org/10.1109/fuzz62266.2025.11152265,yes
+b1aad69bad2c,Quantum-Driven Paradigms: Pioneering Artificial Intelligence Beyond Classical Borders,2026,,10.25397/pg0d-8b42,https://doi.org/10.25397/pg0d-8b42,yes
+b1bdaa2bbbb8,Quantum Classification,2024,,10.1201/9781003429654-11,https://doi.org/10.1201/9781003429654-11,yes
+b253d747bcc9,Quantum Machine Learning and Fraud Detection,2021,Lecture notes in computer science,10.1007/978-3-030-91631-2_8,https://doi.org/10.1007/978-3-030-91631-2_8,yes
+b28e4aff9e6f,The maximum-likelihood quantum amplitude estimation algorithm provides the best tradeoff between accuracy and circuit depth among quantum solutions for integral estimation,2023,International Conference on Quantum Computing and Engineering,10.1109/QCE57702.2023.00069,https://doi.org/10.1109/QCE57702.2023.00069,yes
+b2cc85a6587a,QCC Echo: Redacted Results-Only Verification and Hardware Match Summary,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.17527845,https://doi.org/10.5281/zenodo.17527845,yes
+b3543c214d69,Quantum-enhanced Versus Classical Support Vector Machine: An Application to Stock Index Forecasting,2023,SSRN Electronic Journal,10.2139/ssrn.4630419,https://doi.org/10.2139/ssrn.4630419,yes
+b4634f8d9776,Quantum Support Vector Machine for Fraud Detection,2025,"2025 IEEE 4th International Conference on Computing, Communication, Perception and Quantum Technology (CCPQT)",10.1109/CCPQT66408.2025.11383198,https://doi.org/10.1109/CCPQT66408.2025.11383198,yes
+b4c593efacfa,Quantum Strategies in Finance,2025,,10.4018/979-8-3373-2893-5.ch012,https://doi.org/10.4018/979-8-3373-2893-5.ch012,yes
+b524b2fc9631,Classical and quantum computing methods for estimating loan-level risk distributions,2022,Journal of the Operational Research Society,10.1080/01605682.2022.2115415,https://doi.org/10.1080/01605682.2022.2115415,yes
+b62275ba4e8f,Time-Series Forecasting Using Continuous Variables-Based Quantum Neural Networks,2024,International Conference on Communication Systems and Networks,10.1109/COMSNETS59351.2024.10427192,https://doi.org/10.1109/COMSNETS59351.2024.10427192,yes
+b6835993edd2,quantum_monte_carlo_pricer.py — Disruptive Quantum-Inspired Option Pricing Engine,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18013315,https://doi.org/10.5281/zenodo.18013315,yes
+b69e5fca1ee6,LLM-Guided Ansätze Design for Quantum Circuit Born Machines in Financial Generative Modeling,2025,International Conference on Quantum Computing and Engineering,10.1109/QCE65121.2025.10303,https://doi.org/10.1109/QCE65121.2025.10303,yes
+b7810a7c699b,A quantum neural network with built-in self-attention mechanism,2026,Neurocomputing,10.1016/j.neucom.2026.132862,https://doi.org/10.1016/j.neucom.2026.132862,yes
+b7b5ffbce8ec,Quantum Variational Autoencoder,2018,arXiv,10.1088/2058-9565/aada1f,https://doi.org/10.1088/2058-9565/aada1f,yes
+b8dcb2e989c2,Pengaruh Quantum Trading Algorithm Terhadap Volatilitas Harga Saham LQ45,2025,Accounting Research Unit (ARU Journal),10.30598/arujournalvol6iss1pp68-77,https://doi.org/10.30598/arujournalvol6iss1pp68-77,yes
+b94d98f5a637,A Quantum Walk Model of Financial Options,2021,Wilmott,10.1002/wilm.10918,https://doi.org/10.1002/wilm.10918,yes
+b9793b3d8619,Integrated Photonic Computing Chip For Unary-Based Option Pricing,2024,Optical Fiber Communications Conference and Exhibition,10.1364/ofc.2024.w1f.3,https://doi.org/10.1364/ofc.2024.w1f.3,yes
+b97e7f0690c5,A Quantum Circuit Design for Quantum Portfolio Optimization Problem,2024,,10.1109/itc-cscc62988.2024.10628188,https://doi.org/10.1109/itc-cscc62988.2024.10628188,yes
+b9898808569b,Empirical Evaluation of Quantum Kernel Learning for Sector Rotation Prediction: Using Fama–French 10 Industry Portfolios,2026,Preprints.org,10.20944/preprints202602.0745.v1,https://doi.org/10.20944/preprints202602.0745.v1,yes
+b9aa74e4bc0d,An Empirical Study on Enhancing Explainability Through Quantum Machine Learning for Credit Risk Analysis,2024,2024 IEEE International Conference on Future Machine Learning and Data Science (FMLDS),10.1109/fmlds63805.2024.00084,https://doi.org/10.1109/fmlds63805.2024.00084,yes
+b9bbd2d099f0,"Quantum Binomial Tree, An Effective Method for Probability Distribution Loading for Derivative Pricing",2025,Wilmott,10.54946/wilm.12175,https://doi.org/10.54946/wilm.12175,yes
+b9ec84f4d48c,Towards Pricing Financial Derivatives with an IBM Quantum Computer,2019,arXiv,10.1103/PhysRevResearch.3.013167,https://doi.org/10.1103/PhysRevResearch.3.013167,yes
+ba5afbcce6b8,Quantum Machine Learning and Optimisation in Finance,2024,Quantitative finance (Print),10.1080/14697688.2024.2375260,https://doi.org/10.1080/14697688.2024.2375260,yes
+ba792b0b6f24,A Novel Decomposition‐Ensemble Approach for Forecasting Stock Price With Quantum Neural Network and Big Data,2025,Journal of Forecasting,10.1002/for.70047,https://doi.org/10.1002/for.70047,yes
+ba8b763050ae,A Comparative Technique with Credit card based Fraud detection with Machine Learning and Quantum Algorithm,2024,,10.1109/icssas64001.2024.10760503,https://doi.org/10.1109/icssas64001.2024.10760503,yes
+ba8e571f1e45,Evaluating the Computational Advantages of the Variational Quantum Circuit Model in Financial Fraud Detection,2024,IEEE Access,10.1109/access.2024.3432312,https://doi.org/10.1109/access.2024.3432312,yes
+ba9b439040f0,Quantum Algorithms for Portfolio Optimization in Finance,2025,Next Generation Journal for The Young Researchers,10.62802/krgj1w70,https://doi.org/10.62802/krgj1w70,yes
+bb0210fb8e67,SAPO: Improving the Scalability and Accuracy of Quantum Linear Solver for Portfolio Optimization,2025,,10.1109/dac63849.2025.11133130,https://doi.org/10.1109/dac63849.2025.11133130,yes
+bb6213c444b0,Quantum Finance Unleashed,2025,,10.4018/979-8-3373-2893-5.ch001,https://doi.org/10.4018/979-8-3373-2893-5.ch001,yes
+bb8d6c141f2d,Qnnformer: quantum-enhanced neural networks with multi-attention mechanisms for long-term time series forecasting,2026,Quantum Information Processing,10.1007/s11128-026-05085-5,https://doi.org/10.1007/s11128-026-05085-5,yes
+bbd82caa4d1f,Quantum Computing Drives Innovation in Business Intelligence Across Marketing and Finance through Systematic Review and Strategic Foresight,2026,International Journal of Accounting and Economics Studies,10.14419/803cts61,https://doi.org/10.14419/803cts61,yes
+bc172c83a778,"Quantum algorithms for solving optimization problems in logistics, finance, and material science",2024,,10.62311/nesx/92427,https://doi.org/10.62311/nesx/92427,yes
+bc8d838c7545,Short Communication: A Quantum Algorithm for Linear PDEs Arising in Finance,2021,SIAM Journal on Financial Mathematics,10.1137/21m1397878,https://doi.org/10.1137/21m1397878,yes
+bcd1adfba1e5,The Qubit Shift: Unveiling Next-Generation Deep Learning with Quantum Computing,2025,,10.1109/itt69610.2025.11352910,https://doi.org/10.1109/itt69610.2025.11352910,yes
+bcec4aa1183a,A Scalable Quantum Machine Learning Methodology Design for Handling Large-Scale Data Classification and Optimization Principle,2025,,10.1109/iconstem65670.2025.11374683,https://doi.org/10.1109/iconstem65670.2025.11374683,yes
+bcfb2bcd887f,Adaptive Quantum Entanglement Networks for Real-Time Financial Fraud Detection: A Novel Framework with Temporal Correlation Analysis,2025,,10.36227/techrxiv.175750771.12895702/v1,https://doi.org/10.36227/techrxiv.175750771.12895702/v1,yes
+bf1f4204b1e6,Quantum advantage of Monte Carlo option pricing,2023,Journal of Physics Communications,10.1088/2399-6528/acd2a4,https://doi.org/10.1088/2399-6528/acd2a4,yes
+c0182e500e61,Quantum algorithms for Monte Carlo integration using pseudo-random numbers,2021,International Conference on Quantum Computing and Engineering,10.1109/QCE52317.2021.00075,https://doi.org/10.1109/QCE52317.2021.00075,yes
+c034ac9211c2,Generation of Classical-Quantum Code from UML models,2023,,10.1109/qce57702.2023.10202,https://doi.org/10.1109/qce57702.2023.10202,yes
+c07bf2c04ef9,"Corrections to ""Enhancing Knapsack-Based Financial Portfolio Optimization Using Quantum Approximate Optimization Algorithm"" (IEEE Access (2024) 12 (183779-183791) DOI: 10.1109/ACCESS.2024.3506981)",2025,IEEE Access,10.1109/ACCESS.2025.3611744,https://doi.org/10.1109/ACCESS.2025.3611744,yes
+c0d24cf1b7ed,Practical Meta-Reinforcement Learning of Evolutionary Strategy with Quantum Neural Networks for Stock Trading,2020,Journal of Quantum Information Science,10.4236/jqis.2020.103005,https://doi.org/10.4236/jqis.2020.103005,yes
+c0da85ef2954,Train-and-Scaling the Quantum Alternating Operator Ansatz to Solve Portfolio Diversification,2024,Proceedings IEEE Quantum Week 2024 Qce 2024,10.1109/QCE60285.2024.10266,https://doi.org/10.1109/QCE60285.2024.10266,yes
+c368d34620bf,Credit Card Fraud Detection Using Machine Learning Based on Support Vector Machine,2023,Proceedings of 8th IEEE International Conference on Science Technology Engineering and Mathematics Iconstem 2023,10.1109/ICONSTEM56934.2023.10142247,https://doi.org/10.1109/ICONSTEM56934.2023.10142247,yes
+c408224c2f59,QFDNN: A Resource-Efficient Variational Quantum Feature Deep Neural Networks for Fraud Detection and Loan Prediction,2025,IEEE Transactions on Computational Social Systems,10.1109/TCSS.2025.3568618,https://doi.org/10.1109/TCSS.2025.3568618,yes
+c43a47ce0c1a,Fraud Detection using Quantum Machine Learning(QML),2024,,10.1109/gccit63234.2024.10862508,https://doi.org/10.1109/gccit63234.2024.10862508,yes
+c43d47985bee,Applications of Quantum Machine Learning in Financial Services,2025,Apple Academic Press eBooks,10.1201/9781003558279-8,https://doi.org/10.1201/9781003558279-8,yes
+c459e5fdfbdc,Evaluating Quantum Computing's Potential for Financial Engineering Optimisation,2024,,10.1201/9781003596721-10,https://doi.org/10.1201/9781003596721-10,yes
+c46b48afaa7c,Quantum computing for financial risk measurement,2023,Quantum Information Processing,10.1007/s11128-022-03777-2,https://doi.org/10.1007/s11128-022-03777-2,yes
+c4e919f71785,Quantum Algorithms for Mixed Binary Optimization applied to Transaction Settlement,2019,arXiv,10.1109/TQE.2021.3063635,https://doi.org/10.1109/TQE.2021.3063635,yes
+c50cff63fd9e,Bridging Quantum Algorithms and Classical Finance: Portfolio Optimization Using QAOA and QUBO Framework,2025,2025 1st IEEE Uttar Pradesh Section Women in Engineering International Conference on Electrical Electronics and Computer Engineering (UPWIECON),10.1109/UPWIECON67212.2025.11390104,https://doi.org/10.1109/UPWIECON67212.2025.11390104,yes
+c57f6422ed7b,Quantum Generative Adversarial Networks for learning and loading random distributions,2019,npj Quantum Information,10.1038/s41534-019-0223-2,https://doi.org/10.1038/s41534-019-0223-2,yes
+c60694a1e2ed,Quantum Machine Learning For Credit Risk: A Next-Generation Approach To Risk Assessment,2025,Journal of International Crisis and Risk Communication Research,10.63278/jicrcr.vi.3419,https://doi.org/10.63278/jicrcr.vi.3419,yes
+c6422717f546,Enterprise Portfolio Optimization Based on Particle Swarm Optimization and Quantum Approximate Optimization Algorithm,2025,2025 2nd International Conference on Intelligent Computing and Robotics (ICICR),10.1109/ICICR65456.2025.00119,https://doi.org/10.1109/ICICR65456.2025.00119,yes
+c65b93ca030a,An Innovative Hunting-based Quantum-inspired Jaguar Algorithm for Combinatorial Optimization,2024,,10.1109/qce60285.2024.10401,https://doi.org/10.1109/qce60285.2024.10401,yes
+c759041ceebc,Research on Financial Market Prediction Model Based on Big Data and Quantum Computing,2024,SPIN,10.1142/s2010324724400101,https://doi.org/10.1142/s2010324724400101,yes
+c7b77a40d1ea,Quantum Generative Models of Mid-Price Movement in Limit Order Books,2024,International Conference on AI in Finance,10.1145/3677052.3698679,https://doi.org/10.1145/3677052.3698679,yes
+c7db741770a8,Quantum-Assisted AI for Speeding up Large-Scale Data Processing,2022,,10.63530/ijcsitr_2022_03_01_13,https://doi.org/10.63530/ijcsitr_2022_03_01_13,yes
+c7df20032013,Quantum Deep Hedging,2023,Quantum,10.22331/q-2023-11-29-1191,https://doi.org/10.22331/q-2023-11-29-1191,yes
+c7e723b86ecc,Quantum Monte Carlo study of the quasiparticle effective mass of the two-dimensional uniform electron liquid,2025,arXiv,10.1103/3wjg-y6qk,https://doi.org/10.1103/3wjg-y6qk,yes
+c85b1f95ca15,Non‐Differentiable Leaning of Quantum Circuit Born Machine with Genetic Algorithm,2021,Wilmott,10.1002/wilm.10943,https://doi.org/10.1002/wilm.10943,yes
+c8872ea43678,Quantum Machine Learning for Pattern Recognition in Financial Fraud Detection,2025,International Journal of Academic and Industrial Research Innovations(IJAIRI),10.62311/nesx/rphcrcscrqc1,https://doi.org/10.62311/nesx/rphcrcscrqc1,yes
+c8c709dc67c3,Quantum synergy in peptide folding: A comparative study of CVaR-variational quantum eigensolver and molecular dynamics simulation,2024,International Journal of Biological Macromolecules,10.1016/j.ijbiomac.2024.133033,https://doi.org/10.1016/j.ijbiomac.2024.133033,yes
+c945ded90aa0,Efficient option pricing with unary-based photonic computing chip and generative adversarial learning,2023,Photonics Research,10.1364/PRJ.493865,https://doi.org/10.1364/PRJ.493865,yes
+c94ec3a9d152,A dual-phase deep learning framework for advanced phishing detection using the novel OptSHQCNN approach,2025,Peerj Computer Science,10.7717/peerj-cs.3014,https://doi.org/10.7717/peerj-cs.3014,yes
+c950657aa481,Quantum Testing of Recommender Algorithms on GPU-Based Quantum Simulators,2025,De Computis,10.3390/computers14040137,https://doi.org/10.3390/computers14040137,yes
+c99a158445ec,Entanglement-Based Machine Learning on a Quantum Computer,2014,arXiv,10.1103/PhysRevLett.114.110504,https://doi.org/10.1103/PhysRevLett.114.110504,yes
+ca17c4baa8d1,Quantum Computing for Financial Modelling,2025,,10.4018/979-8-3373-2893-5.ch010,https://doi.org/10.4018/979-8-3373-2893-5.ch010,yes
+cad7df42e483,"""Quantum Machine Learning Algorithms for Complex Optimization Problems""",2024,International Journal of Intelligent Systems and Applications in Engineering,10.17762/ijisae.v12i4.6663,https://doi.org/10.17762/ijisae.v12i4.6663,yes
+cb2b33577b51,Variational quantum classifiers through the lens of the Hessian,2021,PLoS ONE,10.1371/journal.pone.0262346,https://doi.org/10.1371/journal.pone.0262346,yes
+cb7047eb4b01,Deterministic Commutative Normalization Achieves z-diff→0: A Comparative Analysis of SlimeLearning and VAE-based Disentanglement,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18072242,https://doi.org/10.5281/zenodo.18072242,yes
+cbc953d2f213,Quantum-Assisted Machine Learning for Enhanced Fraud Detection in Cybersecurity,2024,International research journal of innovations in engineering and technology,10.47001/irjiet/2024.805042,https://doi.org/10.47001/irjiet/2024.805042,yes
+cc3196e053ee,Towards An End-To-End Approach For Quantum Principal Component Analysis,2023,International Conference on Quantum Computing and Engineering,10.1109/QCE57702.2023.10175,https://doi.org/10.1109/QCE57702.2023.10175,yes
+cd6d281e7994,"Quantum Computing and Entrepreneurial Innovation: Opportunities, Disruption, and Ethics",2025,Human-Computer Interaction,10.62802/4mjhs818,https://doi.org/10.62802/4mjhs818,yes
+cd9329dc38ef,"Quantum attacks on Bitcoin, and how to protect against them",2017,arXiv,10.5195/ledger.2018.127,https://doi.org/10.5195/ledger.2018.127,yes
+cded9dd64213,"Variational Quantum Algorithms in Anomaly Detection, Fraud Indicator Identification, Credit Scoring, and Stock Price Prediction",2024,Lecture notes in networks and systems,10.1007/978-981-97-3302-6_39,https://doi.org/10.1007/978-981-97-3302-6_39,yes
+ced20dbb381f,"Real device experiment data of the paper ""Hybrid Quantum-Classical Neural Networks for Few-Shot Credit Risk Assessment""",2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.17563505,https://doi.org/10.5281/zenodo.17563505,yes
+cf0d84ba3b6a,Experiments on Fraud Detection use case with QML and TDA Mapper,2021,International Conference on Quantum Computing and Engineering,10.1109/QCE52317.2021.00083,https://doi.org/10.1109/QCE52317.2021.00083,yes
+cf15566d165b,Quantum algorithm for angle-based anomaly detection,2024,Zhongguo kexue. Wulixue Lixue Tianwenxue,10.1360/sspma-2024-0471,https://doi.org/10.1360/sspma-2024-0471,yes
+cf30c27e711a,A Critical Analysis of a Multi-Input Cnn Architecture for Quantum-Enhanced Forecasting,2025,2025 IEEE International Conference on Data Mining Workshops (ICDMW),10.1109/ICDMW69685.2025.00428,https://doi.org/10.1109/ICDMW69685.2025.00428,yes
+cf9049abcad1,Quantum-Enhanced Graph Analytics: A Hybrid AI Framework for Seller Fraud Detection in Online Marketplaces,2025,"Stem Cell, Artificial Intelligence and Data Science Journal",10.64206/99ssyx46,https://doi.org/10.64206/99ssyx46,yes
+d0176849806b,Quantum Virtualization for Scalable Fintech Workflows: Multi-Tenant qVMs in Quantum Cloud Environments,2025,Next Generation Journal for The Young Researchers,10.62802/0r7r3p70,https://doi.org/10.62802/0r7r3p70,yes
+d0568e395fbf,11 A review of different techniques and challenges of quantum computing in various applications,2023,,10.1515/9783110798159-011,https://doi.org/10.1515/9783110798159-011,yes
+d097cb51b8b1,Modification of a Quantum-inspired Genetic Algorithm for Numerical Optimization Using Qudit under Conditions of Simulating Quantum Decoherence,2024,Computational nanotechnology,10.33693/2313-223x-2024-11-2-58-85,https://doi.org/10.33693/2313-223x-2024-11-2-58-85,yes
+d186493da11a,Leveraging Quantum Machine Learning to Address Class Imbalance: A Novel Approach for Enhanced Predictive Accuracy,2025,Symmetry,10.3390/sym17020186,https://doi.org/10.3390/sym17020186,yes
+d1d94604a9f6,Quantum Monte Carlo simulations,2026,Advances in Computers,10.1016/bs.adcom.2025.07.008,https://doi.org/10.1016/bs.adcom.2025.07.008,yes
+d1e6a91e7f11,Financial fraud detection using quantum graph neural networks,2023,Quantum Machine Intelligence,10.1007/s42484-024-00143-6,https://doi.org/10.1007/s42484-024-00143-6,yes
+d21bf4bb49f1,Quantum in Consumer Technology,2023,IEEE Consumer Electronics Magazine,10.1109/mce.2023.3249402,https://doi.org/10.1109/mce.2023.3249402,yes
+d28e11e1f8b0,A Testing Pipeline for Quantum Computing Applications,2023,,10.1109/qsw59989.2023.00016,https://doi.org/10.1109/qsw59989.2023.00016,yes
+d2987e36ebc7,Supervised Question Classification on SelQA Dataset Using Variational Quantum Classifiers,2022,Lecture notes in networks and systems,10.1007/978-981-19-3679-1_60,https://doi.org/10.1007/978-981-19-3679-1_60,yes
+d3580aed27bb,Advancing Financial Decision-Making through Quantum Computing and Cloud-Based AI Models: A Comparative Analysis of Predictive Algorithms,2024,Journal of Artificial Intelligence and Big Data Disciplines,10.70179/gbwxre90,https://doi.org/10.70179/gbwxre90,yes
+d388ccd2fff8,A Hybrid Quantum–Classical LSTM Approach for Predicting the Stock Market,2025,Information systems engineering and management,10.1007/978-3-031-99786-0_4,https://doi.org/10.1007/978-3-031-99786-0_4,yes
+d3bf87c97dee,Exponential qubit reduction in optimization for financial transaction settlement,2023,EPJ Quantum Technology,10.1140/epjqt/s40507-024-00262-w,https://doi.org/10.1140/epjqt/s40507-024-00262-w,yes
+d429e0713a3d,Quantum Computing in Option Pricing,2025,Publication Server of Kaiserslautern University of Technology (Kaiserslautern University of Technology),10.26204/kluedo/9328,https://doi.org/10.26204/kluedo/9328,yes
+d746904e8cbb,Training Quantum Self-Attention Model in Near-Term Quantum Computer,2024,,10.1109/wcsp62071.2024.10827420,https://doi.org/10.1109/wcsp62071.2024.10827420,yes
+d76ce1e8a91b,Quantum Computational Finance: Quantum Algorithm for Portfolio Optimization,2024,KI - Künstliche Intelligenz,10.1007/s13218-024-00870-9,https://doi.org/10.1007/s13218-024-00870-9,yes
+d85be19938f4,Quantum computation for pricing the collateralized debt obligations,2020,Quantum Engineering,10.1002/que2.84,https://doi.org/10.1002/que2.84,yes
+d919ba675da3,Application of Deep Quantum Neural Networks to Finance,2024,Wilmott,10.54946/wilm.12042,https://doi.org/10.54946/wilm.12042,yes
+d93774a0f763,Generalized Lanczos Algorithm for Variational Quantum Monte Carlo,2000,arXiv,10.1103/PhysRevB.64.024512,https://doi.org/10.1103/PhysRevB.64.024512,yes
+da48095bcac8,Application of quantum Monte Carlo integration to Markovian backward stochastic differential equations,2024,JSIAM Letters,10.14495/jsiaml.16.105,https://doi.org/10.14495/jsiaml.16.105,yes
+da5f74409827,Integrating Emerging Technologies for Organizational Agility,2025,,10.4018/979-8-3373-6207-6.ch003,https://doi.org/10.4018/979-8-3373-6207-6.ch003,yes
+dbe1e9d1911e,QuantumLeap: Hybrid quantum neural network for financial predictions,2022,Expert systems with applications,10.1016/j.eswa.2022.116583,https://doi.org/10.1016/j.eswa.2022.116583,yes
+dc2662e424c1,"An Extended Epistemic Framework Beyond Probability for Quantum Information Processing with Applications in Security, Artificial Intelligence, and Financial Computing",2025,Entropy,10.3390/e27090977,https://doi.org/10.3390/e27090977,yes
+dc60950e60b9,"Quantum Computing’s Role in Finance, Consumer Behaviour, Blockchain, Digital Marketing, Stock Market Predictions",2026,Studies in big data,10.1007/978-3-032-00586-1_14,https://doi.org/10.1007/978-3-032-00586-1_14,yes
+dc93502cbe99,Contribution of Disruptive Technologies in Computational Finance,2023,"Advances in finance, accounting, and economics book series",10.4018/979-8-3693-1746-4.ch009,https://doi.org/10.4018/979-8-3693-1746-4.ch009,yes
+dca63675e36a,Hybrid Quantum Deep Learning for Financial Market Trend Prediction,2025,"2025 3rd International Conference on IoT, Communication and Automation Technology (ICICAT)",10.1109/ICICAT68430.2025.11414552,https://doi.org/10.1109/ICICAT68430.2025.11414552,yes
+dd43141323b8,Applying QNLP to Sentiment Analysis in Finance,2023,International Conference on Quantum Computing and Engineering,10.1109/QCE57702.2023.10178,https://doi.org/10.1109/QCE57702.2023.10178,yes
+dd4a45af4eb4,Wavelet Based Financial Forecast Ensemble Featuring Hybrid Quantum-Classical LSTM Model,2024,Wseas Transactions on Business and Economics,10.37394/23207.2024.21.151,https://doi.org/10.37394/23207.2024.21.151,yes
+dd6b533767c3,Factoring Decision Support System Based on Optimized Quantum Algorithms QMC,2025,Informatics and Automation,10.15622/ia.24.2.11,https://doi.org/10.15622/ia.24.2.11,yes
+dda6a6312022,Quantum Computing Meets Finance,2025,Physics,10.1103/physics.18.154,https://doi.org/10.1103/physics.18.154,yes
+dda7775da9aa,CircuitHunt: Automated Quantum Circuit Screening for Superior Credit-Card Fraud Detection,2025,2025 IEEE International Conference on Quantum Artificial Intelligence (QAI),10.1109/QAI63978.2025.00073,https://doi.org/10.1109/QAI63978.2025.00073,yes
+ddd77f0637f4,Quantum generative modeling for financial time series with temporal correlations,2025,Machine Learning: Science and Technology,10.1088/2632-2153/ae39a2,https://doi.org/10.1088/2632-2153/ae39a2,yes
+dea554bac8c5,Quantum Portfolios,2001,arXiv,10.1103/PhysRevLett.87.257901,https://doi.org/10.1103/PhysRevLett.87.257901,yes
+df5489e3b780,Continuous-Variable Quantum K-Means Clustering with Photonic Gaussian States,2024,,10.1109/ictc62082.2024.10826857,https://doi.org/10.1109/ictc62082.2024.10826857,yes
+df75588a0f00,QAOA-in-QAOA: Solving Large-Scale MaxCut Problems on Small Quantum Machines,2022,Physical Review Applied,10.1103/physrevapplied.19.024027,https://doi.org/10.1103/physrevapplied.19.024027,yes
+dfca7435a13e,Harnessing Bayesian Statistics to Accelerate Iterative Quantum Amplitude Estimation,2025,Quantum,10.22331/q-2026-01-14-1962,https://doi.org/10.22331/q-2026-01-14-1962,yes
+dfd464e83103,Corrigendum to “Omnisolver: An extensible interface to Ising spin–glass and QUBO solvers” [SoftwareX 24 (2023) 101559],2024,SoftwareX,10.1016/j.softx.2024.101630,https://doi.org/10.1016/j.softx.2024.101630,yes
+dfe7c7ebfb9f,Financial Portfolio Optimization: A QAOA and VQE Formulation for Sharpe Ratio Maximization,2023,2023 6th International Conference on Recent Trends in Advance Computing (ICRTAC),10.1109/ICRTAC59277.2023.10480826,https://doi.org/10.1109/ICRTAC59277.2023.10480826,yes
+dfef8f5777bb,Advancing Computational Efficiency with Quantum Annealing in Complex Optimization Across Scientific Domains,2024,,10.1109/icait61638.2024.10690486,https://doi.org/10.1109/icait61638.2024.10690486,yes
+e02980089334,A Review of Routing and Resource Optimization in Quantum Networks,2026,Electronics,10.3390/electronics15030557,https://doi.org/10.3390/electronics15030557,yes
+e0a04002122e,QAOA-based MRMR Algorithm for Feature Selection,2023,AAIA,10.1145/3603273.3631193,https://doi.org/10.1145/3603273.3631193,yes
+e0b170657e2b,VaR Estimation with Quantum Computing Noise Correction Using Neural Networks,2023,Mathematics,10.3390/math11204355,https://doi.org/10.3390/math11204355,yes
+e0da2160fe63,Time-domain-multiplexed Gaussian Boson sampling for graph problems in finance,2025,Chip,10.1016/j.chip.2025.100181,https://doi.org/10.1016/j.chip.2025.100181,yes
+e13c1293dd99,Predicting Stock Market Volatility and Market Crash Using Deep Learning Methods,2025,Information systems engineering and management,10.1007/978-3-031-92916-8_17,https://doi.org/10.1007/978-3-031-92916-8_17,yes
+e1ab375ffe44,Improving Variational Quantum Optimization using CVaR,2019,arXiv,10.22331/q-2020-04-20-256,https://doi.org/10.22331/q-2020-04-20-256,yes
+e24892efe307,Cryptanalysis of the Quantum Blind Signature Scheme for Supply Chain Finance and Its Improvement,2026,Advanced Quantum Technologies,10.1002/qute.202500785,https://doi.org/10.1002/qute.202500785,yes
+e2976806d26c,Enhancing African market predictions: Integrating quantum computing with Echo State Networks,2024,Scientific African,10.1016/j.sciaf.2024.e02299,https://doi.org/10.1016/j.sciaf.2024.e02299,yes
+e36d3ea67d07,Quantum-Enhanced Probabilistic Databases: A Novel Framework for Real-Time Decision Support Systems in High-Dimensional Uncertainty Modeling,2025,,10.1109/icmctc62214.2025.11196710,https://doi.org/10.1109/icmctc62214.2025.11196710,yes
+e37b332b43d5,FX Asian Option Pricing Using Quantum Computers,2022,SSRN Electronic Journal,10.2139/ssrn.4137397,https://doi.org/10.2139/ssrn.4137397,yes
+e3f0d48b8da0,Quantum Cybersecurity for the Financial Sector,2025,Human-Computer Interaction,10.62802/p9hhgn28,https://doi.org/10.62802/p9hhgn28,yes
+e40a21367703,Stock price prediction: a comparative analysis of classical and quantum neural networks,2024,"East African Journal of Science, Technology and Innovation",10.37425/2hj0r024,https://doi.org/10.37425/2hj0r024,yes
+e4a9bb7f1bbb,Exploring Quantum Machine Learning Algorithms for Enhanced Data Classification and Clustering in Complex Systems - Integration with Gradient Boosting and K-means for Improved Performance,2024,,10.1109/cybercom63683.2024.10803157,https://doi.org/10.1109/cybercom63683.2024.10803157,yes
+e4bb7333aaa5,Variational quantum eigensolver with linear depth problem-inspired ansatz for solving portfolio optimization in finance,2024,Science China Information Sciences,10.1007/s11432-024-4185-1,https://doi.org/10.1007/s11432-024-4185-1,yes
+e4ff7159708b,Simulating the non-Hermitian dynamics of financial option pricing with quantum computers,2024,arXiv,10.1038/s41598-025-97245-3,https://doi.org/10.1038/s41598-025-97245-3,yes
+e513378d8c92,"AI, Data Science, and Quantum Neural Networks in E‑Commerce: Methods, Applications, Risks, and a Research Roadmap",2022,,10.64206/pp5nd013,https://doi.org/10.64206/pp5nd013,yes
+e52f3f130a75,A Hybrid Graph-Based Evolutionary Optimization Model Using SparseEA-AGDS for Secure and Scalable Workload Partitioning in Hybrid Quantum-Classical Systems,2026,Journal of Internet Services and Information Security,10.58346/jisis.2026.i1.038,https://doi.org/10.58346/jisis.2026.i1.038,yes
+e53a9047880e,Hybrid Quantum-Classical Neural Network (HQCNN) for Crypto Price Forecasting,2025,"2025 3rd International Conference on Artificial Intelligence, Blockchain, and Internet of Things (AIBThings)",10.1109/AIBThings66987.2025.11296267,https://doi.org/10.1109/AIBThings66987.2025.11296267,yes
+e667225d4f3c,ADVANCING FINANCIAL PREDICTION THROUGH QUANTUM MACHINE LEARNING,2025,International Journal of Intelligent Data and Machine Learning,10.55640/ijidml-v02i02-01,https://doi.org/10.55640/ijidml-v02i02-01,yes
+e69606eda4d4,Deep Neural Networks and Fan Tokens’ Pricing in Football Clubs,2025,Journal of Intelligent &amp; Fuzzy Systems: Applications in Engineering and Technology,10.1177/18758967251388256,https://doi.org/10.1177/18758967251388256,yes
+e71143fc75ea,Quantum Optimization of Currency Arbitrage via Graph-Informed Entanglement Strategies,2025,International Conference on AI in Finance,10.1145/3768292.3770352,https://doi.org/10.1145/3768292.3770352,yes
+e7e84a5252aa,Quantum Computing Approach to Realistic ESG-Friendly Stock Portfolios,2024,Risks,10.3390/risks12040066,https://doi.org/10.3390/risks12040066,yes
+e8140e32d73c,Solving Large‐Scale Linear Systems of Equations by a Quantum Hybrid Algorithm (Ann. Phys. 7/2022),2022,Annalen der Physik,10.1002/andp.202270014,https://doi.org/10.1002/andp.202270014,yes
+e82f44de737a,&lt;p&gt;&lt;b&gt;&lt;i&gt;Application of Quantum Computing Algorithms for Optimization of Tactical Asset Allocation in &lt;span&gt;&amp;nbsp;&lt;/span&gt;Portfolio Management&lt;/i&gt;&lt;/b&gt;&lt;/p&gt;,2025,SSRN Electronic Journal,10.2139/ssrn.5257790,https://doi.org/10.2139/ssrn.5257790,yes
+e8333614ccce,CCA³-SGAD: Quantum Amplitude Amplification for Combinatorial Search on Sparse Graphs,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18843183,https://doi.org/10.5281/zenodo.18843183,yes
+e884248dc62e,Clock Quantum Monte Carlo: an imaginary-time method for real-time quantum dynamics,2014,arXiv,10.1103/PhysRevA.91.012311,https://doi.org/10.1103/PhysRevA.91.012311,yes
+e8b9674d7c5e,Driving Operational Efficiency in Finance Through Strategic Automation and Process Optimization,2025,Journal of Computer Science and Technology Studies,10.32996/jcsts.2025.7.7.105,https://doi.org/10.32996/jcsts.2025.7.7.105,yes
+e922f913e80b,Quantum algorithm for solving McKean-Vlasov stochastic differential equations,2025,EPJ Quantum Technology,10.1140/epjqt/s40507-025-00453-z,https://doi.org/10.1140/epjqt/s40507-025-00453-z,yes
+e9b892fcd6fc,Toward Efficient Credit Card Fraud Detection: Leveraging Quantum Neural Networks and Modified Feature Selection Techniques,2025,Journal of Machine and Computing,10.53759/7669/jmc202505024,https://doi.org/10.53759/7669/jmc202505024,yes
+e9e49c657667,Scenario-Based Macroeconomic and Financial Forecasting Using Quantum-Enhanced Models,2026,Next Generation Journal for The Young Researchers,10.62802/zacbaj90,https://doi.org/10.62802/zacbaj90,yes
+ea3050e19cb2,11 Unveiling intelligence: exploring variational quantum circuits as machine learning models,2024,,10.1515/9783111342276-011,https://doi.org/10.1515/9783111342276-011,yes
+ea4504852540,"Quantum Binomial Tree, an Exponential Speedup for Derivative Pricing",2022,SSRN Electronic Journal,10.2139/ssrn.4216595,https://doi.org/10.2139/ssrn.4216595,yes
+ea4b39301625,Improved Quantum Approximate Optimization Algorithm based on Conditional Value-at-Risk for Portfolio Optimization,2024,Research Square (Research Square),10.21203/rs.3.rs-4582391/v1,https://doi.org/10.21203/rs.3.rs-4582391/v1,yes
+eb49db8c70eb,derivatives_pricing_visualizer.py — Disruptive Derivatives Pricing Visualizer,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18014195,https://doi.org/10.5281/zenodo.18014195,yes
+ebbdd376073e,Quantum Algorithm for Copula-Based Risk Aggregation using Orthogonal Series Density Estimation,2024,International Conference on Quantum Computing and Engineering,10.1109/QCE60285.2024.00046,https://doi.org/10.1109/QCE60285.2024.00046,yes
+ebc4087b5ca1,Quantum-Resistant Artificial Intelligence and Machine Learning Architectures for Secure Mortgage and Banking Intelligence Systems,2024,,10.70593/978-93-7185-228-9,https://doi.org/10.70593/978-93-7185-228-9,yes
+ebc427ff9eca,The Semicircle Constraint: Geometric Foundations for Variational Quantum Algorithm Optimization,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18406224,https://doi.org/10.5281/zenodo.18406224,yes
+ec46c4209f52,Optimal Tuning of Quantum Generative Adversarial Networks for Multivariate Distribution Loading,2022,Quantum Reports,10.3390/quantum4010006,https://doi.org/10.3390/quantum4010006,yes
+ecd17525083d,Quantum Approximate Optimization Algorithm for Large-Scale Portfolio Selection with Multi-Factor Constraints,2025,Next Generation Journal for The Young Researchers,10.62802/xce3gn85,https://doi.org/10.62802/xce3gn85,yes
+ed02e34c2236,Quantum Computing: A Beginner's Guide To Future Processing,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18919206,https://doi.org/10.5281/zenodo.18919206,yes
+ed0de8d44eff,Quantum Thinking in Finance,2026,,10.58445/rars.3542,https://doi.org/10.58445/rars.3542,yes
+eedf4aad8fda,A Survey on Quantum Computational Finance for Derivatives Pricing and VaR,2022,Archives of Computational Methods in Engineering,10.1007/s11831-022-09732-9,https://doi.org/10.1007/s11831-022-09732-9,yes
+ef5568395d8c,Financial Performance Analysis in European Football Clubs,2020,Entropy,10.3390/e22091056,https://doi.org/10.3390/e22091056,yes
+ef887b17024e,Unveiling Advanced Computational Applications in Quantum Computing: A Comprehensive Review,2023,International Journal of Advanced Nano Computing and Analytics,10.61797/ijanca.v2i2.284,https://doi.org/10.61797/ijanca.v2i2.284,yes
+ef9db5fc8faa,Reinforcement Learning Meets Quantum Optimization: A New Paradigm for Dynamic Portfolio Management,2025,Global Journal of Intelligent Technologies,10.64206/yk0c9a08,https://doi.org/10.64206/yk0c9a08,yes
+f02939adf369,Power Law Amplitude Estimation for Option Pricing with NISQ Devices,2024,Advanced Quantum Technologies,10.1002/qute.202400411,https://doi.org/10.1002/qute.202400411,yes
+f054252b17db,Adaptive AI and quantum computing for real-time financial fraud detection and cyber-attack prevention in U.S. healthcare,2025,World Journal of Advanced Research and Reviews,10.30574/wjarr.2025.26.2.1767,https://doi.org/10.30574/wjarr.2025.26.2.1767,yes
+f0cfc9685e15,Optimizing Feature Selection for Predictive Analytics With Quantum Algorithms,2024,"Advances in marketing, customer relationship management, and e-services book series",10.4018/979-8-3693-7673-7.ch009,https://doi.org/10.4018/979-8-3693-7673-7.ch009,yes
+f1cdc4d681b5,Unraveling the Effect of COVID-19 on the Selection of Optimal Portfolio Using Hybrid Quantum-Classical Algorithms,2022,2022 IEEE International Conference on Quantum Computing and Engineering (QCE),10.1109/qce53715.2022.00154,https://doi.org/10.1109/qce53715.2022.00154,yes
+f2dee5528891,Exploring Quantum Computing Algorithms for Optimization Problems,2025,International Journal on Advanced Computer Theory and Engineering,10.65521/ijacte.v13i1.92,https://doi.org/10.65521/ijacte.v13i1.92,yes
+f35eb73554d8,Quantum Machine Learning: Algorithms and Applications in Quantum Computing,2025,International Journal on Advanced Electrical and Computer Engineering,10.65521/ijaece.v13i1.81,https://doi.org/10.65521/ijaece.v13i1.81,yes
+f362fd204c2b,Hybrid Classical-Quantum Generative Algorithms for Financial Modelling and Prediction,2025,,10.1109/ic363308.2025.10956507,https://doi.org/10.1109/ic363308.2025.10956507,yes
+f3998e794c14,A Review on High-Frequency Trading Forecasting Methods: Opportunity and Challenges for Quantum Based Method,2024,IEEE Access,10.1109/ACCESS.2024.3418458,https://doi.org/10.1109/ACCESS.2024.3418458,yes
+f3cb59fe38ac,Utilizing Graph Neural Networks (GNN) in Quantum-Natural Language Processing (Q-NLP) for Risk Management in Banking Sector: A Novel Approach,2025,Graph Neural Networks Essentials and Use Cases,10.1007/978-3-031-88538-9_6,https://doi.org/10.1007/978-3-031-88538-9_6,yes
+f4883fc328d4,Error-Resilient Quantum Machine Learning for Real-World Optimization Problems in Finance and Supply Chain Networks,2025,InPrime Indonesian Journal of Pure and Applied Mathematics,10.15408/inprime.v7i1.44960,https://doi.org/10.15408/inprime.v7i1.44960,yes
+f55fea197b67,Comparative analysis of loan risk forecasting using quantum machine learning and classical machine learning models,2025,,10.21203/rs.3.rs-7907390/v1,https://doi.org/10.21203/rs.3.rs-7907390/v1,yes
+f5adfe23aa3d,Quantum optimization techniques and applications,2025,Advances in computers,10.1016/bs.adcom.2025.06.001,https://doi.org/10.1016/bs.adcom.2025.06.001,yes
+f67b13b40931,Integration of innovative business models using quantum computing and generative AI,2025,,10.1201/9781003597414-23,https://doi.org/10.1201/9781003597414-23,yes
+f85bdc99d9eb,Quantum computing for finance,2023,Nature Reviews Physics,10.1038/s42254-023-00603-1,https://doi.org/10.1038/s42254-023-00603-1,yes
+f8669d109a5f,Quantum Computing-The Underlying Principle Behind it,2025,Prabha Materials Science Letters,10.33889/pmsl.2025.4.2.020,https://doi.org/10.33889/pmsl.2025.4.2.020,yes
+f88bb4cc0c22,Systematic Review on the Influence of Classical and Quantum Machine Learning in the Financial Sector,2026,Data Science and Management,10.1016/j.dsm.2026.01.001,https://doi.org/10.1016/j.dsm.2026.01.001,yes
+f92cf78ba56a,"A comparative insight into peptide folding with quantum CVaR-VQE algorithm, MD simulations and structural alphabet analysis",2024,Quantum Information Processing,10.1007/s11128-024-04261-9,https://doi.org/10.1007/s11128-024-04261-9,yes
+f94276561f48,Generative Learning with Qopula Circuits,2024,International Conference on Communication Systems and Networks,10.1109/COMSNETS59351.2024.10427073,https://doi.org/10.1109/COMSNETS59351.2024.10427073,yes
+f9a4ea0df88e,Quantum Time-Energy Theory (QTET) & UTRER: AFFIDAVIT,2025,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.17512580,https://doi.org/10.5281/zenodo.17512580,yes
+f9f0249a4f6d,Advanced Equivalence Checking for Quantum Circuits,2020,IEEE Transactions on Computer-Aided Design of Integrated Circuits and Systems,10.1109/TCAD.2020.3032630,https://doi.org/10.1109/TCAD.2020.3032630,yes
+fb499d357762,A quantum portfolio optimization algorithm based on hard constraint and warm starting,2025,Dianzi Keji Daxue Xuebao Journal of the University of Electronic Science and Technology of China,10.12178/1001-0548.2024162,https://doi.org/10.12178/1001-0548.2024162,yes
+fc82cb4fddfa,Quadratic Unconstrained Binary Optimization Approach for Incorporating Solvency Capital into Portfolio Optimization,2024,Risks,10.3390/risks12020023,https://doi.org/10.3390/risks12020023,yes
+fd31c17753a0,Financial fraud detection using a hybrid deep belief network and quantum optimization approach,2025,Discover Applied Sciences,10.1007/s42452-025-06999-y,https://doi.org/10.1007/s42452-025-06999-y,yes
+fd5b3f400773,Quantum Computing and the Future of Finance: Exploring How Quantum Technology Impacts Financial Analysis and Forecasting,2026,Zenodo (CERN European Organization for Nuclear Research),10.5281/zenodo.18492589,https://doi.org/10.5281/zenodo.18492589,yes
+fd6d12958e8e,Quantum Computing for Cryptography: Breaking Encryption Algorithms,2026,International Journal for Research in Applied Science and Engineering Technology,10.22214/ijraset.2026.77826,https://doi.org/10.22214/ijraset.2026.77826,yes
+fdc49be32988,Coherent feed-forward quantum neural network,2024,Quantum Machine Intelligence,10.1007/s42484-024-00222-8,https://doi.org/10.1007/s42484-024-00222-8,yes
+fecff5249e72,Quantum-enhanced analysis of discrete stochastic processes,2020,npj Quantum Information,10.1038/s41534-021-00459-2,https://doi.org/10.1038/s41534-021-00459-2,yes
+ff36740b3b52,Quantum powered credit risk assessment: a novel approach using Hybrid Quantum-Classical Deep Neural Network for Row-Type Dependent Predictive Analysis,2025,EPJ Quantum Technology,10.1140/epjqt/s40507-025-00323-8,https://doi.org/10.1140/epjqt/s40507-025-00323-8,yes
+ff9ec9ec394a,Advancements in Quantum Computing and Information Science,2024,,10.62311/nesx/97820,https://doi.org/10.62311/nesx/97820,yes
+0067a26ce270,Quantum algorithm for stochastic optimal stopping problems,2021,arXiv (Cornell University),,,no
+01326ce2213f,"Quantum Chebyshev Transform: Mapping, Embedding, Learning and Sampling Distributions",2023,arXiv,,,no
+05a01a257cc7,Large-scale portfolio optimization using Pauli Correlation Encoding,2025,,,,no
+0608ad48d5b8,Pricing ﬁnancial derivatives with exponential quantum speedup,2021,,,,no
+076cb93860b0,Quantum Bayesian networks with application to games displaying Parrondo's paradox,2015,arXiv,,,no
+081132e62980,Quantum Algorithm for Local-Volatility Option Pricing via the Kolmogorov Equation,2025,ArXiv.org,,,no
+0d4d912721cf,H-EFT-VA: An Effective-Field-Theory Variational Ansatz with Provable Barren Plateau Avoidance,2026,ArXiv.org,,,no
+1312e9d3c55e,Hybrid Quantum-Classical Machine Learning with PennyLane: A Comprehensive Guide for Computational Research,2025,arXiv,,,no
+136790c5fbc5,Space and Time Cost of Continuous Rotations in Surface Codes,2025,,,,no
+1694a492105e,Accelerating variational quantum Monte Carlo using the variational quantum eigensolver,2023,arXiv,,,no
+17bf34700dca,Capturing dynamics with noisy quantum computers,2026,Leiden Repository (Leiden University),,,no
+1938aae185de,Quantum-enhanced Markov Chain Monte Carlo for Combinatorial Optimization,2026,,,,no
+1b63c3136291,A Comparative Study of Quantum Optimization Techniques for Solving Combinatorial Optimization Benchmark Problems,2025,,,,no
+1b7d8c497d7d,A Generalized Quantum Inner Product and Applications to Financial Engineering,2022,arXiv.org,,,no
+1bc4675bdbc6,Discrete-Time Quantum Walk of a Bose-Einstein Condensate in Momentum Space,2018,SHAREOK (University of Oklahoma; Oklahoma State University; Central Oklahoma University),,,no
+1bf880322e6f,Quantum Speedups for Derivative Pricing Beyond Black-Scholes,2026,,,,no
+1c1c816351f4,Gravitational wave matched filtering by quantum Monte Carlo integration and quantum amplitude amplification,2022,arXiv,,,no
+1d16f793a68b,Quantum neural network for continuous variable prediction,2022,,,,no
+1d715e0cd1aa,"HQFS: Hybrid Quantum Classical Financial Security with VQC Forecasting, QUBO Annealing, and Audit-Ready Post-Quantum Signing",2026,,,,no
+2322e385b8e7,Differential Evolution VQE for Crypto-currency Arbitrage. Quantum Optimization with many local minima,2023,arXiv,,,no
+25b9eceec1f2,Performance Comparison of QAOA Mixers for Ternary Portfolio Optimization,2026,,,,no
+292400fdfae6,Quantum algorithms for differential equations in finance and physics,2025,Communities in ADDI (University of the Basque Country),,,no
+296dd193c78f,A framework to evaluate the performance of Variational Quantum Algorithms,2026,,,,no
+2bb96fecae4b,Portfolio rebalancing experiments using the Quantum Alternating Operator Ansatz,2019,,,,no
+2c74be1a024b,Quantum speedup for combinatorial optimization with flat energy landscapes,2023,arXiv,,,no
+2fa8a733b41d,Realization of a quantum walk in momentum space with a Bose-Einstein condensate,2018,arXiv (Cornell University),,,no
+320ac2390210,Explicit block-encoding for partial differential equation-constrained optimization,2025,,,,no
+32be27773fc7,Training Knowledge Transfer for Adaptive Portfolio Rebalancing Based on Trend Ratio with Quantum-inspired Optimization System,2025,Journal of the Association for Information Systems,,,no
+33968c404556,Circuit Design based on Feature Similarity for Quantum Generative Modeling,2025,,,,no
+36432eaf1f31,Characterizing asymmetric and bimodal long-term financial return distributions through quantum walks,2025,,,,no
+39e897283cac,Exploring the synergistic potential of quantum annealing and gate model computing for portfolio optimization,2023,,,,no
+3a3ba897009d,QAOA applied to the portfolio optimization problem,2023,LA Referencia (Red Federada de Repositorios Institucionales de Publicaciones Científicas),,,no
+3a4b78215cc7,Real Option Pricing using Quantum Computers,2023,,,,no
+3c1b7774da65,Black-Litterman Portfolio Optimization with Noisy Intermediate-Scale Quantum Computers,2023,arXiv,,,no
+412a4331b358,Software for Creating Scalable Benchmarks from Quantum Algorithms,2025,ArXiv.org,,,no
+41a852fada38,Quantum Analysis of Continuous Time Stochastic Process,2022,,,,no
+47412220e1bb,Quantum Computational Algorithms for Derivative Pricing and Credit Risk in a Regime Switching Economy,2023,,,,no
+48cd8220e3b2,Entanglement scaling in matrix product state representation of smooth functions and their shallow quantum circuit approximations,2024,,,,no
+4ceae3900931,VARIATIONAL QUANTUM ALGORITHMS FOR DERIVATIVE PRICING,2024,National University of Singapore,,,no
+4dc6746d80a2,Uncertainty and symmetry bound for the total detection probability of quantum walks,2019,arXiv (Cornell University),,,no
+4de005c12725,Automated Function Implementation via Conditional Parameterized Quantum Circuits with Applications to Finance,2023,,,,no
+4ee4d5f63858,The Potential of Quantum Techniques for Stock Price Prediction,2023,arXiv,,,no
+55cbe84d64e7,Quantum Speedup of Monte Carlo Integration in the Direction of Dimension and its Application to Finance,2020,arXiv (Cornell University),,,no
+59cca9744140,Quantum State Preparation by Improved MPS Method,2025,,,,no
+629ad7ff1054,Financial Market Modeling with Quantum Neural Networks,2015,arXiv,,,no
+631717352091,Monte-Carlo Option Pricing in Quantum Parallel,2025,,,,no
+67f83161d410,A Survey of Quantum Computing for Finance,2022,,,,no
+68b9ec9dea63,Quantum-Enhanced Temporal Embeddings via a Hybrid Seq2Seq Architecture,2026,ArXiv.org,,,no
+69bf4c1b7cbe,A Quantum-Inspired Binary Optimization Algorithm for Representative Selection,2023,arXiv,,,no
+69bfce9095d0,Genetically Engineered Quantum Circuits for Financial Market Indicators,2025,,,,no
+6cb040f251ff,Quantum Algorithm for Local-Volatility Option Pricing via the Kolmogorov Equation,2025,arXiv,,,no
+6e0380dce3b2,Accelerating Quantum Monte Carlo Calculations with Set-Equivariant Architectures and Transfer Learning,2025,arXiv,,,no
+6e6696a9c05a,Quantum Time Series Similarity Measures and Quantum Temporal Kernels,2023,,,,no
+70217d6e8f7f,Hybrid Quantum-Classical Algorithm For Robust Optimization via Stochastic-Gradient Online Learning,2023,,,,no
+75a7b04fa681,Encoding of Probability Distributions for Quantum Monte Carlo Using Tensor Networks,2024,arXiv,,,no
+774364c6da63,hqQUBO: A Hybrid-querying Quantum Optimization Model Validated with 16-qubits on an Ion Trap Quantum Computer for Life Science Applications,2025,,,,no
+79a526ef5902,Arline Benchmarks: Automated Benchmarking Platform for Quantum Compilers,2022,arXiv.org,,,no
+7c11ab76f3d9,Benchmarking Quantum Solvers in Noisy Digital Simulations for Financial Portfolio Optimization,2025,,,,no
+7c6e8af63f61,Constrained Portfolio Optimization via Quantum Approximate Optimization Algorithm (QAOA) with XY-Mixers and Trotterized Initialization: A Hybrid Approach for Direct Indexing,2026,ArXiv.org,,,no
+7c795b799d02,Credit Default Prediction with Projected Quantum Feature Models and Ensembles,2025,,,,no
+7e5d0a8fc172,Quadratic Speed-up in Infinite Variance Quantum Monte Carlo,2024,arXiv,,,no
+7f91dcfbca63,"Quantum-inspired anomaly detection, a QUBO formulation",2023,,,,no
+822dbee7acfe,Scaling Portfolio Diversification with Quantum Circuit Cutting Techniques,2025,,,,no
+8372b98f0875,Unsupervised quantum machine learning for fraud detection,2022,,,,no
+852010d3745d,Combinatorial Amplitude Patterns via Nested Quantum Affine Transformations,2024,,,,no
+8bb680c2fb8b,Quantum computing: Challenges and opportunities,2020,Cascon 2019 Proceedings Conference of the Centre for Advanced Studies on Collaborative Research Proceedings of the 29th Annual International Conference on Computer Science and Software Engineering,,,no
+8d8d76478f6b,Quantum Monte Carlo Simulations for predicting electron-positron pair production via the linear Breit-Wheeler process,2026,arXiv,,,no
+8f553bfb1077,"A quantum spectral method for simulating stochastic processes, with applications to Monte Carlo",2023,,,,no
+92948f73b470,Quantum Data Learning of Topological-to-Ferromagnetic Phase Transitions in the 2+1D Toric Code Loop Gas Model,2025,arXiv,,,no
+9405b3330b09,Quantum classical hybrid neural networks for continuous variable prediction,2022,,,,no
+94dbaa0bc6b4,Fundamental theorem for quantum asset pricing,2022,arXiv,,,no
+955dd8044889,Quantum Finance: a tutorial on quantum computing applied to the financial market,2022,,,,no
+9b3837c81545,Portfolio Management Using Market Graph and Reinforcement Learning,2024,TSpace,,,no
+a2b747cae698,Quantum Heavy-tailed Bandits,2023,arXiv,,,no
+a4cb146201fc,Quantum propensity in economics,2021,arXiv,,,no
+aeba35e547c4,"Efficient Evaluation of Exponential and Gaussian Functions on a Quantum Computer, with Application to Quantum Computational Chemistry and Quantum Finance",2023,,,,no
+b4397d93ce2f,Benchmarking Amplitude Estimation on a Superconducting Quantum Computer,2022,,,,no
+b7c9696b8ffc,Quantum Adversarial Learning in Emulation of Monte-Carlo Methods for Max-cut Approximation: QAOA is not optimal,2022,arXiv,,,no
+b8057faa8a23,Exponentially Improved Constant in Quantum Solution Extraction,2025,arXiv,,,no
+bb719c33a7f1,Comparative Study of Quantum-Circuit Scalability in a Financial Problem,2024,,,,no
+c1358ec0f6a6,Quantum Computation for Pricing Caps using the LIBOR Market Model,2022,,,,no
+c233bf88de0f,On Quantum BSDE Solver for High-Dimensional Parabolic PDEs,2025,arXiv,,,no
+c47a454352d5,Preparing random state for quantum financing with quantum walks,2023,,,,no
+c48c60134357,Statistics-Informed Parameterized Quantum Circuit via Maximum Entropy Principle for Data Science and Finance,2024,,,,no
+c56a3ba7d912,Quantum Reservoir Computing for Credit Card Default Prediction on a Neutral Atom Platform,2025,,,,no
+c70de9d73132,Real-time Sign-Problem-Suppressed Quantum Monte Carlo Algorithm For Noisy Quantum Circuit Simulations,2025,arXiv,,,no
+c7451962353b,QUANTUM COMPUTING IN FINANCIAL RISK MANAGEMENT AND PORTFOLIO OPTIMIZATION,2025,Open MIND,,,no
+cab849abe702,Diagram-to-Circuit QNLP for Financial Sentiment Analysis,2025,ArXiv.org,,,no
+cd5dc35d5f39,Fraud detection in credit card transactions using Quantum-Assisted Restricted Boltzmann Machines,2025,ArXiv.org,,,no
+cde1c896dc3c,Quantum Machine Learning for Finance,2021,arXiv.org,,,no
+cf803ec26409,Quasi-binary encoding based quantum alternating operator ansatz,2023,,,,no
+d18096ef8f4c,Financial Portfolio Optimization: a QUBO Formulation for Sharpe Ratio Maximization,2023,,,,no
+d255ff5edaae,Toward quantum advantage: Quantum variational algorithms for NP-hard approximations,2023,Digital Access to Scholarship at Harvard (DASH) (Harvard University),,,no
+d349fc59251c,Preparing Arbitrary Continuous Functions in Quantum Registers With Logarithmic Complexity,2022,arXiv,,,no
+d5410f88017c,Composite QDrift-Product Formulas for Quantum and Classical Simulations in Real and Imaginary Time,2023,arXiv,,,no
+d7449b1ba0c5,Improving credit card transaction fraud detection using CVQBoosting,2026,Singapore Management University Institutional Knowledge (InK) (Singapore Management University),,,no
+de580e8c085e,Qudit-based scalable quantum algorithm for solving the integer programming problem,2025,,,,no
+de7c20d08bbe,Novel Quantum Circuit Designs of Random Injection and Payoff Computation for Financial Risk Assessment,2025,,,,no
+df5b91d07411,Hybrid Photonic Quantum Reservoir Computing for High-Dimensional Financial Surface Prediction,2026,ArXiv.org,,,no
+e505ff143d95,Quantum Machine Learning and Optimisation in Finance: Drive financial innovation with quantum-powered algorithms and optimisation strategies,2024,Quantum Machine Learning and Optimisation in Finance Drive Financial Innovation with Quantum Powered Algorithms and Optimisation Strategies,,,no
+e6692a4012cb,"Response to ""Exponential challenges in unbiasing quantum Monte Carlo algorithms with quantum computers""",2022,arXiv,,,no
+ee8331fcdc90,Designing PSS and SVC Parameters simultaneously through the Improved Quantum Algorithm in the Multi-machine Power System,2018,,,,no
+ef99551dab0f,NExt ApplicationS of Quantum Computing D5.1: Review of state-of-the-art for Pricing and Computation of VaR,2021,,,,no
+f190da5cb928,Constraint-Aware Quantum Optimization via Hamming Weight Operators,2026,,,,no
+f792c5e92b0c,Prospects and challenges of quantum finance,2020,,,,no
+f93112e0b03a,"Universal Quantum Speedup for Branch-and-Bound, Branch-and-Cut, and Tree-Search Algorithms",2022,,,,no
+f9e5b6ee139d,Quantum Multiple Kernel Learning in Financial Classification Tasks,2023,,,,no
+fa9e2c7101b8,QAOA Applications in Finance,2021,Bulletin of the American Physical Society,,,no
+fbaaa4d89d56,Quantum Implementation of Risk Analysis-relevant Copulas,2020,,,,no
+fbec16f60f72,Exponential Improvement on Asian Option Pricing Through Quantum Preconditioning Methods,2025,,,,no
+ff62c3dd3f66,Hybrid Quantum-Classical Ensemble Learning for S\&P 500 Directional Prediction,2025,arXiv,,,no
