@@ -150,7 +150,9 @@ def main():
     print("Loaded %d abstracts, %d AI reasons" % (len(abstracts), len(ai_reasons)))
 
     # ── Backup ──
-    backup = SCREENING_DIR / ("ai_discrepancy_review_backup_%s.csv" % datetime.now().strftime("%Y%m%d_%H%M%S"))
+    backup_dir = SCREENING_DIR / "_backups"
+    backup_dir.mkdir(exist_ok=True)
+    backup = backup_dir / ("ai_discrepancy_review_backup_%s.csv" % datetime.now().strftime("%Y%m%d_%H%M%S"))
     shutil.copy2(DISCREPANCY_CSV, backup)
     print("Backup: %s" % backup)
 
