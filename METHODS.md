@@ -4,14 +4,9 @@ Maps protocol sections to thesis chapters, PRISMA items, and Hoefler framework d
 
 ## Overarching Research Design
 
-This SLR (Phase 1a) sits within an exploratory sequential mixed-methods design:
-
-| Phase | Component | Documented in |
-|-------|-----------|---------------|
-| 1a | Systematic literature review | This repository |
-| 1b | Semi-structured practitioner interviews | Separate protocol |
-| 2 | Cross-method synthesis | Separate document |
-| 3 | Experimental validation | Separate protocol |
+This SLR (Phase 1a) sits within an exploratory sequential mixed-methods design.
+See the [Project Overview](../PROJECT_OVERVIEW.md) for the full research design,
+step definitions, and data flow.
 
 The mappings below cover only Phase 1a.
 

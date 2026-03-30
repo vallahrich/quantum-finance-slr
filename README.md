@@ -10,7 +10,7 @@ A reproducible, local-first toolkit for running a systematic literature review (
 | Dimension | Value |
 |-----------|-------|
 | Domain | Gate-based quantum computing in finance |
-| Research context | Phase 1a of an exploratory sequential mixed-methods design |
+| Research context | Phase 1a — see [Project Overview](../PROJECT_OVERVIEW.md) |
 | Databases | Scopus, OpenAlex, arXiv, Semantic Scholar |
 | Includes | Preprints, NISQ, and fault-tolerant studies |
 | Time window | 2016-01-01 to present |

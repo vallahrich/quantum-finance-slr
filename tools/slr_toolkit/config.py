@@ -71,6 +71,13 @@ TOPIC_CODING_CSV      = EXTRACTION_DIR / "topic_coding.csv"
 TOPIC_CODING_SUMMARY  = EXTRACTION_DIR / "topic_coding_summary.md"
 TOPIC_CODING_CHECKPOINT = EXTRACTION_DIR / "topic_coding_checkpoint.json"
 TOPIC_CODING_PROMPT_LOG = EXTRACTION_DIR / "topic_coding_prompt_log.jsonl"
+
+# Tier classification (Phase B — cross-repo integration)
+TIER_CLASSIFICATION_CSV        = EXTRACTION_DIR / "tier_classification.csv"
+TIER_CLASSIFICATION_SUMMARY    = EXTRACTION_DIR / "tier_classification_summary.md"
+TIER_CLASSIFICATION_CHECKPOINT = EXTRACTION_DIR / "tier_classification_checkpoint.json"
+TIER_CLASSIFICATION_PROMPT_LOG = EXTRACTION_DIR / "tier_classification_prompt_log.jsonl"
+
 PROTOCOL_MD           = PROTOCOL_DIR / "protocol.md"
 AMENDMENTS_CSV        = PROTOCOL_DIR / "amendments_log.csv"
 

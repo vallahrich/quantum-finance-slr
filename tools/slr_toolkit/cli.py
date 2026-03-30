@@ -363,6 +363,129 @@ def _cmd_topic_code(args: argparse.Namespace) -> None:
     print("  Draft LLM coding only: review topic labels before using them in synthesis.")
 
 
+def _cmd_classify_tiers(args: argparse.Namespace) -> None:
+    """Run LLM-assisted tier classification on topic-coded papers."""
+    from .classify_tiers import (
+        estimate_tier_classification_cost,
+        generate_tier_summary,
+        load_topic_coded_papers,
+        run_tier_classification,
+    )
+
+    topic_csv_path = Path(args.input_file) if args.input_file else None
+
+    if args.estimate_cost or args.dry_run:
+        records = load_topic_coded_papers(topic_csv=topic_csv_path)
+        estimate = estimate_tier_classification_cost(records)
+        print("Tier Classification Cost Estimate:")
+        print(f"  Records to classify:  {estimate['n_records']}")
+        print(f"  Est. input tokens:    {estimate['est_input_tokens']:,}")
+        print(f"  Est. output tokens:   {estimate['est_output_tokens']:,}")
+        print(f"  Est. total cost:      ${estimate['est_total_cost_usd']:.4f}")
+        if args.dry_run:
+            print("\n  [dry-run] No API calls made.")
+        return
+
+    result = run_tier_classification(
+        api_key=args.api_key,
+        endpoint=args.endpoint,
+        deployment=args.deployment,
+        batch_size=args.batch_size,
+        delay=args.delay,
+        max_records=args.max_records,
+        input_file=topic_csv_path,
+    )
+
+    summary_path = generate_tier_summary(result)
+    print(f"[ok] Tier classification complete -> {result.name}")
+    print(f"[ok] Summary generated -> {summary_path.name}")
+    print("  Draft LLM classification only: review tier assignments before Zotero sync.")
+
+
+def _cmd_zotero_create_collections(args: argparse.Namespace) -> None:
+    """Create the Tier > Group collection hierarchy in Zotero."""
+    import json as _json
+
+    from .zotero_sync import ZoteroWriter
+
+    writer = ZoteroWriter(
+        group_id=args.group_id or "",
+        api_key=args.api_key or "",
+    )
+
+    print("Creating Zotero collection hierarchy...")
+    collection_map = writer.create_tier_hierarchy()
+    print(f"[ok] Created root collection: {collection_map['root_collection_key']}")
+
+    # Write collection map
+    output_path = Path(args.output) if args.output else (
+        config.ROOT_DIR.parent / "shared" / "zotero_collection_map.json"
+    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        _json.dumps(collection_map, indent=2) + "\n", encoding="utf-8",
+    )
+    print(f"[ok] Collection map written to {output_path}")
+
+    # Count
+    total = sum(
+        len(tier.get("groups", {}))
+        for tier in collection_map["tiers"].values()
+    )
+    print(f"  {len(collection_map['tiers'])} tiers, {total} groups created.")
+
+
+def _cmd_zotero_bridge(args: argparse.Namespace) -> None:
+    """Build the paper_id_bridge.csv by matching DOIs to Zotero items."""
+    from .zotero_sync import ZoteroWriter
+
+    writer = ZoteroWriter(
+        group_id=args.group_id or "",
+        api_key=args.api_key or "",
+    )
+
+    output_path = Path(args.output) if args.output else None
+    matched = writer.build_paper_id_bridge(bridge_output_path=output_path)
+    print(f"[ok] Bridge built. {matched} papers matched to Zotero items.")
+
+
+def _cmd_zotero_assign(args: argparse.Namespace) -> None:
+    """Assign papers to Zotero collections based on tier classification."""
+    import json as _json
+
+    from .zotero_sync import ZoteroWriter
+
+    writer = ZoteroWriter(
+        group_id=args.group_id or "",
+        api_key=args.api_key or "",
+    )
+
+    # Load collection map
+    map_path = Path(args.collection_map) if args.collection_map else (
+        config.ROOT_DIR.parent / "shared" / "zotero_collection_map.json"
+    )
+    if not map_path.exists():
+        print(f"[FAIL] Collection map not found: {map_path}")
+        print("  Run 'zotero-create-collections' first.")
+        return
+
+    collection_map = _json.loads(map_path.read_text(encoding="utf-8"))
+
+    tier_csv_path = Path(args.tier_csv) if args.tier_csv else None
+    bridge_path = Path(args.bridge) if args.bridge else None
+
+    counts = writer.assign_papers_to_tiers(
+        tier_csv_path=tier_csv_path,
+        bridge_csv_path=bridge_path,
+        collection_map=collection_map,
+    )
+
+    print(f"[ok] Tier assignment complete:")
+    print(f"  Assigned:           {counts['assigned']}")
+    print(f"  Skipped (unapproved): {counts['skipped_not_approved']}")
+    print(f"  Skipped (no Zotero):  {counts['skipped_no_zotero']}")
+
+
 def _cmd_rerun_clean(args: argparse.Namespace) -> None:
     """Move noisy run folders to a deprecated directory and log the amendment."""
     import csv
@@ -788,6 +911,119 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print token/cost estimate and exit.",
     )
     p_tc.set_defaults(func=_cmd_topic_code)
+
+    # -- classify-tiers -----------------------------------------------------
+    p_ct = sub.add_parser(
+        "classify-tiers",
+        help="Run LLM-assisted tier classification on topic-coded papers.",
+    )
+    p_ct.add_argument(
+        "--input-file", default=None,
+        help="Optional input CSV override. Default: 06_extraction/topic_coding.csv.",
+    )
+    p_ct.add_argument(
+        "--api-key", default=None,
+        help="Azure OpenAI API key (default: AZURE_OPENAI_API_KEY env var).",
+    )
+    p_ct.add_argument(
+        "--endpoint", default=None,
+        help="Azure OpenAI endpoint URL (default: AZURE_OPENAI_ENDPOINT env var).",
+    )
+    p_ct.add_argument(
+        "--deployment", default=None,
+        help="Azure OpenAI deployment/model name.",
+    )
+    p_ct.add_argument(
+        "--batch-size", type=int, default=10,
+        help="Number of records per batch (default: 10).",
+    )
+    p_ct.add_argument(
+        "--delay", type=float, default=1.0,
+        help="Seconds to wait between batches (default: 1.0).",
+    )
+    p_ct.add_argument(
+        "--max-records", type=int, default=None,
+        help="Maximum number of papers to classify (default: all).",
+    )
+    p_ct.add_argument(
+        "--dry-run", action="store_true",
+        help="Show cost estimate without calling the API.",
+    )
+    p_ct.add_argument(
+        "--estimate-cost", action="store_true",
+        help="Print token/cost estimate and exit.",
+    )
+    p_ct.set_defaults(func=_cmd_classify_tiers)
+
+    # -- zotero-create-collections ------------------------------------------
+    p_zcc = sub.add_parser(
+        "zotero-create-collections",
+        help="Create the Tier > Group collection hierarchy in Zotero.",
+    )
+    p_zcc.add_argument(
+        "--group-id", default=None,
+        help="Zotero group ID (default: ZOTERO_GROUP_ID env var).",
+    )
+    p_zcc.add_argument(
+        "--api-key", default=None,
+        help="Zotero API key (default: ZOTERO_API_KEY env var).",
+    )
+    p_zcc.add_argument(
+        "--output", default=None,
+        help="Output path for collection map JSON "
+             "(default: ../shared/zotero_collection_map.json).",
+    )
+    p_zcc.set_defaults(func=_cmd_zotero_create_collections)
+
+    # -- zotero-bridge ------------------------------------------------------
+    p_zb = sub.add_parser(
+        "zotero-bridge",
+        help="Build paper_id_bridge.csv by matching DOIs to Zotero items.",
+    )
+    p_zb.add_argument(
+        "--group-id", default=None,
+        help="Zotero group ID (default: ZOTERO_GROUP_ID env var).",
+    )
+    p_zb.add_argument(
+        "--api-key", default=None,
+        help="Zotero API key (default: ZOTERO_API_KEY env var).",
+    )
+    p_zb.add_argument(
+        "--output", default=None,
+        help="Output path for bridge CSV "
+             "(default: ../shared/paper_id_bridge.csv).",
+    )
+    p_zb.set_defaults(func=_cmd_zotero_bridge)
+
+    # -- zotero-assign ------------------------------------------------------
+    p_za = sub.add_parser(
+        "zotero-assign",
+        help="Assign papers to Zotero collections based on tier classification.",
+    )
+    p_za.add_argument(
+        "--group-id", default=None,
+        help="Zotero group ID (default: ZOTERO_GROUP_ID env var).",
+    )
+    p_za.add_argument(
+        "--api-key", default=None,
+        help="Zotero API key (default: ZOTERO_API_KEY env var).",
+    )
+    p_za.add_argument(
+        "--collection-map", default=None,
+        help="Path to collection map JSON "
+             "(default: ../shared/zotero_collection_map.json).",
+    )
+    p_za.add_argument(
+        "--tier-csv", default=None,
+        help="Path to tier classification CSV "
+             "(default: 06_extraction/tier_classification.csv).",
+    )
+    p_za.add_argument(
+        "--bridge", default=None,
+        help="Path to paper_id_bridge.csv "
+             "(default: ../shared/paper_id_bridge.csv).",
+    )
+    p_za.set_defaults(func=_cmd_zotero_assign)
 
     return parser
 
