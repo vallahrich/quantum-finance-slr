@@ -14,6 +14,8 @@ dependencies = [
     "rispy>=0.9",
     "bibtexparser>=1.4",
     "openai>=1.40",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
 ]
 
 [project.optional-dependencies]

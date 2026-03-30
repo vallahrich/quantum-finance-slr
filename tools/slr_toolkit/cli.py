@@ -393,7 +393,7 @@ def _cmd_classify_tiers(args: argparse.Namespace) -> None:
         batch_size=args.batch_size,
         delay=args.delay,
         max_records=args.max_records,
-        topic_csv=topic_csv_path,
+        input_file=topic_csv_path,
     )
 
     summary_path = generate_tier_summary(result)

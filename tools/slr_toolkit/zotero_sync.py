@@ -27,6 +27,28 @@ from .utils import ensure_dir
 
 log = logging.getLogger(__name__)
 
+# ---------------------------------------------------------------------------
+# Load .env from parent repo (quantum-finance/.env)
+# ---------------------------------------------------------------------------
+
+def _find_env_file() -> Path | None:
+    """Walk up from this file to find quantum-finance/.env."""
+    d = Path(__file__).resolve().parent
+    for _ in range(6):
+        candidate = d / ".env"
+        if candidate.is_file():
+            return candidate
+        d = d.parent
+    return None
+
+try:
+    from dotenv import load_dotenv as _load_dotenv
+    _env_path = _find_env_file()
+    if _env_path:
+        _load_dotenv(_env_path, override=False)
+except ImportError:
+    pass
+
 API_BASE = "https://api.zotero.org"
 
 # Zotero write API: max 1 request/second for writes, 50 objects per batch
@@ -156,12 +178,12 @@ class ZoteroWriter:
 
     def _patch(self, path: str, data: dict, version: int) -> requests.Response:
         url = f"{self._base}{path}"
-        headers = {
-            **self._headers,
-            "Content-Type": "application/json",
-            "If-Unmodified-Since-Version": str(version),
-        }
-        for attempt in range(3):
+        for attempt in range(5):
+            headers = {
+                **self._headers,
+                "Content-Type": "application/json",
+                "If-Unmodified-Since-Version": str(version),
+            }
             time.sleep(_WRITE_DELAY)
             resp = requests.patch(
                 url, headers=headers, json=data, timeout=60,
@@ -171,12 +193,21 @@ class ZoteroWriter:
                 log.warning("Rate limited (PATCH), waiting %d seconds", retry_after)
                 time.sleep(retry_after)
                 continue
+            if resp.status_code == 412:
+                # Version conflict — re-fetch item to get current version
+                log.warning("Version conflict (412) on %s, re-fetching...", path)
+                time.sleep(_WRITE_DELAY)
+                item_resp = requests.get(url, headers=self._headers, timeout=30)
+                if item_resp.ok:
+                    item_data = item_resp.json().get("data", item_resp.json())
+                    version = item_data.get("version", version + 1)
+                continue
             resp.raise_for_status()
             ver = resp.headers.get("Last-Modified-Version")
             if ver:
                 self._library_version = int(ver)
             return resp
-        raise RuntimeError(f"PATCH failed after 3 retries: {url}")
+        raise RuntimeError(f"PATCH failed after 5 retries: {url}")
 
     def _delete(self, path: str, version: int) -> requests.Response:
         url = f"{self._base}{path}"
@@ -341,20 +372,31 @@ class ZoteroWriter:
                 break
         return items
 
+    @staticmethod
+    def _normalize_doi(doi: str) -> str:
+        """Strip URL prefixes and normalize a DOI for comparison."""
+        d = doi.strip().lower()
+        for prefix in ("https://doi.org/", "http://doi.org/", "https://dx.doi.org/", "http://dx.doi.org/"):
+            if d.startswith(prefix):
+                d = d[len(prefix):]
+                break
+        return d
+
     def find_item_by_doi(self, doi: str) -> dict | None:
         """Search for an item by DOI. Returns the first match or None."""
         if not doi:
             return None
+        norm_doi = self._normalize_doi(doi)
         resp = self._get("/items", params={
             "format": "json",
             "itemType": "-attachment || note",
-            "q": doi,
+            "q": norm_doi,
             "qmode": "everything",
             "limit": 5,
         })
         for item in resp.json():
             item_doi = item.get("data", {}).get("DOI", "")
-            if item_doi and item_doi.lower().strip() == doi.lower().strip():
+            if item_doi and self._normalize_doi(item_doi) == norm_doi:
                 return item
         return None
 
@@ -452,6 +494,51 @@ class ZoteroWriter:
     # Bridge building
     # ------------------------------------------------------------------
 
+    @staticmethod
+    def _load_dois_from_reviewers(
+        paper_ids: set[str],
+    ) -> tuple[dict[str, str], dict[str, str]]:
+        """Load DOIs and titles from reviewer spreadsheets."""
+        try:
+            import openpyxl
+        except ImportError:
+            log.warning("openpyxl not installed, cannot read reviewer spreadsheets")
+            return {}, {}
+
+        doi_map: dict[str, str] = {}
+        title_map: dict[str, str] = {}
+        screening_dir = config.ROOT_DIR / "05_screening"
+
+        for fname, sheet in [
+            ("screening_reviewer_A.xlsx", None),
+            ("screening_reviewer_B.xlsx", "Screening"),
+        ]:
+            fpath = screening_dir / fname
+            if not fpath.exists():
+                continue
+            wb = openpyxl.load_workbook(str(fpath), read_only=True)
+            ws = wb[sheet] if sheet else wb.active
+            headers = [c.value for c in next(ws.iter_rows(min_row=1, max_row=1))]
+            if "Paper ID" not in headers or "DOI" not in headers:
+                wb.close()
+                continue
+            pidx = headers.index("Paper ID")
+            didx = headers.index("DOI")
+            tidx = headers.index("Title") if "Title" in headers else -1
+            for row in ws.iter_rows(min_row=2, values_only=True):
+                pid = row[pidx]
+                if not pid or pid not in paper_ids:
+                    continue
+                doi = str(row[didx] or "").strip()
+                if doi and pid not in doi_map:
+                    doi_map[pid] = doi
+                if tidx >= 0 and pid not in title_map:
+                    title_map[pid] = str(row[tidx] or "")
+            wb.close()
+            log.info("Loaded %d DOIs from %s", len(doi_map), fname)
+
+        return doi_map, title_map
+
     def build_paper_id_bridge(
         self,
         topic_csv_path: Path | None = None,
@@ -460,7 +547,7 @@ class ZoteroWriter:
     ) -> int:
         """Match SLR papers to Zotero items by DOI. Returns count of matches.
 
-        Reads DOIs from master_records.csv (joined via topic_coding.csv paper_ids).
+        Reads DOIs from master_records.csv or reviewer spreadsheets.
         Queries Zotero for each DOI. Writes bridge CSV.
         """
         if topic_csv_path is None:
@@ -489,19 +576,66 @@ class ZoteroWriter:
                             doi_map[pid] = doi
                         title_map[pid] = row.get("title", "")
 
+        # Fallback: load DOIs from reviewer spreadsheets
+        if not doi_map:
+            log.info("master_records.csv unavailable, loading DOIs from reviewer spreadsheets")
+            doi_map, title_map = self._load_dois_from_reviewers(paper_ids)
+
+        # Also load DOIs from existing bridge file (may have been enriched externally)
+        if bridge_output_path is None:
+            _bridge_path = config.ROOT_DIR.parent / "shared" / "paper_id_bridge.csv"
+        else:
+            _bridge_path = bridge_output_path
+        if _bridge_path.exists():
+            with open(_bridge_path, encoding="utf-8", newline="") as f:
+                for row in csv.DictReader(f):
+                    pid = row.get("slr_paper_id", "")
+                    doi = row.get("doi", "").strip()
+                    if pid in paper_ids and doi and pid not in doi_map:
+                        doi_map[pid] = doi
+                        if not title_map.get(pid):
+                            title_map[pid] = row.get("title", "")
+            log.info("After merging existing bridge: %d DOIs total", len(doi_map))
+
         if not doi_map:
             log.warning(
                 "No DOIs found for topic-coded papers. "
-                "Bridge building requires master_records.csv with DOI data."
+                "Bridge building requires DOIs from master_records.csv or reviewer spreadsheets."
             )
             return 0
 
-        # Match against Zotero
+        # Fetch ALL Zotero items once and build a DOI->key lookup
+        log.info("Fetching all Zotero items for bulk DOI matching...")
+        zotero_doi_index: dict[str, dict] = {}  # normalized_doi -> item
+        start = 0
+        page_size = 100
+        while True:
+            resp = self._get("/items", params={
+                "format": "json",
+                "itemType": "-attachment || note",
+                "limit": page_size,
+                "start": start,
+            })
+            items = resp.json()
+            if not items:
+                break
+            for item in items:
+                zdoi = item.get("data", {}).get("DOI", "")
+                if zdoi:
+                    norm = self._normalize_doi(zdoi)
+                    zotero_doi_index[norm] = item
+            start += len(items)
+            if len(items) < page_size:
+                break
+        log.info("Indexed %d Zotero items with DOIs", len(zotero_doi_index))
+
+        # Match
         bridge_rows: list[dict[str, str]] = []
         matched = 0
 
         for pid, doi in sorted(doi_map.items()):
-            item = self.find_item_by_doi(doi)
+            norm_doi = self._normalize_doi(doi)
+            item = zotero_doi_index.get(norm_doi)
             if item:
                 bridge_rows.append({
                     "slr_paper_id": pid,
@@ -511,7 +645,6 @@ class ZoteroWriter:
                     "match_method": "doi",
                 })
                 matched += 1
-                log.debug("Matched %s -> %s (DOI: %s)", pid, item["key"], doi)
             else:
                 bridge_rows.append({
                     "slr_paper_id": pid,
@@ -636,10 +769,28 @@ class ZoteroWriter:
                         collection_keys.append(ckey)
                     tags.append(f"tier:3-{g}")
 
-            if collection_keys:
-                self.add_item_to_collections(zotero_key, collection_keys)
-            if tags:
-                self.add_tags(zotero_key, tags)
+            if collection_keys or tags:
+                # Single PATCH: fetch item, merge collections + tags, write once
+                item = self.get_item(zotero_key)
+                data = item.get("data", item)
+                version = data.get("version", item.get("version"))
+                patch_data: dict = {}
+
+                if collection_keys:
+                    existing_cols = set(data.get("collections", []))
+                    merged_cols = sorted(existing_cols | set(collection_keys))
+                    if set(merged_cols) != existing_cols:
+                        patch_data["collections"] = merged_cols
+
+                if tags:
+                    existing_tags = {t["tag"] for t in data.get("tags", [])}
+                    new_tags = [t for t in tags if t not in existing_tags]
+                    if new_tags:
+                        all_tags = data.get("tags", []) + [{"tag": t} for t in new_tags]
+                        patch_data["tags"] = all_tags
+
+                if patch_data:
+                    self._patch(f"/items/{zotero_key}", data=patch_data, version=version)
 
             counts["assigned"] += 1
             log.info(
