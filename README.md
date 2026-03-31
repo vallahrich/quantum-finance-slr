@@ -253,13 +253,13 @@ Accepted imported AI labels include:
 | Metric | Count | % |
 |--------|-------|---|
 | Papers included for coding | 858 | |
-| PDF download — success | 433 | 50.5% |
-| PDF download — failed | 203 | 23.7% |
-| No open-access source found | 222 | 25.9% |
-| PDFs on disk | 449 | |
-| Still missing | 425 | 49.5% |
+| PDF download — success | 454 | 52.9% |
+| PDF download — failed | 184 | 21.4% |
+| No open-access source found | 220 | 25.6% |
+| PDFs on disk | 470 | |
+| Still missing | 404 | 47.1% |
 
-*Status as of 2026-03-31. Use `missing_pdfs_doi_links.html` or import `missing_pdfs_zotero.ris` to retrieve remaining full texts.*
+*Status as of 2026-03-31. 21 additional PDFs recovered via Semantic Scholar title search. Use `missing_pdfs_doi_links.html` or import `missing_pdfs_zotero.ris` to retrieve remaining full texts.*
 
 ## Extraction Status
 
