@@ -108,8 +108,10 @@ _TIER3_GROUP_NAMES = {
 class ZoteroWriter:
     """Zotero API client with read and write capabilities."""
 
+    DEFAULT_GROUP_ID = "6475432"
+
     def __init__(self, group_id: str = "", api_key: str = ""):
-        self._group_id = group_id or os.environ.get("ZOTERO_GROUP_ID", "")
+        self._group_id = group_id or os.environ.get("ZOTERO_GROUP_ID", self.DEFAULT_GROUP_ID)
         self._api_key = api_key or os.environ.get("ZOTERO_API_KEY", "")
         if not self._group_id:
             raise ValueError("ZOTERO_GROUP_ID not set")
@@ -489,6 +491,437 @@ class ZoteroWriter:
         self._delete(f"/items/{item_key}", version=version)
         log.info("Deleted item %s", item_key)
         return True
+
+    # ------------------------------------------------------------------
+    # SLR Results Sync
+    # ------------------------------------------------------------------
+
+    _SLR_TAGS = ["quantum-finance", "slr", "slr-results", "included"]
+
+    @staticmethod
+    def normalize_title(title: str) -> str:
+        """Normalize a title for dedup comparison."""
+        import re as _re
+        t = title.lower().strip()
+        t = _re.sub(r"[^a-z0-9]+", " ", t)
+        return " ".join(t.split())
+
+    @staticmethod
+    def _extract_arxiv_id(doi: str) -> str:
+        """Extract arXiv ID from DOI if present."""
+        import re as _re
+        if doi:
+            m = _re.match(r"10\.48550/arXiv\.(.+)", doi, _re.IGNORECASE)
+            if m:
+                return m.group(1)
+        return ""
+
+    @staticmethod
+    def _first_author_year(authors: str, year: str) -> str:
+        """Build a first-author+year key for fallback dedup."""
+        if not authors or not year:
+            return ""
+        first = authors.split(";")[0].split(",")[0].strip().lower()
+        return f"{first}|{year}"
+
+    def _build_zotero_index(self) -> tuple[
+        dict[str, dict],   # doi -> item
+        dict[str, dict],   # arxiv_id -> item
+        dict[str, dict],   # norm_title -> item
+        dict[str, dict],   # first_author_year -> item
+    ]:
+        """Fetch all Zotero items and build dedup indices."""
+        import re as _re
+        doi_idx: dict[str, dict] = {}
+        arxiv_idx: dict[str, dict] = {}
+        title_idx: dict[str, dict] = {}
+        author_year_idx: dict[str, dict] = {}
+
+        all_items = self.get_all_items()
+        for item in all_items:
+            data = item.get("data", {})
+            # DOI index
+            zdoi = data.get("DOI", "").strip()
+            if zdoi:
+                doi_idx[self._normalize_doi(zdoi)] = item
+                # Also index arXiv DOIs
+                aid = self._extract_arxiv_id(zdoi)
+                if aid:
+                    arxiv_idx[aid.lower()] = item
+
+            # arXiv ID from Extra field (common Zotero pattern)
+            extra = data.get("extra", "")
+            for line in extra.split("\n"):
+                line = line.strip()
+                if line.lower().startswith("arxiv:"):
+                    aid = line.split(":", 1)[1].strip()
+                    if aid:
+                        arxiv_idx[aid.lower()] = item
+
+            # Title index
+            title = data.get("title", "")
+            if title:
+                title_idx[self.normalize_title(title)] = item
+
+            # First author + year
+            creators = data.get("creators", [])
+            if creators:
+                first_creator = creators[0]
+                last_name = first_creator.get("lastName", first_creator.get("name", ""))
+                year = data.get("date", "")[:4]
+                if last_name and year:
+                    key = f"{last_name.lower().strip()}|{year}"
+                    author_year_idx[key] = item
+
+        log.info(
+            "Zotero index: %d DOIs, %d arXiv IDs, %d titles, %d author-year",
+            len(doi_idx), len(arxiv_idx), len(title_idx), len(author_year_idx),
+        )
+        return doi_idx, arxiv_idx, title_idx, author_year_idx
+
+    def _find_existing_item(
+        self,
+        paper: dict,
+        doi_idx: dict[str, dict],
+        arxiv_idx: dict[str, dict],
+        title_idx: dict[str, dict],
+        author_year_idx: dict[str, dict],
+    ) -> tuple[dict | None, str]:
+        """Find an existing Zotero item matching this paper. Returns (item, match_method)."""
+        doi = paper.get("doi", "").strip()
+        if doi:
+            norm_doi = self._normalize_doi(doi)
+            if norm_doi in doi_idx:
+                return doi_idx[norm_doi], "doi"
+            # Check arXiv ID from DOI
+            aid = self._extract_arxiv_id(doi)
+            if aid and aid.lower() in arxiv_idx:
+                return arxiv_idx[aid.lower()], "arxiv_id"
+
+        # Title match
+        title = paper.get("title", "").strip()
+        if title:
+            norm_t = self.normalize_title(title)
+            if norm_t in title_idx:
+                return title_idx[norm_t], "title"
+
+        # First author + year fallback
+        authors = paper.get("authors", "")
+        year = paper.get("year", "")
+        ay_key = self._first_author_year(authors, year)
+        if ay_key and ay_key in author_year_idx:
+            return author_year_idx[ay_key], "author_year"
+
+        return None, ""
+
+    @staticmethod
+    def _map_paper_to_zotero_data(paper: dict) -> dict:
+        """Map SLR paper metadata to Zotero item data."""
+        doi = paper.get("doi", "").strip()
+
+        # Determine item type
+        source_db = paper.get("source_db", "").lower()
+        venue = paper.get("venue", "").lower()
+        is_preprint = paper.get("is_preprint", "") == "1"
+
+        if is_preprint or source_db == "arxiv" or "arxiv" in venue:
+            item_type = "preprint"
+        elif any(kw in venue for kw in ("conference", "proceedings", "workshop", "symposium")):
+            item_type = "conferencePaper"
+        elif any(kw in venue for kw in ("book", "chapter", "springer", "lecture notes")):
+            item_type = "bookSection"
+        else:
+            item_type = "journalArticle"
+
+        # Parse authors
+        creators = []
+        for author_str in paper.get("authors", "").split(";"):
+            author_str = author_str.strip()
+            if not author_str:
+                continue
+            parts = author_str.split(",", 1)
+            if len(parts) == 2:
+                creators.append({
+                    "creatorType": "author",
+                    "lastName": parts[0].strip(),
+                    "firstName": parts[1].strip(),
+                })
+            else:
+                creators.append({
+                    "creatorType": "author",
+                    "name": author_str,
+                })
+
+        data: dict = {
+            "itemType": item_type,
+            "title": paper.get("title", ""),
+            "creators": creators,
+            "date": paper.get("year", ""),
+            "DOI": doi,
+            "abstractNote": paper.get("abstract", ""),
+        }
+
+        # Set venue field based on item type
+        venue_val = paper.get("venue", "")
+        if item_type == "journalArticle":
+            data["publicationTitle"] = venue_val
+        elif item_type == "conferencePaper":
+            data["proceedingsTitle"] = venue_val
+        elif item_type == "preprint":
+            data["repository"] = venue_val or "arXiv"
+        elif item_type == "bookSection":
+            data["bookTitle"] = venue_val
+
+        # Keywords
+        keywords = paper.get("keywords", "").strip()
+        if keywords:
+            keyword_list = [k.strip() for k in keywords.split(";") if k.strip()]
+            data["tags"] = [{"tag": k} for k in keyword_list]
+
+        # Extra field for arXiv ID
+        arxiv_id = ZoteroWriter._extract_arxiv_id(doi)
+        if arxiv_id:
+            data["extra"] = f"arXiv: {arxiv_id}"
+            if item_type == "preprint":
+                data["url"] = f"https://arxiv.org/abs/{arxiv_id}"
+
+        return data
+
+    def _create_slr_note(self, paper: dict, match_method: str = "new") -> dict:
+        """Build a child note with SLR metadata."""
+        from datetime import datetime as _dt
+
+        pid = paper.get("paper_id", "")
+        lines = [
+            "<h2>SLR Metadata</h2>",
+            f"<p><b>Paper ID:</b> {pid}</p>",
+            f"<p><b>Source DB:</b> {paper.get('source_db', '')}</p>",
+            f"<p><b>Inclusion reason:</b> Included in final SLR results</p>",
+        ]
+
+        # Add topic coding info if available
+        if paper.get("primary_topics"):
+            lines.append(f"<p><b>Primary topics:</b> {paper.get('primary_topics', '')}</p>")
+        if paper.get("method_family"):
+            lines.append(f"<p><b>Method family:</b> {paper.get('method_family', '')}</p>")
+        if paper.get("application_area"):
+            lines.append(f"<p><b>Application area:</b> {paper.get('application_area', '')}</p>")
+
+        lines.append(f"<p><b>Sync method:</b> {match_method}</p>")
+        lines.append(f"<p><b>Sync timestamp:</b> {_dt.now().isoformat(timespec='seconds')}</p>")
+        lines.append(f"<p><em>Auto-synced by quantum-finance-slr toolkit</em></p>")
+
+        return {
+            "itemType": "note",
+            "note": "\n".join(lines),
+            "tags": [{"tag": "slr-metadata"}],
+        }
+
+    def ensure_collection(self, name: str, parent_key: str | None = None) -> str:
+        """Find or create a collection by name. Returns the collection key."""
+        collections = self.list_collections()
+        for col in collections:
+            data = col.get("data", col)
+            if data.get("name") == name:
+                parent = data.get("parentCollection", False)
+                if parent_key is None and not parent:
+                    return col["key"]
+                if parent_key and parent == parent_key:
+                    return col["key"]
+        return self.create_collection(name, parent_key=parent_key)
+
+    def sync_slr_results(
+        self,
+        *,
+        collection_name: str = "SLR Results",
+        dry_run: bool = True,
+        max_items: int | None = None,
+    ) -> dict:
+        """Sync final included SLR papers into a Zotero collection.
+
+        Parameters
+        ----------
+        collection_name : str
+            Name of the top-level Zotero collection for results.
+        dry_run : bool
+            If True (default), only report what would be done.
+        max_items : int | None
+            Cap on papers to process (useful for testing).
+
+        Returns
+        -------
+        dict
+            Sync report with created/updated/skipped/failed counts and details.
+        """
+        report: dict = {
+            "dry_run": dry_run,
+            "created": [],
+            "updated": [],
+            "skipped": [],
+            "failed": [],
+        }
+
+        # 1. Load included paper IDs
+        included_ids: set[str] = set()
+        with open(config.INCLUDED_FOR_CODING, encoding="utf-8", newline="") as f:
+            for row in csv.DictReader(f):
+                if row.get("final_decision", "").strip().lower() == "include":
+                    included_ids.add(row["paper_id"])
+
+        # 2. Load master records metadata
+        master: dict[str, dict] = {}
+        with open(config.MASTER_RECORDS_CSV, encoding="utf-8", newline="") as f:
+            for row in csv.DictReader(f):
+                if row["paper_id"] in included_ids:
+                    master[row["paper_id"]] = row
+
+        # 3. Enrich with topic coding if available
+        if config.TOPIC_CODING_CSV.exists():
+            with open(config.TOPIC_CODING_CSV, encoding="utf-8", newline="") as f:
+                for row in csv.DictReader(f):
+                    pid = row.get("paper_id", "")
+                    if pid in master:
+                        for field in ("primary_topics", "secondary_topics",
+                                      "application_area", "method_family"):
+                            if row.get(field):
+                                master[pid][field] = row[field]
+
+        papers = [master[pid] for pid in sorted(included_ids) if pid in master]
+        if max_items is not None:
+            papers = papers[:max_items]
+
+        log.info("Syncing %d papers to Zotero collection '%s'", len(papers), collection_name)
+
+        # 4. Build dedup index from existing Zotero library
+        print(f"Building Zotero library index...")
+        doi_idx, arxiv_idx, title_idx, ay_idx = self._build_zotero_index()
+
+        # 5. Find or create the target collection
+        collection_key = None
+        if not dry_run:
+            collection_key = self.ensure_collection(collection_name)
+            log.info("Target collection '%s' -> %s", collection_name, collection_key)
+        print(f"Target collection: '{collection_name}'" +
+              (f" [{collection_key}]" if collection_key else " [dry-run]"))
+
+        # 6. Process each paper
+        for i, paper in enumerate(papers, 1):
+            pid = paper["paper_id"]
+            title = paper.get("title", "") or pid
+            safe_title = title[:60] + "..." if len(title) > 60 else title
+            safe_title = safe_title.encode("ascii", errors="replace").decode("ascii")
+
+            existing, match_method = self._find_existing_item(
+                paper, doi_idx, arxiv_idx, title_idx, ay_idx,
+            )
+
+            if existing:
+                zkey = existing["key"]
+                print(f"  [{i}/{len(papers)}] UPDATE ({match_method}): {safe_title}")
+
+                if dry_run:
+                    report["updated"].append({
+                        "paper_id": pid, "zotero_key": zkey,
+                        "match_method": match_method, "title": title,
+                    })
+                    continue
+
+                try:
+                    # Add to collection + add SLR tags
+                    item_data = existing.get("data", existing)
+                    version = item_data.get("version", existing.get("version"))
+
+                    patch: dict = {}
+                    # Merge collections
+                    existing_cols = set(item_data.get("collections", []))
+                    if collection_key and collection_key not in existing_cols:
+                        patch["collections"] = sorted(existing_cols | {collection_key})
+
+                    # Merge tags
+                    existing_tags = {t["tag"] for t in item_data.get("tags", [])}
+                    new_tags = [t for t in self._SLR_TAGS if t not in existing_tags]
+                    if new_tags:
+                        all_tags = item_data.get("tags", []) + [{"tag": t} for t in new_tags]
+                        patch["tags"] = all_tags
+
+                    if patch:
+                        self._patch(f"/items/{zkey}", data=patch, version=version)
+
+                    # Add child note
+                    note_data = self._create_slr_note(paper, match_method=match_method)
+                    note_data["parentItem"] = zkey
+                    if collection_key:
+                        note_data["collections"] = [collection_key]
+                    self._post("/items", [note_data])
+
+                    report["updated"].append({
+                        "paper_id": pid, "zotero_key": zkey,
+                        "match_method": match_method, "title": title,
+                    })
+                except Exception as exc:
+                    log.warning("Failed to update %s: %s", pid, exc)
+                    report["failed"].append({
+                        "paper_id": pid, "error": str(exc), "title": title,
+                    })
+            else:
+                print(f"  [{i}/{len(papers)}] CREATE: {safe_title}")
+
+                if dry_run:
+                    report["created"].append({
+                        "paper_id": pid, "title": title,
+                    })
+                    continue
+
+                try:
+                    item_data = self._map_paper_to_zotero_data(paper)
+
+                    # Add SLR tags
+                    existing_tags = item_data.get("tags", [])
+                    for t in self._SLR_TAGS:
+                        if not any(tag["tag"] == t for tag in existing_tags):
+                            existing_tags.append({"tag": t})
+                    item_data["tags"] = existing_tags
+
+                    # Add to collection
+                    if collection_key:
+                        item_data["collections"] = [collection_key]
+
+                    resp = self._post("/items", [item_data])
+                    result = resp.json()
+                    successful = result.get("successful", result.get("success", {}))
+                    if "0" in successful:
+                        obj = successful["0"]
+                        new_key = obj["key"] if isinstance(obj, dict) else obj
+                        log.info("Created item %s for paper %s", new_key, pid)
+
+                        # Add child note
+                        note_data = self._create_slr_note(paper, match_method="new")
+                        note_data["parentItem"] = new_key
+                        if collection_key:
+                            note_data["collections"] = [collection_key]
+                        self._post("/items", [note_data])
+
+                        report["created"].append({
+                            "paper_id": pid, "zotero_key": new_key, "title": title,
+                        })
+                    else:
+                        failed = result.get("failed", {})
+                        raise RuntimeError(f"Zotero create failed: {failed}")
+                except Exception as exc:
+                    log.warning("Failed to create %s: %s", pid, exc)
+                    report["failed"].append({
+                        "paper_id": pid, "error": str(exc), "title": title,
+                    })
+
+        # 7. Summary
+        report["summary"] = {
+            "total": len(papers),
+            "created": len(report["created"]),
+            "updated": len(report["updated"]),
+            "skipped": len(report["skipped"]),
+            "failed": len(report["failed"]),
+        }
+        return report
 
     # ------------------------------------------------------------------
     # Bridge building

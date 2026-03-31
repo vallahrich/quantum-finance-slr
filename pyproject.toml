@@ -22,6 +22,7 @@ dependencies = [
 fuzzy = ["rapidfuzz>=3.0"]
 dev = ["pytest>=7.0", "rapidfuzz>=3.0"]
 ai = ["scikit-learn>=1.3", "asreview>=2.0"]
+browser = ["playwright>=1.40"]
 
 [tool.setuptools.packages.find]
 where = ["."]

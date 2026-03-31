@@ -1,9 +1,13 @@
 """Download open-access PDFs for included papers.
 
-Resolution order per paper:
-  1. arXiv  — if DOI matches ``10.48550/arXiv.*`` or source_db == "arxiv"
-  2. Semantic Scholar — ``openAccessPdf`` field via paper lookup
-  3. Unpaywall — free OA copy lookup by DOI (requires email for polite pool)
+Resolution order per paper (expanded cascade):
+  1. arXiv       — if DOI matches ``10.48550/arXiv.*`` or source_db == "arxiv"
+  2. Direct repos — Zenodo, SSRN, TechRxiv (DOI-pattern-based direct URLs)
+  3. OpenAlex    — ``open_access.oa_url`` field via works lookup
+  4. Semantic Scholar — ``openAccessPdf`` field via paper lookup
+  5. CORE        — institutional repository aggregator (requires free API key)
+  6. Unpaywall   — free OA copy lookup by DOI (requires email for polite pool)
+  7. CrossRef    — publisher ``link[]`` array with PDF URLs
 
 Results are written to ``08_full_texts/pdfs/`` with a CSV log tracking
 every attempt so the process is fully resumable.
@@ -24,6 +28,13 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+import requests as _requests
+import urllib3 as _urllib3
+
+# Suppress InsecureRequestWarning when verify=False is used (corporate
+# environments where the certifi CA bundle is unavailable).
+_urllib3.disable_warnings(_urllib3.exceptions.InsecureRequestWarning)
+
 from . import config
 from .utils import atomic_write_text, ensure_dir, load_master_records
 
@@ -34,6 +45,10 @@ log = logging.getLogger("slr_toolkit.pdf_download")
 _ARXIV_PDF_BASE = "https://arxiv.org/pdf/"
 _S2_PAPER_API = "https://api.semanticscholar.org/graph/v1/paper"
 _UNPAYWALL_API = "https://api.unpaywall.org/v2"
+_OPENALEX_API = "https://api.openalex.org/works"
+_CORE_API = "https://api.core.ac.uk/v3"
+_CROSSREF_API = "https://api.crossref.org/works"
+_ZENODO_API = "https://zenodo.org/api/records"
 
 _USER_AGENT = "QuantumFinanceSLR/0.1 (systematic-review-toolkit; mailto:{email})"
 _PDF_CONTENT_TYPES = {"application/pdf", "application/octet-stream"}
@@ -69,9 +84,9 @@ def _fetch_url(url: str, *, timeout: int = 30, headers: dict | None = None) -> b
     hdrs = {"User-Agent": _USER_AGENT.format(email="slr@example.com")}
     if headers:
         hdrs.update(headers)
-    req = urllib.request.Request(url, headers=hdrs)
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read()
+    resp = _requests.get(url, headers=hdrs, timeout=timeout, verify=False)
+    resp.raise_for_status()
+    return resp.content
 
 
 def _fetch_json(url: str, *, timeout: int = 30, headers: dict | None = None) -> dict:
@@ -80,21 +95,55 @@ def _fetch_json(url: str, *, timeout: int = 30, headers: dict | None = None) -> 
     return json.loads(data)
 
 
+_BROWSER_UA = (
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+    "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+)
+
+
 def _download_pdf(url: str, dest: Path, *, timeout: int = 60) -> bool:
-    """Download a PDF from *url* to *dest*. Returns True on success."""
+    """Download a PDF from *url* to *dest* using requests for robust handling.
+
+    Uses ``requests`` for better redirect, cookie, and session handling
+    compared to the original urllib-only version.  Falls back to a
+    browser-like User-Agent on 403 Forbidden.
+    """
     try:
-        # Encode spaces and other unsafe chars in the URL path/query
-        url = urllib.parse.quote(url, safe=":/?#[]@!$&'()*+,;=-._~%")
-        req = urllib.request.Request(url, headers={
-            "User-Agent": _USER_AGENT.format(email="slr@example.com"),
-            "Accept": "application/pdf",
-        })
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            content_type = resp.headers.get("Content-Type", "")
-            data = resp.read()
+        resp = _requests.get(
+            url,
+            headers={
+                "User-Agent": _USER_AGENT.format(email="slr@example.com"),
+                "Accept": "application/pdf, */*",
+            },
+            timeout=timeout,
+            allow_redirects=True,
+            verify=False,
+        )
+        # Retry with browser UA on 403 (some publishers block bot agents)
+        if resp.status_code == 403:
+            log.debug("Got 403, retrying with browser User-Agent: %s", url)
+            resp = _requests.get(
+                url,
+                headers={
+                    "User-Agent": _BROWSER_UA,
+                    "Accept": "application/pdf, text/html, */*",
+                },
+                timeout=timeout,
+                allow_redirects=True,
+                verify=False,
+            )
+        resp.raise_for_status()
+        data = resp.content
 
         # Basic validation: PDF files start with %PDF
         if not data[:5].startswith(b"%PDF"):
+            # Some publishers serve an HTML landing page — look for a
+            # meta-refresh or direct PDF link in the first 4 KB.
+            if b"<html" in data[:2048].lower():
+                pdf_link = _extract_pdf_link_from_html(data[:8192], url)
+                if pdf_link:
+                    log.info("Found embedded PDF link in HTML response, retrying: %s", pdf_link)
+                    return _download_pdf(pdf_link, dest, timeout=timeout)
             log.warning("Response from %s does not look like a PDF (first bytes: %r)", url, data[:20])
             return False
 
@@ -102,9 +151,23 @@ def _download_pdf(url: str, dest: Path, *, timeout: int = 60) -> bool:
         dest.write_bytes(data)
         log.info("Downloaded PDF: %s (%d bytes)", dest.name, len(data))
         return True
-    except (urllib.error.URLError, urllib.error.HTTPError, OSError) as exc:
+    except (_requests.RequestException, OSError) as exc:
         log.warning("PDF download failed from %s: %s", url, exc)
         return False
+
+
+def _extract_pdf_link_from_html(html_bytes: bytes, base_url: str) -> str | None:
+    """Try to find a direct PDF link in an HTML response body."""
+    text = html_bytes.decode("utf-8", errors="ignore")
+    # Look for meta-refresh redirect
+    m = re.search(r'<meta[^>]+url=(["\']?)([^"\'>\s]+\.pdf[^"\'>\s]*)\1', text, re.IGNORECASE)
+    if m:
+        return urllib.parse.urljoin(base_url, m.group(2))
+    # Look for a direct PDF link
+    m = re.search(r'href=(["\'])([^"\']+\.pdf[^"\']*)\1', text, re.IGNORECASE)
+    if m:
+        return urllib.parse.urljoin(base_url, m.group(2))
+    return None
 
 
 # ── Source resolvers ───────────────────────────────────────────────────────
@@ -213,6 +276,173 @@ def _try_unpaywall(paper: dict, *, email: str) -> str | None:
     return None
 
 
+# ── New source resolvers (Phase 1b + Phase 2) ────────────────────────────
+
+
+def _try_direct_repos(paper: dict) -> str | None:
+    """Resolve PDFs from OA platforms via DOI pattern (Zenodo, SSRN, TechRxiv)."""
+    doi = paper.get("doi", "").strip()
+    if not doi:
+        return None
+
+    # Zenodo: 10.5281/zenodo.{id}
+    m = re.match(r"10\.5281/zenodo\.(\d+)", doi, re.IGNORECASE)
+    if m:
+        record_id = m.group(1)
+        try:
+            data = _fetch_json(f"{_ZENODO_API}/{record_id}")
+            for f in data.get("files", []):
+                if f.get("key", "").lower().endswith(".pdf"):
+                    link = f.get("links", {}).get("self")
+                    if link:
+                        return link
+        except (urllib.error.HTTPError, urllib.error.URLError, OSError) as exc:
+            log.debug("Zenodo API failed for %s: %s", doi, exc)
+        return None
+
+    # SSRN: 10.2139/ssrn.{id}
+    m = re.match(r"10\.2139/ssrn\.(\d+)", doi, re.IGNORECASE)
+    if m:
+        ssrn_id = m.group(1)
+        return f"https://papers.ssrn.com/sol3/Delivery.cfm/SSRN-id{ssrn_id}.pdf?abstractid={ssrn_id}"
+
+    # TechRxiv: 10.36227/techrxiv.*
+    if doi.lower().startswith("10.36227/techrxiv"):
+        try:
+            resp = _requests.head(
+                f"https://doi.org/{doi}",
+                allow_redirects=True,
+                timeout=15,
+                headers={"User-Agent": _USER_AGENT.format(email="slr@example.com")},
+                verify=False,
+            )
+            final_url = resp.url
+            # TechRxiv landing pages often have a /Fulltext/ PDF variant
+            pdf_url = re.sub(r"/Article/", "/Fulltext/", final_url)
+            if pdf_url != final_url:
+                return pdf_url
+        except _requests.RequestException as exc:
+            log.debug("TechRxiv resolve failed for %s: %s", doi, exc)
+
+    return None
+
+
+def _try_openalex(paper: dict, *, openalex_key: str = "") -> str | None:
+    """Look up paper on OpenAlex and return OA URL if available."""
+    doi = paper.get("doi", "").strip()
+
+    headers: dict[str, str] = {}
+    if openalex_key:
+        headers["Authorization"] = f"Bearer {openalex_key}"
+
+    # DOI-based lookup (preferred)
+    if doi:
+        url = f"{_OPENALEX_API}/doi:{urllib.parse.quote(doi, safe='')}"
+        params = "?select=open_access"
+        if openalex_key:
+            params += f"&api_key={urllib.parse.quote(openalex_key, safe='')}"
+        time.sleep(0.2)
+        try:
+            data = _fetch_json(url + params, headers=headers)
+            oa = data.get("open_access", {})
+            if oa.get("is_oa") and oa.get("oa_url"):
+                return oa["oa_url"]
+        except (urllib.error.HTTPError, urllib.error.URLError, OSError) as exc:
+            log.debug("OpenAlex DOI lookup failed for %s: %s", doi, exc)
+
+    # Title fallback
+    title = paper.get("title", "").strip()
+    if title:
+        params_dict: dict[str, str] = {
+            "filter": f"title.search:{title}",
+            "select": "open_access,title",
+            "per_page": "1",
+        }
+        if openalex_key:
+            params_dict["api_key"] = openalex_key
+        url = f"{_OPENALEX_API}?{urllib.parse.urlencode(params_dict)}"
+        time.sleep(0.2)
+        try:
+            data = _fetch_json(url, headers=headers)
+            results = data.get("results", [])
+            if results:
+                oa = results[0].get("open_access", {})
+                if oa.get("is_oa") and oa.get("oa_url"):
+                    return oa["oa_url"]
+        except (urllib.error.HTTPError, urllib.error.URLError, OSError) as exc:
+            log.debug("OpenAlex title search failed for %s: %s", paper.get("paper_id"), exc)
+
+    return None
+
+
+def _try_core(paper: dict, *, core_key: str = "") -> str | None:
+    """Look up paper on CORE (core.ac.uk) and return downloadUrl if available."""
+    if not core_key:
+        return None
+
+    doi = paper.get("doi", "").strip()
+    headers = {"Authorization": f"Bearer {core_key}"}
+
+    # DOI-based lookup
+    if doi:
+        url = f"{_CORE_API}/works/doi:{urllib.parse.quote(doi, safe='')}"
+        time.sleep(0.15)
+        try:
+            data = _fetch_json(url, headers=headers)
+            dl_url = data.get("downloadUrl", "")
+            if dl_url:
+                return dl_url
+        except (urllib.error.HTTPError, urllib.error.URLError, OSError) as exc:
+            log.debug("CORE DOI lookup failed for %s: %s", doi, exc)
+
+    # Title search fallback
+    title = paper.get("title", "").strip()
+    if title:
+        params = urllib.parse.urlencode({"q": title, "limit": "1"})
+        url = f"{_CORE_API}/search/works?{params}"
+        time.sleep(0.15)
+        try:
+            data = _fetch_json(url, headers=headers)
+            results = data.get("results", [])
+            if results:
+                dl_url = results[0].get("downloadUrl", "")
+                if dl_url:
+                    return dl_url
+        except (urllib.error.HTTPError, urllib.error.URLError, OSError) as exc:
+            log.debug("CORE title search failed for %s: %s", paper.get("paper_id"), exc)
+
+    return None
+
+
+def _try_crossref(paper: dict, *, email: str = "") -> str | None:
+    """Look up paper on CrossRef and return a PDF link from the link[] array."""
+    doi = paper.get("doi", "").strip()
+    if not doi:
+        return None
+
+    url = f"{_CROSSREF_API}/{urllib.parse.quote(doi, safe='')}"
+    headers: dict[str, str] = {
+        "User-Agent": _USER_AGENT.format(email=email or "slr@example.com"),
+    }
+    time.sleep(0.5)
+
+    try:
+        data = _fetch_json(url, headers=headers)
+    except (urllib.error.HTTPError, urllib.error.URLError, OSError) as exc:
+        log.debug("CrossRef lookup failed for DOI %s: %s", doi, exc)
+        return None
+
+    message = data.get("message", {})
+    for link in message.get("link", []):
+        content_type = link.get("content-type", "")
+        if "pdf" in content_type.lower():
+            link_url = link.get("URL", "")
+            if link_url:
+                return link_url
+
+    return None
+
+
 # ── Download log I/O ──────────────────────────────────────────────────────
 
 _LOG_COLUMNS = [
@@ -252,9 +482,12 @@ def download_pdfs(
     *,
     email: str | None = None,
     s2_key: str | None = None,
+    openalex_key: str | None = None,
+    core_key: str | None = None,
     max_papers: int | None = None,
     delay: float = 3.5,
     skip_existing: bool = True,
+    retry_failed: bool = False,
     input_file: Path | None = None,
 ) -> Path:
     """Download open-access PDFs for all papers in the final included list.
@@ -267,12 +500,19 @@ def download_pdfs(
     s2_key : str | None
         Semantic Scholar API key for higher rate limits. Also checked via
         ``S2_API_KEY`` env var.
+    openalex_key : str | None
+        OpenAlex API key. Also checked via ``OPENALEX_API_KEY`` env var.
+    core_key : str | None
+        CORE API key for institutional repository lookups. Also checked via
+        ``CORE_API_KEY`` env var.
     max_papers : int | None
         Cap on how many papers to attempt (useful for testing).
     delay : float
         Seconds between API requests (default 3.5 — S2 free-tier limit).
     skip_existing : bool
         Skip papers that already have a successful download in the log.
+    retry_failed : bool
+        When True, only re-attempt papers with ``download_failed`` status.
     input_file : Path | None
         Override the default included-papers file.
 
@@ -283,6 +523,8 @@ def download_pdfs(
     """
     email = email or os.environ.get("UNPAYWALL_EMAIL", "")
     s2_key = s2_key or os.environ.get("S2_API_KEY", "")
+    openalex_key = openalex_key or os.environ.get("OPENALEX_API_KEY", "")
+    core_key = core_key or os.environ.get("CORE_API_KEY", "")
 
     # 1. Load final included paper IDs
     included_path = input_file or config.INCLUDED_FOR_CODING
@@ -321,8 +563,16 @@ def download_pdfs(
     # 4. Determine which papers still need downloading
     papers_to_try = []
     for pid in sorted(included_ids):
-        if skip_existing and pid in download_log and download_log[pid].get("status") == "success":
+        existing = download_log.get(pid, {})
+        existing_status = existing.get("status", "")
+
+        if retry_failed:
+            # Only re-attempt papers that previously failed download
+            if existing_status != "download_failed":
+                continue
+        elif skip_existing and existing_status == "success":
             continue
+
         if pid in master:
             papers_to_try.append(master[pid])
         else:
@@ -336,12 +586,17 @@ def download_pdfs(
         print("All included papers already downloaded (or no papers to process).")
         return log_path
 
-    print(f"Attempting PDF download for {len(papers_to_try)} papers...")
+    mode = "retry-failed" if retry_failed else "download"
+    print(f"Attempting PDF {mode} for {len(papers_to_try)} papers...")
     print(f"  Output: {config.FULL_TEXTS_DIR / 'pdfs'}")
-    if email:
-        print(f"  Unpaywall email: {email}")
-    else:
-        print("  Unpaywall: disabled (set --email or UNPAYWALL_EMAIL env var)")
+    sources_status = []
+    sources_status.append("arXiv, Direct-repos, Semantic Scholar")
+    sources_status.append(f"OpenAlex: {'on' if openalex_key else 'off (set OPENALEX_API_KEY)'}")
+    sources_status.append(f"CORE: {'on' if core_key else 'off (set CORE_API_KEY)'}")
+    sources_status.append(f"Unpaywall: {'on' if email else 'off (set --email)'}")
+    sources_status.append("CrossRef")
+    for s in sources_status:
+        print(f"  {s}")
     print()
 
     pdf_dir = ensure_dir(config.FULL_TEXTS_DIR / "pdfs")
@@ -351,7 +606,9 @@ def download_pdfs(
         pid = paper["paper_id"]
         title = paper.get("title", "") or pid
         short_title = title[:60] + "..." if len(title) > 60 else title
-        print(f"  [{i}/{len(papers_to_try)}] {short_title}")
+        # Replace non-ASCII chars to avoid cp1252 encoding errors on Windows
+        safe_title = short_title.encode("ascii", errors="replace").decode("ascii")
+        print(f"  [{i}/{len(papers_to_try)}] {safe_title}")
 
         pdf_filename = f"{pid}_{_sanitise_filename(title)}.pdf"
         dest = pdf_dir / pdf_filename
@@ -373,7 +630,7 @@ def download_pdfs(
             print(f"           -> cached (already on disk)")
             continue
 
-        # Try sources in priority order
+        # Try sources in priority order (expanded 7-tier cascade)
         pdf_url: str | None = None
         source_used = ""
 
@@ -383,19 +640,47 @@ def download_pdfs(
             source_used = "arxiv"
             log.info("  arXiv URL found: %s", pdf_url)
 
-        # 2. Semantic Scholar
+        # 2. Direct repositories (Zenodo, SSRN, TechRxiv)
+        if not pdf_url:
+            pdf_url = _try_direct_repos(paper)
+            if pdf_url:
+                source_used = "direct_repo"
+                log.info("  Direct repo URL found: %s", pdf_url)
+
+        # 3. OpenAlex
+        if not pdf_url:
+            pdf_url = _try_openalex(paper, openalex_key=openalex_key)
+            if pdf_url:
+                source_used = "openalex"
+                log.info("  OpenAlex OA URL found: %s", pdf_url)
+
+        # 4. Semantic Scholar
         if not pdf_url:
             pdf_url = _try_semantic_scholar(paper, s2_key=s2_key, delay=delay)
             if pdf_url:
                 source_used = "semantic_scholar"
                 log.info("  S2 open-access URL found: %s", pdf_url)
 
-        # 3. Unpaywall
+        # 5. CORE
+        if not pdf_url and core_key:
+            pdf_url = _try_core(paper, core_key=core_key)
+            if pdf_url:
+                source_used = "core"
+                log.info("  CORE URL found: %s", pdf_url)
+
+        # 6. Unpaywall
         if not pdf_url and email:
             pdf_url = _try_unpaywall(paper, email=email)
             if pdf_url:
                 source_used = "unpaywall"
                 log.info("  Unpaywall URL found: %s", pdf_url)
+
+        # 7. CrossRef
+        if not pdf_url:
+            pdf_url = _try_crossref(paper, email=email)
+            if pdf_url:
+                source_used = "crossref"
+                log.info("  CrossRef URL found: %s", pdf_url)
 
         # Attempt download
         if pdf_url:

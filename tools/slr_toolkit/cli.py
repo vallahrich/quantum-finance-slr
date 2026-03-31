@@ -313,6 +313,109 @@ def _cmd_ai_validation(args: argparse.Namespace) -> None:
     print(f"\n  Full report: 05_screening/ai_validation_report.md")
 
 
+def _cmd_import_zotero_pdfs(args: argparse.Namespace) -> None:
+    """Import PDFs downloaded via Zotero."""
+    from .import_zotero_pdfs import import_zotero_pdfs
+
+    log_path = import_zotero_pdfs(
+        Path(args.zotero_dir),
+        match_threshold=args.match_threshold,
+    )
+    print(f"\n[ok] Download log: {log_path}")
+
+
+def _cmd_institutional_download(args: argparse.Namespace) -> None:
+    """Download PDFs via CBS institutional proxy."""
+    from .institutional_download import institutional_download
+
+    log_path = institutional_download(
+        proxy_base=args.proxy_base,
+        delay=args.delay,
+        max_papers=args.max_papers,
+        headless=not args.no_headless,
+        input_file=Path(args.input_file) if args.input_file else None,
+    )
+    print(f"\n[ok] Download log: {log_path}")
+
+
+def _cmd_scan_pdfs(args: argparse.Namespace) -> None:
+    """Scan pdfs/ directory for manually-added files and update download log."""
+    import csv as _csv
+    from datetime import datetime as _dt
+
+    from .utils import atomic_write_text as _awt
+
+    pdf_dir = config.FULL_TEXTS_DIR / "pdfs"
+    log_path = config.DOWNLOAD_LOG_CSV
+
+    # Load existing log
+    existing: dict[str, dict] = {}
+    if log_path.exists():
+        with open(log_path, encoding="utf-8", newline="") as f:
+            for row in _csv.DictReader(f):
+                existing[row["paper_id"]] = row
+
+    # Load master records for metadata
+    master: dict[str, dict] = {}
+    if config.MASTER_RECORDS_CSV.exists():
+        with open(config.MASTER_RECORDS_CSV, encoding="utf-8", newline="") as f:
+            for row in _csv.DictReader(f):
+                master[row["paper_id"]] = row
+
+    known_filenames = {r.get("filename", "") for r in existing.values() if r.get("status") == "success"}
+    new_count = 0
+
+    for pdf_path in sorted(pdf_dir.glob("*.pdf")):
+        if pdf_path.name in known_filenames:
+            continue
+        # Try to extract paper_id from filename (format: {paper_id}_{title}.pdf)
+        parts = pdf_path.stem.split("_", 1)
+        pid = parts[0] if parts else ""
+        if pid and pid not in existing:
+            meta = master.get(pid, {})
+            existing[pid] = {
+                "paper_id": pid,
+                "title": meta.get("title", ""),
+                "doi": meta.get("doi", ""),
+                "source": "manual",
+                "pdf_url": "",
+                "status": "success",
+                "filename": pdf_path.name,
+                "timestamp": _dt.now().isoformat(timespec="seconds"),
+            }
+            new_count += 1
+            print(f"  Found: {pdf_path.name} -> {pid}")
+        elif pid and existing.get(pid, {}).get("status") != "success":
+            meta = master.get(pid, {})
+            existing[pid] = {
+                "paper_id": pid,
+                "title": meta.get("title", ""),
+                "doi": meta.get("doi", ""),
+                "source": "manual",
+                "pdf_url": "",
+                "status": "success",
+                "filename": pdf_path.name,
+                "timestamp": _dt.now().isoformat(timespec="seconds"),
+            }
+            new_count += 1
+            print(f"  Found: {pdf_path.name} -> {pid}")
+
+    if new_count:
+        columns = ["paper_id", "title", "doi", "source", "pdf_url", "status", "filename", "timestamp"]
+        lines = [",".join(columns)]
+        for p in sorted(existing):
+            row = existing[p]
+            def _esc(v: str) -> str:
+                if any(c in v for c in (",", '"', "\n")):
+                    return '"' + v.replace('"', '""') + '"'
+                return v
+            lines.append(",".join(_esc(str(row.get(c, ""))) for c in columns))
+        _awt(log_path, "\n".join(lines) + "\n")
+
+    print(f"\n[ok] Scan complete: {new_count} new PDFs registered")
+    print(f"  Log: {log_path}")
+
+
 def _cmd_download_pdfs(args: argparse.Namespace) -> None:
     """Download open-access PDFs for final included papers."""
     from .pdf_download import download_pdfs
@@ -320,9 +423,12 @@ def _cmd_download_pdfs(args: argparse.Namespace) -> None:
     log_path = download_pdfs(
         email=args.email,
         s2_key=args.s2_key,
+        openalex_key=getattr(args, "openalex_key", None),
+        core_key=getattr(args, "core_key", None),
         max_papers=args.max_papers,
         delay=args.delay,
         skip_existing=not args.force,
+        retry_failed=getattr(args, "retry_failed", False),
         input_file=Path(args.input_file) if args.input_file else None,
     )
     print(f"\n[ok] Download log: {log_path}")
@@ -400,6 +506,43 @@ def _cmd_classify_tiers(args: argparse.Namespace) -> None:
     print(f"[ok] Tier classification complete -> {result.name}")
     print(f"[ok] Summary generated -> {summary_path.name}")
     print("  Draft LLM classification only: review tier assignments before Zotero sync.")
+
+
+def _cmd_zotero_sync_results(args: argparse.Namespace) -> None:
+    """Sync final included SLR papers into a Zotero collection."""
+    import json as _json
+
+    from .zotero_sync import ZoteroWriter
+
+    writer = ZoteroWriter(
+        group_id=args.group_id or "",
+        api_key=args.api_key or "",
+    )
+
+    dry_run = not args.execute
+    report = writer.sync_slr_results(
+        collection_name=args.collection_name,
+        dry_run=dry_run,
+        max_items=args.max_items,
+    )
+
+    summary = report["summary"]
+    mode = "DRY-RUN" if dry_run else "LIVE"
+    print(f"\n[{mode}] Sync complete:")
+    print(f"  Total:   {summary['total']}")
+    print(f"  Created: {summary['created']}")
+    print(f"  Updated: {summary['updated']}")
+    print(f"  Skipped: {summary['skipped']}")
+    print(f"  Failed:  {summary['failed']}")
+
+    # Save report
+    report_path = config.FULL_TEXTS_DIR / "zotero_sync_report.json"
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(_json.dumps(report, indent=2, default=str) + "\n", encoding="utf-8")
+    print(f"\n  Report: {report_path}")
+
+    if dry_run:
+        print("\n  This was a dry-run. Pass --execute to sync for real.")
 
 
 def _cmd_zotero_create_collections(args: argparse.Namespace) -> None:
@@ -867,7 +1010,68 @@ def build_parser() -> argparse.ArgumentParser:
         "--input-file", default=None,
         help="Override the included-papers CSV (default: 05_screening/included_for_coding.csv).",
     )
+    p_dp.add_argument(
+        "--openalex-key", default=None,
+        help="OpenAlex API key (also: OPENALEX_API_KEY env var).",
+    )
+    p_dp.add_argument(
+        "--core-key", default=None,
+        help="CORE API key for institutional repository lookups (also: CORE_API_KEY env var).",
+    )
+    p_dp.add_argument(
+        "--retry-failed", action="store_true",
+        help="Only re-attempt papers with 'download_failed' status.",
+    )
     p_dp.set_defaults(func=_cmd_download_pdfs)
+
+    # -- import-zotero-pdfs -------------------------------------------------
+    p_iz = sub.add_parser(
+        "import-zotero-pdfs",
+        help="Import PDFs downloaded via Zotero into the SLR pipeline.",
+    )
+    p_iz.add_argument(
+        "zotero_dir",
+        help="Directory containing PDFs exported from Zotero.",
+    )
+    p_iz.add_argument(
+        "--match-threshold", type=float, default=0.85,
+        help="Fuzzy title match threshold 0-1 (default: 0.85).",
+    )
+    p_iz.set_defaults(func=_cmd_import_zotero_pdfs)
+
+    # -- institutional-download ---------------------------------------------
+    p_id = sub.add_parser(
+        "institutional-download",
+        help="Download PDFs via CBS institutional proxy (Playwright).",
+    )
+    p_id.add_argument(
+        "--proxy-base", required=True,
+        help="CBS EZProxy base URL, e.g. https://www-doi-org.esc-web.lib.cbs.dk",
+    )
+    p_id.add_argument(
+        "--delay", type=float, default=7.0,
+        help="Seconds between requests (default: 7).",
+    )
+    p_id.add_argument(
+        "--max-papers", type=int, default=None,
+        help="Maximum number of papers to attempt.",
+    )
+    p_id.add_argument(
+        "--no-headless", action="store_true",
+        help="Show the browser window (useful for login / debugging).",
+    )
+    p_id.add_argument(
+        "--input-file", default=None,
+        help="Override the included-papers CSV.",
+    )
+    p_id.set_defaults(func=_cmd_institutional_download)
+
+    # -- scan-pdfs ----------------------------------------------------------
+    p_sp = sub.add_parser(
+        "scan-pdfs",
+        help="Scan pdfs/ dir for manually added files and update download log.",
+    )
+    p_sp.set_defaults(func=_cmd_scan_pdfs)
 
     # -- topic-code ---------------------------------------------------------
     p_tc = sub.add_parser(
@@ -954,6 +1158,33 @@ def build_parser() -> argparse.ArgumentParser:
         help="Print token/cost estimate and exit.",
     )
     p_ct.set_defaults(func=_cmd_classify_tiers)
+
+    # -- zotero-sync-results ------------------------------------------------
+    p_zsr = sub.add_parser(
+        "zotero-sync-results",
+        help="Sync final included SLR papers into a Zotero collection.",
+    )
+    p_zsr.add_argument(
+        "--group-id", default=None,
+        help="Zotero group ID (default: 6475432).",
+    )
+    p_zsr.add_argument(
+        "--api-key", default=None,
+        help="Zotero API key (default: ZOTERO_API_KEY env var).",
+    )
+    p_zsr.add_argument(
+        "--collection-name", default="SLR Results",
+        help="Name of the Zotero collection (default: 'SLR Results').",
+    )
+    p_zsr.add_argument(
+        "--max-items", type=int, default=None,
+        help="Max papers to process (for testing).",
+    )
+    p_zsr.add_argument(
+        "--execute", action="store_true",
+        help="Actually sync (default is dry-run).",
+    )
+    p_zsr.set_defaults(func=_cmd_zotero_sync_results)
 
     # -- zotero-create-collections ------------------------------------------
     p_zcc = sub.add_parser(
