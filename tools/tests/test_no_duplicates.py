@@ -216,10 +216,9 @@ class TestDOIUniqueness:
 
 class TestTitleNearDuplicates:
 
-    # Known title-duplicate pairs where dedup didn't link preprint/published
-    # versions across sources (different DOIs, different version groups).
-    # These are tracked here so the count doesn't silently grow.
-    _KNOWN_TITLE_DUP_COUNT = 11  # Update if duplicates are resolved
+    # Known title-duplicate pairs where different papers share the same title
+    # (different authors). These are tracked so the count doesn't silently grow.
+    _KNOWN_TITLE_DUP_COUNT = 1  # Updated 2026-03-31 after merging 17 preprint/published pairs
 
     def test_title_duplicates_do_not_grow(
         self,

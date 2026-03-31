@@ -227,11 +227,12 @@ Accepted imported AI labels include:
 
 | Metric | Count | % |
 |--------|-------|---|
-| Total unique records | 6,232 ingested, 3,222 duplicates removed | |
-| **Screened** | **3,010** | 100% |
-| Include | 651 | 21.6% |
-| Exclude | 2,359 | 78.4% |
-| ERR-LLM (fallback to include) | 33 | 1.1% |
+| Total unique records | 6,232 ingested, 3,239 duplicates removed | |
+| **Screened** | **2,993** | 100% |
+| Include | 858 | 28.7% |
+| Exclude | 2,136 | 71.3% |
+
+*17 preprint/published duplicate pairs merged on 2026-03-31.*
 
 **Top exclusion reasons:**
 
@@ -243,8 +244,29 @@ Accepted imported AI labels include:
 | EX-PARADIGM | 284 | Annealing only / quantum-inspired |
 | EX-OTHER | 76 | Miscellaneous |
 | EX-NOTEN | 6 | Non-English |
+| duplicate | 17 | Preprint/published pairs merged post-screening |
 
 **Calibration**: Cohen's kappa = 0.849 (PASS, threshold 0.70). See [calibration_log.md](05_screening/calibration_log.md).
+
+## Full-Text Retrieval Status
+
+| Metric | Count | % |
+|--------|-------|---|
+| Papers included for coding | 858 | |
+| PDF download — success | 433 | 50.5% |
+| PDF download — failed | 203 | 23.7% |
+| No open-access source found | 222 | 25.9% |
+| PDFs on disk | 449 | |
+| Still missing | 425 | 49.5% |
+
+*Status as of 2026-03-31. Use `missing_pdfs_doi_links.html` or import `missing_pdfs_zotero.ris` to retrieve remaining full texts.*
+
+## Extraction Status
+
+| Metric | Count |
+|--------|-------|
+| Topic coding completed | 585 / 858 |
+| Tier classification completed | 585 / 858 |
 
 ## How PRISMA Counts Are Computed
 
