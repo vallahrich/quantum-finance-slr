@@ -325,17 +325,108 @@ def _cmd_import_zotero_pdfs(args: argparse.Namespace) -> None:
 
 
 def _cmd_institutional_download(args: argparse.Namespace) -> None:
-    """Download PDFs via CBS institutional proxy."""
-    from .institutional_download import institutional_download
+    """Download PDFs via institutional proxy (Stage 2 only)."""
+    from .institutional_download import retry_unresolved_with_institutional_access
 
-    log_path = institutional_download(
-        proxy_base=args.proxy_base,
+    log_path, stats = retry_unresolved_with_institutional_access(
+        institution=getattr(args, "institution", "cbs"),
         delay=args.delay,
         max_papers=args.max_papers,
-        headless=not args.no_headless,
+        headless=getattr(args, "headless", False),
         input_file=Path(args.input_file) if args.input_file else None,
+        working_only=getattr(args, "working_only", False),
     )
     print(f"\n[ok] Download log: {log_path}")
+
+
+def _cmd_download_all(args: argparse.Namespace) -> None:
+    """Two-stage download: open-access first, then institutional fallback."""
+    from .institutional_download import (
+        get_unresolved_papers,
+        retry_unresolved_with_institutional_access,
+    )
+    from .pdf_download import download_pdfs
+
+    # ── Stage 1: Open-access cascade ──
+    print("=" * 60)
+    print("STAGE 1: Open-access retrieval (7-source cascade)")
+    print("=" * 60)
+    log_path = download_pdfs(
+        email=args.email,
+        s2_key=args.s2_key,
+        openalex_key=getattr(args, "openalex_key", None),
+        core_key=getattr(args, "core_key", None),
+        max_papers=None,  # No cap on OA stage
+        delay=args.delay,
+        skip_existing=True,
+        retry_failed=False,
+        input_file=Path(args.input_file) if args.input_file else None,
+    )
+
+    # ── Check how many are still unresolved ──
+    unresolved = get_unresolved_papers(
+        input_file=Path(args.input_file) if args.input_file else None,
+    )
+    if not unresolved:
+        print("\nAll papers retrieved via open access — no institutional fallback needed.")
+        return
+
+    print(f"\n{len(unresolved)} papers still unresolved after open-access stage.")
+
+    if args.skip_institutional:
+        print("Institutional fallback skipped (--skip-institutional flag).")
+        print(f"[ok] Download log: {log_path}")
+        return
+
+    # ── Stage 2: Institutional fallback ──
+    log_path, stats = retry_unresolved_with_institutional_access(
+        institution=getattr(args, "institution", "cbs"),
+        delay=args.institutional_delay,
+        max_papers=args.max_institutional,
+        headless=False,  # Need visible browser for SSO login
+        input_file=Path(args.input_file) if args.input_file else None,
+    )
+
+    # ── Final summary ──
+    print()
+    print("=" * 60)
+    print("TWO-STAGE DOWNLOAD SUMMARY")
+    print("=" * 60)
+    from .institutional_download import _load_download_log
+    final_log = _load_download_log(log_path)
+    total = len(final_log)
+    success = sum(1 for r in final_log.values() if r.get("status") == "success")
+    oa_success = sum(
+        1 for r in final_log.values()
+        if r.get("status") == "success" and r.get("source") != "institutional"
+    )
+    inst_success = sum(
+        1 for r in final_log.values()
+        if r.get("status") == "success" and r.get("source") == "institutional"
+    )
+    failed = sum(1 for r in final_log.values() if r.get("status") != "success")
+    print(f"  Total papers in log:   {total}")
+    print(f"  Retrieved (total):     {success}")
+    print(f"    via open access:     {oa_success}")
+    print(f"    via institutional:   {inst_success}")
+    print(f"  Still missing:         {failed}")
+    if total:
+        print(f"  Overall retrieval:     {success/total*100:.1f}%")
+    print(f"\n[ok] Download log: {log_path}")
+
+
+def _cmd_clear_session(args: argparse.Namespace) -> None:
+    """Clear saved institutional login session."""
+    from .institutional_download import SessionManager, get_institution
+
+    profile = get_institution(args.institution)
+    mgr = SessionManager(profile)
+    if mgr.has_saved_session:
+        mgr.clear()
+        print(f"[ok] Session cleared for {profile.name}")
+        print(f"     Deleted: {profile.session_state_path}")
+    else:
+        print(f"No saved session for {profile.name}.")
 
 
 def _cmd_scan_pdfs(args: argparse.Namespace) -> None:
@@ -524,6 +615,7 @@ def _cmd_zotero_sync_results(args: argparse.Namespace) -> None:
         collection_name=args.collection_name,
         dry_run=dry_run,
         max_items=args.max_items,
+        attach_pdfs=args.attach_pdfs,
     )
 
     summary = report["summary"]
@@ -534,7 +626,9 @@ def _cmd_zotero_sync_results(args: argparse.Namespace) -> None:
     print(f"  Updated: {summary['updated']}")
     print(f"  Skipped: {summary['skipped']}")
     print(f"  Failed:  {summary['failed']}")
-
+    if args.attach_pdfs:
+        print(f"  PDFs uploaded: {summary.get('pdfs_uploaded', 0)}")
+        print(f"  PDFs failed:   {summary.get('pdfs_failed', 0)}")
     # Save report
     report_path = config.FULL_TEXTS_DIR / "zotero_sync_report.json"
     report_path.parent.mkdir(parents=True, exist_ok=True)
@@ -1042,11 +1136,11 @@ def build_parser() -> argparse.ArgumentParser:
     # -- institutional-download ---------------------------------------------
     p_id = sub.add_parser(
         "institutional-download",
-        help="Download PDFs via CBS institutional proxy (Playwright).",
+        help="Retry unresolved papers via institutional proxy (Stage 2 only).",
     )
     p_id.add_argument(
-        "--proxy-base", required=True,
-        help="CBS EZProxy base URL, e.g. https://www-doi-org.esc-web.lib.cbs.dk",
+        "--institution", default="cbs",
+        help="Institution key (default: cbs). Available: cbs.",
     )
     p_id.add_argument(
         "--delay", type=float, default=7.0,
@@ -1057,14 +1151,76 @@ def build_parser() -> argparse.ArgumentParser:
         help="Maximum number of papers to attempt.",
     )
     p_id.add_argument(
-        "--no-headless", action="store_true",
-        help="Show the browser window (useful for login / debugging).",
+        "--headless", action="store_true",
+        help="Run browser headless (default: visible for SSO login).",
     )
     p_id.add_argument(
         "--input-file", default=None,
         help="Override the included-papers CSV.",
     )
+    p_id.add_argument(
+        "--working-only", action="store_true",
+        help="Only attempt publishers known to work (IEEE, Springer, Wiley, ACM, Elsevier).",
+    )
     p_id.set_defaults(func=_cmd_institutional_download)
+
+    # -- download-all -------------------------------------------------------
+    p_da = sub.add_parser(
+        "download-all",
+        help="Two-stage download: open-access first, then institutional fallback.",
+    )
+    p_da.add_argument(
+        "--email", default=None,
+        help="Contact email for Unpaywall (also: UNPAYWALL_EMAIL env var).",
+    )
+    p_da.add_argument(
+        "--s2-key", default=None,
+        help="Semantic Scholar API key (also: S2_API_KEY env var).",
+    )
+    p_da.add_argument(
+        "--openalex-key", default=None,
+        help="OpenAlex API key (also: OPENALEX_API_KEY env var).",
+    )
+    p_da.add_argument(
+        "--core-key", default=None,
+        help="CORE API key (also: CORE_API_KEY env var).",
+    )
+    p_da.add_argument(
+        "--delay", type=float, default=3.5,
+        help="Seconds between API requests for OA stage (default: 3.5).",
+    )
+    p_da.add_argument(
+        "--institutional-delay", type=float, default=7.0,
+        help="Seconds between requests for institutional stage (default: 7).",
+    )
+    p_da.add_argument(
+        "--institution", default="cbs",
+        help="Institution key for Stage 2 (default: cbs).",
+    )
+    p_da.add_argument(
+        "--max-institutional", type=int, default=None,
+        help="Cap papers in institutional stage (default: all unresolved).",
+    )
+    p_da.add_argument(
+        "--skip-institutional", action="store_true",
+        help="Run only Stage 1 (open-access), skip institutional fallback.",
+    )
+    p_da.add_argument(
+        "--input-file", default=None,
+        help="Override the included-papers CSV.",
+    )
+    p_da.set_defaults(func=_cmd_download_all)
+
+    # -- clear-session ------------------------------------------------------
+    p_cs = sub.add_parser(
+        "clear-session",
+        help="Clear saved institutional login session (force re-login).",
+    )
+    p_cs.add_argument(
+        "--institution", default="cbs",
+        help="Institution key (default: cbs).",
+    )
+    p_cs.set_defaults(func=_cmd_clear_session)
 
     # -- scan-pdfs ----------------------------------------------------------
     p_sp = sub.add_parser(
@@ -1183,6 +1339,10 @@ def build_parser() -> argparse.ArgumentParser:
     p_zsr.add_argument(
         "--execute", action="store_true",
         help="Actually sync (default is dry-run).",
+    )
+    p_zsr.add_argument(
+        "--attach-pdfs", action="store_true",
+        help="Upload local PDFs as attachments to Zotero items.",
     )
     p_zsr.set_defaults(func=_cmd_zotero_sync_results)
 

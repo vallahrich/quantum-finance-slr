@@ -1,0 +1,199 @@
+{
+  "dry_run": false,
+  "created": [],
+  "updated": [
+    {
+      "paper_id": "001f5dbe487a",
+      "zotero_key": "G7XBS6VH",
+      "match_method": "doi",
+      "title": "Applications of Vedic Computing for Quantum Computing"
+    },
+    {
+      "paper_id": "0030bd185e0d",
+      "zotero_key": "8INFJQUG",
+      "match_method": "doi",
+      "title": "AI-Augmented Quantitative Finance: A Multi-Methodological Framework Combining Machine Learning, Deep Learning, and Quantum Computing for Predictive Risk Modeling"
+    },
+    {
+      "paper_id": "0067a26ce270",
+      "zotero_key": "PKBVDEQG",
+      "match_method": "title",
+      "title": "Quantum algorithm for stochastic optimal stopping problems"
+    },
+    {
+      "paper_id": "00c17032f4af",
+      "zotero_key": "4KUXNNPD",
+      "match_method": "doi",
+      "title": "Toward Quantum Enabled Solutions for Real-Time Currency Arbitrage in Financial Markets"
+    },
+    {
+      "paper_id": "00e181896bba",
+      "zotero_key": "UD5DC3DC",
+      "match_method": "doi",
+      "title": "Pioneering Quantum Computing in Financial Services"
+    },
+    {
+      "paper_id": "01326ce2213f",
+      "zotero_key": "CAR6R6HD",
+      "match_method": "title",
+      "title": "Quantum Chebyshev Transform: Mapping, Embedding, Learning and Sampling Distributions"
+    },
+    {
+      "paper_id": "01877ad38ab2",
+      "zotero_key": "HCZXBGI7",
+      "match_method": "doi",
+      "title": "Mixed Quantum-Classical Method For Fraud Detection with Quantum Feature Selection"
+    },
+    {
+      "paper_id": "01a1ecaddb94",
+      "zotero_key": "A93NBFPX",
+      "match_method": "doi",
+      "title": "Optimized Stock Price Forecasting: A Deep Learning Approach Using QCTO Based GRU Network"
+    },
+    {
+      "paper_id": "01e7ba36bcfc",
+      "zotero_key": "89DCMMXV",
+      "match_method": "doi",
+      "title": "Analysis of a hybrid quantum network for classification tasks"
+    },
+    {
+      "paper_id": "026a7b6919fc",
+      "zotero_key": "JAC2EVQN",
+      "match_method": "doi",
+      "title": "Hybrid Classical-quantum Computing: Applications to Statistical Mechanics of Financial Markets"
+    },
+    {
+      "paper_id": "02db829631f9",
+      "zotero_key": "TKU5D3F2",
+      "match_method": "doi",
+      "title": "Quantum Optimization for Portfolio Management in Financial Services Using the Variational Quantum Eigensolver (VQE) Algorithm"
+    },
+    {
+      "paper_id": "04326473e1bb",
+      "zotero_key": "WVRP2N4L",
+      "match_method": "doi",
+      "title": "Quantum Algorithms for Solving Large-Scale Optimization Problems: Challenges and Breakthroughs"
+    },
+    {
+      "paper_id": "045306ad1a16",
+      "zotero_key": "G9TRZDN9",
+      "match_method": "doi",
+      "title": "CVaR-Based Variational Quantum Optimization for User Association in Handoff-Aware Vehicular Networks"
+    },
+    {
+      "paper_id": "0525be4c60fb",
+      "zotero_key": "NVGQ9A2Y",
+      "match_method": "doi",
+      "title": "Application of quantum computing in healthcare billing - USA"
+    },
+    {
+      "paper_id": "05a01a257cc7",
+      "zotero_key": "9K4AA8U7",
+      "match_method": "title",
+      "title": "Large-scale portfolio optimization using Pauli Correlation Encoding"
+    },
+    {
+      "paper_id": "0608ad48d5b8",
+      "zotero_key": "9TQKFZ5P",
+      "match_method": "title",
+      "title": "Pricing \ufb01nancial derivatives with exponential quantum speedup"
+    },
+    {
+      "paper_id": "060ebc7a91c0",
+      "zotero_key": "KTYZS6CE",
+      "match_method": "doi",
+      "title": "Empirical Analysis of Quantum Compution using Qiskit Framework"
+    },
+    {
+      "paper_id": "06c5f405d529",
+      "zotero_key": "HBG4GERJ",
+      "match_method": "doi",
+      "title": "Quantum Computing For Health And Financial Decision-Making: Empowering Employees To Improve Life And Finance"
+    },
+    {
+      "paper_id": "06db2582a06a",
+      "zotero_key": "E38K5FG3",
+      "match_method": "doi",
+      "title": "Introduction to Quantum Computing"
+    },
+    {
+      "paper_id": "06fdf18c23c4",
+      "zotero_key": "KW5DFG94",
+      "match_method": "doi",
+      "title": "A Hybrid Quantum-Classical Model for Stock Price Prediction Using Quantum-Enhanced Long Short-Term Memory"
+    },
+    {
+      "paper_id": "0757b9aa9a3b",
+      "zotero_key": "G9WZTNPQ",
+      "match_method": "doi",
+      "title": "Parametric Quantum Feature Selection Methods for Fraud andDefault Detection"
+    },
+    {
+      "paper_id": "075a4a34de90",
+      "zotero_key": "ICZ6M2EW",
+      "match_method": "title",
+      "title": "Efficient state preparation for multivariate Monte Carlo simulation"
+    },
+    {
+      "paper_id": "076cb93860b0",
+      "zotero_key": "QHVU8X58",
+      "match_method": "title",
+      "title": "Quantum Bayesian networks with application to games displaying Parrondo's paradox"
+    },
+    {
+      "paper_id": "0801deffcfa4",
+      "zotero_key": "C39PNI9W",
+      "match_method": "doi",
+      "title": "Harnessing Quantum Computing for Predictive Analysis"
+    },
+    {
+      "paper_id": "081dbc9360d1",
+      "zotero_key": "TSCIFAH8",
+      "match_method": "doi",
+      "title": "Quantum Computing Simulated Annealing Algorithm Applying in Portfolio Optimization Problem"
+    },
+    {
+      "paper_id": "082f292f8c48",
+      "zotero_key": "39B7DQWJ",
+      "match_method": "doi",
+      "title": "Hybrid Encoding-based Quantum Self Attention for Financial Time Series Analysis"
+    },
+    {
+      "paper_id": "090ce79070cb",
+      "zotero_key": "98WXCJQV",
+      "match_method": "doi",
+      "title": "Higher-Order Portfolio Optimization with Quantum Approximate Optimization Algorithm"
+    },
+    {
+      "paper_id": "0a1f9315f6a7",
+      "zotero_key": "JI9ERBAB",
+      "match_method": "doi",
+      "title": "Quantum computing applications, challenges, and prospects in financial portfolio optimization"
+    },
+    {
+      "paper_id": "0a824fa99e38",
+      "zotero_key": "6AUTJGC4",
+      "match_method": "doi",
+      "title": "Implementing Credit Risk Analysis with Quantum Singular Value Transformation"
+    },
+    {
+      "paper_id": "0a96ec74c59f",
+      "zotero_key": "6VJV429A",
+      "match_method": "doi",
+      "title": "Parity Quantum Optimization: Benchmarks"
+    }
+  ],
+  "skipped": [],
+  "failed": [],
+  "pdfs_uploaded": [],
+  "pdfs_failed": [],
+  "summary": {
+    "total": 30,
+    "created": 0,
+    "updated": 30,
+    "skipped": 0,
+    "failed": 0,
+    "pdfs_uploaded": 0,
+    "pdfs_failed": 0
+  }
+}

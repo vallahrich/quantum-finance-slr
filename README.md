@@ -253,13 +253,13 @@ Accepted imported AI labels include:
 | Metric | Count | % |
 |--------|-------|---|
 | Papers included for coding | 858 | |
-| PDF download — success | 454 | 52.9% |
-| PDF download — failed | 184 | 21.4% |
-| No open-access source found | 220 | 25.6% |
-| PDFs on disk | 470 | |
-| Still missing | 404 | 47.1% |
+| PDF download — success | 483 | 56.3% |
+| PDF download — failed | 167 | 19.5% |
+| No open-access source found | 208 | 24.2% |
+| PDFs on disk | 499 | |
+| Still missing | 375 | 43.7% |
 
-*Status as of 2026-03-31. 21 additional PDFs recovered via Semantic Scholar title search. Use `missing_pdfs_doi_links.html` or import `missing_pdfs_zotero.ris` to retrieve remaining full texts.*
+*Status as of 2026-03-31. Three recovery rounds applied: main 7-source cascade, Semantic Scholar title search (+21), arXiv API title search (+26), duplicate copy (+2), DOI HTML scraping (+1). Remaining 375 are behind publisher paywalls (IEEE, Springer, Wiley, Elsevier) or on bot-protected repositories (SSRN, MDPI). Use institutional proxy or Zotero to retrieve.*
 
 ## Extraction Status
 

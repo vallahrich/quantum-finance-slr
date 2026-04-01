@@ -493,6 +493,135 @@ class ZoteroWriter:
         return True
 
     # ------------------------------------------------------------------
+    # PDF attachment upload
+    # ------------------------------------------------------------------
+
+    def upload_pdf(self, parent_item_key: str, pdf_path: Path) -> bool:
+        """Upload a PDF file as a child attachment to a Zotero item.
+
+        Uses the Zotero file-upload API (3-step: authorize → S3 → register).
+        Returns True on success, False on failure.
+        """
+        import hashlib
+
+        pdf_path = Path(pdf_path)
+        if not pdf_path.is_file():
+            log.warning("PDF not found: %s", pdf_path)
+            return False
+
+        file_bytes = pdf_path.read_bytes()
+        file_size = len(file_bytes)
+        md5 = hashlib.md5(file_bytes).hexdigest()
+        filename = pdf_path.name
+        mtime = int(pdf_path.stat().st_mtime * 1000)
+
+        # Step 1: Create the attachment item
+        attach_data = [{
+            "itemType": "attachment",
+            "parentItem": parent_item_key,
+            "linkMode": "imported_file",
+            "title": filename,
+            "contentType": "application/pdf",
+            "filename": filename,
+            "tags": [],
+        }]
+
+        time.sleep(_WRITE_DELAY)
+        resp = self._post("/items", attach_data)
+        result = resp.json()
+        successful = result.get("successful", result.get("success", {}))
+        if "0" not in successful:
+            failed = result.get("failed", {})
+            log.warning("Failed to create attachment item for %s: %s", filename, failed)
+            return False
+
+        obj = successful["0"]
+        attach_key = obj["key"] if isinstance(obj, dict) else obj
+
+        # Step 2: Request upload authorization
+        url = f"{self._base}/items/{attach_key}/file"
+        auth_headers = {
+            **self._headers,
+            "Content-Type": "application/x-www-form-urlencoded",
+            "If-None-Match": "*",
+        }
+        auth_body = f"md5={md5}&filename={filename}&filesize={file_size}&mtime={mtime}"
+
+        for attempt in range(3):
+            time.sleep(_WRITE_DELAY)
+            auth_resp = requests.post(
+                url, headers=auth_headers, data=auth_body, timeout=30,
+            )
+            if auth_resp.status_code == 429:
+                retry_after = int(auth_resp.headers.get("Retry-After", 5))
+                time.sleep(retry_after)
+                continue
+            if auth_resp.status_code == 200:
+                break
+            auth_resp.raise_for_status()
+        else:
+            log.warning("Upload auth failed after 3 retries for %s", filename)
+            return False
+
+        auth_data = auth_resp.json()
+
+        # If exists == 1, file already on server — just register
+        if auth_data.get("exists"):
+            log.info("File already exists on Zotero server: %s", filename)
+            return True
+
+        # Step 3: Upload to S3
+        s3_url = auth_data["url"]
+        s3_prefix = auth_data.get("prefix", "")
+        s3_suffix = auth_data.get("suffix", "")
+        s3_content_type = auth_data.get("contentType", "application/pdf")
+
+        upload_body = (
+            s3_prefix.encode("latin-1") + file_bytes + s3_suffix.encode("latin-1")
+        )
+
+        for attempt in range(3):
+            s3_resp = requests.post(
+                s3_url,
+                headers={"Content-Type": s3_content_type},
+                data=upload_body,
+                timeout=120,
+            )
+            if s3_resp.status_code in (200, 201, 204):
+                break
+            if attempt < 2:
+                time.sleep(5)
+        else:
+            log.warning("S3 upload failed for %s: %d", filename, s3_resp.status_code)
+            return False
+
+        # Step 4: Register upload with Zotero
+        upload_key = auth_data["uploadKey"]
+        reg_headers = {
+            **self._headers,
+            "Content-Type": "application/x-www-form-urlencoded",
+            "If-None-Match": "*",
+        }
+        reg_body = f"upload={upload_key}"
+
+        for attempt in range(3):
+            time.sleep(_WRITE_DELAY)
+            reg_resp = requests.post(
+                url, headers=reg_headers, data=reg_body, timeout=30,
+            )
+            if reg_resp.status_code == 429:
+                retry_after = int(reg_resp.headers.get("Retry-After", 5))
+                time.sleep(retry_after)
+                continue
+            if reg_resp.status_code == 204:
+                log.info("Uploaded PDF %s to item %s", filename, parent_item_key)
+                return True
+            reg_resp.raise_for_status()
+
+        log.warning("Upload registration failed for %s", filename)
+        return False
+
+    # ------------------------------------------------------------------
     # SLR Results Sync
     # ------------------------------------------------------------------
 
@@ -736,6 +865,7 @@ class ZoteroWriter:
         collection_name: str = "SLR Results",
         dry_run: bool = True,
         max_items: int | None = None,
+        attach_pdfs: bool = False,
     ) -> dict:
         """Sync final included SLR papers into a Zotero collection.
 
@@ -747,6 +877,8 @@ class ZoteroWriter:
             If True (default), only report what would be done.
         max_items : int | None
             Cap on papers to process (useful for testing).
+        attach_pdfs : bool
+            If True, upload local PDFs as attachments to Zotero items.
 
         Returns
         -------
@@ -759,6 +891,8 @@ class ZoteroWriter:
             "updated": [],
             "skipped": [],
             "failed": [],
+            "pdfs_uploaded": [],
+            "pdfs_failed": [],
         }
 
         # 1. Load included paper IDs
@@ -803,6 +937,25 @@ class ZoteroWriter:
             log.info("Target collection '%s' -> %s", collection_name, collection_key)
         print(f"Target collection: '{collection_name}'" +
               (f" [{collection_key}]" if collection_key else " [dry-run]"))
+
+        # 5b. Build PDF lookup: paper_id -> pdf path
+        pdf_index: dict[str, Path] = {}
+        if attach_pdfs:
+            pdfs_dir = config.FULL_TEXTS_DIR / "pdfs"
+            if pdfs_dir.is_dir():
+                for pdf_file in pdfs_dir.glob("*.pdf"):
+                    # Filenames follow pattern: {paper_id}_{title_slug}.pdf
+                    pid_part = pdf_file.stem.split("_", 1)[0]
+                    pdf_index[pid_part] = pdf_file
+            # Also check download_log for paper_id -> filename mapping
+            if config.DOWNLOAD_LOG_CSV.is_file():
+                with open(config.DOWNLOAD_LOG_CSV, encoding="utf-8", newline="") as f:
+                    for row in csv.DictReader(f):
+                        if row.get("status") == "success" and row.get("filename"):
+                            pdf_path = pdfs_dir / row["filename"]
+                            if pdf_path.is_file():
+                                pdf_index[row["paper_id"]] = pdf_path
+            print(f"  PDFs available for upload: {len(pdf_index)}")
 
         # 6. Process each paper
         for i, paper in enumerate(papers, 1):
@@ -858,6 +1011,17 @@ class ZoteroWriter:
                         "paper_id": pid, "zotero_key": zkey,
                         "match_method": match_method, "title": title,
                     })
+
+                    # Upload PDF if available
+                    if attach_pdfs and pid in pdf_index:
+                        try:
+                            if self.upload_pdf(zkey, pdf_index[pid]):
+                                report["pdfs_uploaded"].append(pid)
+                            else:
+                                report["pdfs_failed"].append(pid)
+                        except Exception as pdf_exc:
+                            log.warning("PDF upload failed for %s: %s", pid, pdf_exc)
+                            report["pdfs_failed"].append(pid)
                 except Exception as exc:
                     log.warning("Failed to update %s: %s", pid, exc)
                     report["failed"].append({
@@ -904,6 +1068,17 @@ class ZoteroWriter:
                         report["created"].append({
                             "paper_id": pid, "zotero_key": new_key, "title": title,
                         })
+
+                        # Upload PDF if available
+                        if attach_pdfs and pid in pdf_index:
+                            try:
+                                if self.upload_pdf(new_key, pdf_index[pid]):
+                                    report["pdfs_uploaded"].append(pid)
+                                else:
+                                    report["pdfs_failed"].append(pid)
+                            except Exception as pdf_exc:
+                                log.warning("PDF upload failed for %s: %s", pid, pdf_exc)
+                                report["pdfs_failed"].append(pid)
                     else:
                         failed = result.get("failed", {})
                         raise RuntimeError(f"Zotero create failed: {failed}")
@@ -920,6 +1095,8 @@ class ZoteroWriter:
             "updated": len(report["updated"]),
             "skipped": len(report["skipped"]),
             "failed": len(report["failed"]),
+            "pdfs_uploaded": len(report["pdfs_uploaded"]),
+            "pdfs_failed": len(report["pdfs_failed"]),
         }
         return report
 

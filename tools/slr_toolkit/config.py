@@ -86,6 +86,21 @@ INCLUDED_FOR_CODING   = SCREENING_DIR / "included_for_coding.csv"
 DOWNLOAD_LOG_CSV      = FULL_TEXTS_DIR / "download_log.csv"
 
 # ---------------------------------------------------------------------------
+# Institutional access (browser-based proxy downloads)
+# ---------------------------------------------------------------------------
+# Directory for persistent browser session state (cookies, storage).
+# Cleared manually to force re-authentication.
+AUTH_STATE_DIR: Path        = ROOT_DIR / ".auth"
+CBS_SESSION_STATE: Path     = AUTH_STATE_DIR / "cbs_proxy_session.json"
+
+# CBS EZProxy configuration
+CBS_PROXY_LOGIN_BASE: str   = "http://esc-web.lib.cbs.dk/login?url="
+CBS_PROXY_DOI_BASE: str     = "https://www-doi-org.esc-web.lib.cbs.dk"
+
+# Default institution for two-stage download
+DEFAULT_INSTITUTION: str    = "cbs"
+
+# ---------------------------------------------------------------------------
 # Column definitions
 # ---------------------------------------------------------------------------
 NORMALIZED_COLUMNS: list[str] = [
