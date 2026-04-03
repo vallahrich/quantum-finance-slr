@@ -769,7 +769,7 @@ Mandatory for all full-text exclusions (PRISMA 2020 §13b).
 ### Codebook
 
 Extraction fields are defined in the codebook
-(`06_extraction/extraction_template.xlsx`, Codebook sheet). Key field groups:
+(Step 2 — to be created during classification phase). Key field groups:
 
 - **Bibliographic:** paper_id, title, authors, year, venue, doi
 - **Classification:** problem_family, quantum_method, evaluation_type,

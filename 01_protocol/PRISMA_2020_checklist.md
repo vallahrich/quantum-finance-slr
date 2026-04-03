@@ -9,12 +9,12 @@ each item is addressed.
 | # | Item | Checklist text | Section/Page |
 |---|------|---------------|-------------|
 | **TITLE** | | | |
-| 1 | Title | Identify the report as a systematic review. | |
+| 1 | Title | Identify the report as a systematic review. | Thesis title page |
 | **ABSTRACT** | | | |
-| 2 | Abstract | See the PRISMA 2020 for Abstracts checklist. | |
+| 2 | Abstract | See the PRISMA 2020 for Abstracts checklist. | Thesis abstract |
 | **INTRODUCTION** | | | |
-| 3 | Rationale | Describe the rationale for the review in the context of existing knowledge. | |
-| 4 | Objectives | Provide an explicit statement of the objective(s) or question(s) the review addresses. | |
+| 3 | Rationale | Describe the rationale for the review in the context of existing knowledge. | Thesis Ch. 1; Protocol §1b |
+| 4 | Objectives | Provide an explicit statement of the objective(s) or question(s) the review addresses. | Protocol §2–§3 |
 | **METHODS** | | | |
 | 5 | Eligibility criteria | Specify the inclusion and exclusion criteria for the review and how studies were grouped for the syntheses. | Protocol §9 |
 | 6 | Information sources | Specify all databases, registers, websites, organisations, reference lists and other sources searched or consulted to identify studies. Specify the date when each source was last searched or consulted. | Protocol §6 |
@@ -33,22 +33,22 @@ each item is addressed.
 | 13f | Synthesis methods — reporting bias | Describe any methods used to assess risk of bias due to missing results in a synthesis (arising from reporting biases). | Protocol §11c |
 | 14 | Reporting bias assessment | Describe any methods used to assess risk of bias due to missing results in a synthesis (arising from reporting biases). | Protocol §11c |
 | **RESULTS** | | | |
-| 15 | Study selection | Describe the results of the search and selection process, from the number of records identified in the search to the number of studies included in the review, ideally using a flow diagram. | PRISMA flow (auto-generated) |
-| 16a | Study characteristics | Cite each included study and present its characteristics. | |
-| 16b | Risk of bias in studies | Present assessments of risk of bias for each included study. | |
-| 17 | Results of individual studies | For all outcomes, present, for each study: (a) summary statistics for each group and (b) an effect estimate and its precision. | |
-| 18 | Results of syntheses | Present results of each synthesis. | |
-| 19 | Reporting biases | Present assessments of risk of bias due to missing results for each synthesis assessed. | |
-| 20 | Certainty of evidence | Present assessments of certainty of the body of evidence for each outcome. | |
+| 15 | Study selection | Describe the results of the search and selection process, from the number of records identified in the search to the number of studies included in the review, ideally using a flow diagram. | 06_figures/fig1_prisma_flow; 02_search_logs/prisma_counts.xlsx |
+| 16a | Study characteristics | Cite each included study and present its characteristics. | 05_screening/included_for_coding.csv; 04_deduped_library/master_records.csv |
+| 16b | Risk of bias in studies | Present assessments of risk of bias for each included study. | Protocol §11 (Step 2) |
+| 17 | Results of individual studies | For all outcomes, present, for each study: (a) summary statistics for each group and (b) an effect estimate and its precision. | N/A (evidence mapping, not meta-analysis) |
+| 18 | Results of syntheses | Present results of each synthesis. | Step 2 classification outputs |
+| 19 | Reporting biases | Present assessments of risk of bias due to missing results for each synthesis assessed. | Protocol §11c (Step 2) |
+| 20 | Certainty of evidence | Present assessments of certainty of the body of evidence for each outcome. | Protocol §11b (Step 2) |
 | **DISCUSSION** | | | |
-| 21 | Discussion | Provide a general interpretation of the results in the context of other evidence. Discuss limitations of the evidence and of the review process. | |
+| 21 | Discussion | Provide a general interpretation of the results in the context of other evidence. Discuss limitations of the evidence and of the review process. | Thesis Ch. 6 Discussion |
 | 22 | Registration and protocol | Provide registration information for the review, including register name and registration number, or state that the review was not registered. Where available, provide a link to the review protocol and amendments. | Protocol §0 |
 | **OTHER INFORMATION** | | | |
-| 23 | Support | Describe sources of financial or non-financial support for the review and the role of the funders or sponsors. | |
-| 24a | Competing interests | Declare any competing interests of review authors. | |
+| 23 | Support | Describe sources of financial or non-financial support for the review and the role of the funders or sponsors. | Thesis Acknowledgements |
+| 24a | Competing interests | Declare any competing interests of review authors. | Thesis Declaration |
 | 24b | Availability of data | Report which of the following are publicly available and where they can be found: template data collection forms; data extracted from included studies; data used for all analyses; analytic code; any other materials used in the review. | GitHub repository |
-| 25 | Supplementary materials | Indicate the existence of any supplementary materials. | |
-| 26 | Funding | Identify the source of funding for the review and the role of the funder. | |
+| 25 | Supplementary materials | Indicate the existence of any supplementary materials. | This repository |
+| 26 | Funding | Identify the source of funding for the review and the role of the funder. | Thesis Acknowledgements |
 | 27 | Amendments | Report any amendments to information provided at registration or in the protocol. | 01_protocol/amendments_log.csv |
 
 ---

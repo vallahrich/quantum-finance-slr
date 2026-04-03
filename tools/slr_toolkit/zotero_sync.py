@@ -909,17 +909,6 @@ class ZoteroWriter:
                 if row["paper_id"] in included_ids:
                     master[row["paper_id"]] = row
 
-        # 3. Enrich with topic coding if available
-        if config.TOPIC_CODING_CSV.exists():
-            with open(config.TOPIC_CODING_CSV, encoding="utf-8", newline="") as f:
-                for row in csv.DictReader(f):
-                    pid = row.get("paper_id", "")
-                    if pid in master:
-                        for field in ("primary_topics", "secondary_topics",
-                                      "application_area", "method_family"):
-                            if row.get(field):
-                                master[pid][field] = row[field]
-
         papers = [master[pid] for pid in sorted(included_ids) if pid in master]
         if max_items is not None:
             papers = papers[:max_items]
@@ -1151,7 +1140,7 @@ class ZoteroWriter:
 
     def build_paper_id_bridge(
         self,
-        topic_csv_path: Path | None = None,
+        included_csv_path: Path | None = None,
         master_csv_path: Path | None = None,
         bridge_output_path: Path | None = None,
     ) -> int:
@@ -1160,13 +1149,13 @@ class ZoteroWriter:
         Reads DOIs from master_records.csv or reviewer spreadsheets.
         Queries Zotero for each DOI. Writes bridge CSV.
         """
-        if topic_csv_path is None:
-            topic_csv_path = config.TOPIC_CODING_CSV
+        if included_csv_path is None:
+            included_csv_path = config.INCLUDED_FOR_CODING
         if master_csv_path is None:
             master_csv_path = config.MASTER_RECORDS_CSV
 
-        # Collect paper_ids from topic coding
-        with open(topic_csv_path, encoding="utf-8", newline="") as f:
+        # Collect paper_ids from included papers
+        with open(included_csv_path, encoding="utf-8", newline="") as f:
             paper_ids = {
                 row["paper_id"]
                 for row in csv.DictReader(f)
@@ -1300,7 +1289,9 @@ class ZoteroWriter:
         Returns dict with counts: assigned, skipped_not_approved, skipped_no_zotero.
         """
         if tier_csv_path is None:
-            tier_csv_path = config.TIER_CLASSIFICATION_CSV
+            raise ValueError(
+                "tier_csv_path is required (Step 2 operation)."
+            )
 
         if not tier_csv_path.exists():
             raise FileNotFoundError(

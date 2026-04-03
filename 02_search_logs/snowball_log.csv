@@ -1,1 +1,2 @@
 iteration,direction,source_paper_id,candidate_title,candidate_doi,screened_decision,notes
+0,note,,,,,Snowballing deferred to Step 2 (classification phase). Per protocol §7c the start set is all included papers after full-text screening. Snowball iterations will be conducted during classification using Semantic Scholar and OpenAlex citation data.

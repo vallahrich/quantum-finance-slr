@@ -9,7 +9,7 @@ Resolution order per paper (expanded cascade):
   6. Unpaywall   — free OA copy lookup by DOI (requires email for polite pool)
   7. CrossRef    — publisher ``link[]`` array with PDF URLs
 
-Results are written to ``08_full_texts/pdfs/`` with a CSV log tracking
+Results are written to ``07_full_texts/pdfs/`` with a CSV log tracking
 every attempt so the process is fully resumable.
 """
 

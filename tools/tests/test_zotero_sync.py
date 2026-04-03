@@ -292,8 +292,7 @@ class TestSyncDryRun:
         with patch.object(type(writer), '_build_zotero_index',
                           return_value=({}, {}, {}, {})):
             with patch("tools.slr_toolkit.config.INCLUDED_FOR_CODING", included_csv), \
-                 patch("tools.slr_toolkit.config.MASTER_RECORDS_CSV", master_csv), \
-                 patch("tools.slr_toolkit.config.TOPIC_CODING_CSV", tmp_path / "nonexistent.csv"):
+                 patch("tools.slr_toolkit.config.MASTER_RECORDS_CSV", master_csv):
 
                 report = writer.sync_slr_results(dry_run=True, max_items=5)
 

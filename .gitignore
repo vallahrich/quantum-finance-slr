@@ -59,6 +59,5 @@ desktop.ini
 .ipynb_checkpoints/
 
 # PDFs (large, stored in Zotero)
-08_full_texts/pdfs/
-08_full_texts/downloadedpdf/
-08_full_texts/_compressed/
+07_full_texts/pdfs/
+07_full_texts/_compressed/

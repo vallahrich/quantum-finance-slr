@@ -1,7 +1,7 @@
 """Import PDFs downloaded via Zotero into the SLR pipeline.
 
 Scans a user-specified directory for PDFs, matches them to paper_ids
-via DOI or fuzzy title matching, copies them to ``08_full_texts/pdfs/``
+via DOI or fuzzy title matching, copies them to ``07_full_texts/pdfs/``
 with the correct naming convention, and updates ``download_log.csv``.
 """
 

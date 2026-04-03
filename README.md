@@ -1,9 +1,6 @@
 # Quantum-Finance SLR Toolkit
 
-A reproducible, local-first toolkit for running a systematic literature review (SLR) on **gate-based quantum computing in finance**, with tiered extraction for evidence mapping and practical advantage assessment.
-
-- **Tier 1** extraction (all included papers): evidence mapping across problem families, quantum methods, evaluation approaches, and maturity.
-- **Tier 2** extraction (quantitative subset): practical advantage assessment using the Hoefler et al. (2023) framework.
+Reproducible, local-first toolkit for conducting a **systematic literature review (SLR)** on gate-based quantum computing in finance. This repository delivers a complete **Step 1** (search, screening, PDF retrieval) for handoff to Step 2 (classification and analysis).
 
 ## Scope
 
@@ -13,35 +10,39 @@ A reproducible, local-first toolkit for running a systematic literature review (
 | Databases | Scopus, OpenAlex, arXiv, Semantic Scholar |
 | Includes | Preprints, NISQ, and fault-tolerant studies |
 | Time window | 2016-01-01 – 2026-03-14 |
-| Advantage framework | Tier-1 evidence mapping + Tier-2 Hoefler advantage assessment |
+| Search date | Final run: 2026-03-14 (v5) |
 
 ## Results Summary
 
 | Stage | Count |
 |-------|-------|
 | Records identified | 6,232 |
-| Duplicates removed | 3,239 |
-| Unique records screened (title/abstract) | 2,993 |
-| Included after screening | 858 (28.7%) |
-| Topic coding completed | 585 |
-| Tier classification completed | 585 |
+| Duplicates removed | 3,222 |
+| Unique records screened (title/abstract) | 3,010 |
+| Excluded at title/abstract | 2,135 |
+| **Included after screening** | **875** |
+| Full-text PDFs retrieved | 713 (81.5%) |
+| PDFs still missing | 162 (18.5%) |
 
-**Calibration**: Cohen's κ = 0.849 (threshold ≥ 0.70). See [calibration_log.md](05_screening/calibration_log.md).
+**Calibration**: Cohen’s κ = 0.849 (threshold ≥ 0.70). See [calibration_log.md](05_screening/calibration_log.md).
+
+**AI safety net**: 184 papers flagged by AI screening; 144 rescued (included after re-review).
 
 ### Exclusion Reasons (Title/Abstract)
 
 | Code | Count | Description |
 |------|-------|-------------|
-| EX-NONFIN | 1,014 | Not a finance application |
-| EX-NOMETHOD | 667 | Survey/review, no original method |
-| EX-TOOSHORT | 312 | Insufficient methodological detail |
-| EX-PARADIGM | 284 | Annealing only / quantum-inspired |
-| EX-OTHER | 76 | Miscellaneous |
+| EX-NONFIN | 901 | Not a finance application |
+| EX-NOMETHOD | 557 | Survey/review, no original method |
+| EX-TOOSHORT | 258 | Insufficient methodological detail |
+| EX-PARADIGM | 234 | Annealing only / quantum-inspired |
+| EX-REVERSED | 106 | Excluded after inter-rater discrepancy review |
+| EX-OTHER | 73 | Miscellaneous |
 | EX-NOTEN | 6 | Non-English |
 
 ### Figures
 
-All figures are in [`07_figures/`](07_figures/) and can be regenerated via `python generate_figures.py`:
+All figures are in [`06_figures/`](06_figures/) and can be regenerated via `python generate_figures.py`:
 
 | Figure | Description |
 |--------|-------------|
@@ -49,10 +50,6 @@ All figures are in [`07_figures/`](07_figures/) and can be regenerated via `pyth
 | `fig2_year_distribution` | Records by publication year (2016–2026) |
 | `fig3_source_distribution` | Records by source database |
 | `fig4_exclusion_reasons` | Screening exclusion reason breakdown |
-| `fig5_topic_distribution` | Primary application topics |
-| `fig6_method_families` | Quantum method families |
-| `fig7_evaluation_types` | Evaluation approach distribution |
-| `fig8_year_topic_heatmap` | Application topics × year heatmap |
 
 ## Folder Structure
 
@@ -61,13 +58,10 @@ quantum-finance-slr/
 ├── 01_protocol/           Protocol, amendments log, PRISMA checklists
 ├── 02_search_logs/        PRISMA-S search log, benchmark check, snowball log
 ├── 03_raw_exports/        Raw API search results per source (v5 = final run)
-│   └── _deprecated_noisy/ Earlier search iterations (v1–v4) retained for audit
 ├── 04_deduped_library/    Deduplicated master_records.csv + master_library.bib
 ├── 05_screening/          Screening workbooks, AI decisions, calibration
-├── 06_extraction/         Data extraction, topic coding, codebook, taxonomy
-├── 07_figures/            Generated figures (PNG + PDF)
-├── 08_full_texts/         PDF storage and download log
-├── _archive/              Archived one-off utility scripts
+├── 06_figures/            Generated figures (PNG + PDF)
+├── 07_full_texts/         PDF storage and download log
 ├── tools/
 │   ├── slr_toolkit/       Core Python package (CLI, search, dedup, screening, LLM)
 │   └── tests/             pytest test suite
@@ -129,17 +123,27 @@ python -m tools.slr_toolkit.cli llm-screen
 python -m tools.slr_toolkit.cli prisma
 ```
 
-### 5. Topic coding & extraction
-
-```bash
-python -m tools.slr_toolkit.cli topic-code
-```
-
-### 6. Generate figures
+### 5. Generate figures
 
 ```bash
 python generate_figures.py
 ```
+
+## What’s Next (Step 2 — Classification)
+
+This repository delivers Step 1 of the thesis workflow. The handoff to Step 2 includes:
+
+- **875 included papers** in `05_screening/included_for_coding.csv`
+- **713 full-text PDFs** in `07_full_texts/pdfs/` and Zotero
+- **162 missing PDFs** listed in `07_full_texts/missing_pdfs.csv` — behind publisher paywalls; manual download needed
+- **Master library** in `04_deduped_library/master_records.csv` with metadata
+- **Screening audit trail** — AI decisions, discrepancy review, calibration log, prompt logs
+
+Step 2 tasks (not in scope for this repository):
+- Topic coding and tier classification
+- Snowballing (protocol §7c) using included papers as start set
+- Tiered extraction (Tier 1 evidence mapping, Tier 2 Hoefler advantage assessment)
+- Quality appraisal and synthesis
 
 ## AI / LLM Configuration
 
@@ -155,7 +159,7 @@ The toolkit uses Azure OpenAI via the `openai` SDK with structured JSON output (
 
 **Screening model**: `gpt-5-mini` (production run). Models evaluated: `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini`, `gpt-5-mini`.
 
-Audit trails: `llm_screening_prompt_log.jsonl` (screening) and `topic_coding_prompt_log.jsonl` (topic coding).
+Audit trail: `05_screening/llm_screening_prompt_log.jsonl`.
 
 ## Running Tests
 
@@ -163,7 +167,7 @@ Audit trails: `llm_screening_prompt_log.jsonl` (screening) and `topic_coding_pro
 pytest tools/tests -v
 ```
 
-Covers: Azure OpenAI endpoints, deduplication, ingestion (RIS/BibTeX/CSV), query builders, LLM screening, topic coding, shared utilities.
+Covers: Azure OpenAI endpoints, deduplication, ingestion (RIS/BibTeX/CSV), query builders, LLM screening, shared utilities.
 
 ## Methodological Frameworks
 

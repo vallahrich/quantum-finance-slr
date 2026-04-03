@@ -60,13 +60,7 @@ python -m tools.slr_toolkit.cli ai-validation
 python -m tools.slr_toolkit.cli fn-audit
 ```
 
-### 6. Topic Coding
-
-```bash
-python -m tools.slr_toolkit.cli topic-code
-```
-
-### 7. PRISMA Counts & Figures
+### 6. PRISMA Counts & Figures
 
 ```bash
 python -m tools.slr_toolkit.cli prisma
@@ -88,17 +82,15 @@ pytest tools/tests -v
 | Master library | `04_deduped_library/` | Yes |
 | PRISMA counts | `02_search_logs/prisma_counts.xlsx` | Yes |
 | Search log | `02_search_logs/search_log.xlsx` | Yes |
-| Figures | `07_figures/` | Yes |
+| Figures | `06_figures/` | Yes |
 | Protocol and amendments | `01_protocol/` | No |
 | Screening decisions | `05_screening/` | Mixed |
-| Extraction outputs | `06_extraction/` | Mixed |
 
 ## Reproducibility Notes
 
 - Raw exports and screening artifacts are kept for auditability.
-- LLM prompt logs (`llm_screening_prompt_log.jsonl`, `topic_coding_prompt_log.jsonl`) provide full audit trails.
-- Earlier search iterations (v1–v4) are in `03_raw_exports/_deprecated_noisy/` for reference.
-- One-off utility scripts used during development are archived in `_archive/`.
+- LLM prompt log (`05_screening/llm_screening_prompt_log.jsonl`) provides a full audit trail.
+- Earlier search iterations (v1–v4) were discarded to keep the repo clean; only v5 (final) is retained.
 
 ## Azure OpenAI Configuration
 

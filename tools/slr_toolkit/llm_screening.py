@@ -32,9 +32,7 @@ from .utils import atomic_write_text, ensure_dir, load_master_records, safe_floa
 
 log = logging.getLogger(__name__)
 
-# Backward-compat aliases used by topic_coding
-_AzureAPIError = AzureAPIError
-_get_azure_ad_token = get_azure_ad_token
+_safe_float = safe_float
 
 # ── Azure OpenAI pricing (USD per 1 K tokens) ───────────────────────────
 # Default: gpt-5-mini pricing as of 2026-03-14. Adjust these for your deployment.
@@ -107,13 +105,6 @@ SCREENING_RESPONSE_SCHEMA: dict = {
 def _build_user_prompt(title: str, abstract: str, paper_id: str) -> str:
     abstract_text = abstract.strip() if abstract.strip() else "(no abstract available)"
     return f"Paper ID: {paper_id}\nTitle: {title}\nAbstract: {abstract_text}"
-
-
-# Backward-compat aliases for topic_coding imports
-_build_url = None  # no longer used; topic_coding will be updated
-_call_azure_openai = None  # no longer used
-_extract_message_content = None  # no longer used
-_safe_float = safe_float
 
 
 def _normalize_reason_code(value: object, decision: str) -> str:

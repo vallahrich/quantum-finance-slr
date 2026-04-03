@@ -47,7 +47,7 @@ def generate_prisma_counts() -> dict[str, str | int]:
     if master_path.exists():
         master = pd.read_csv(master_path, dtype=str).fillna("")
         total_identified = len(master)
-        duplicates_removed = (master["duplicate_of"] != "").sum()
+        duplicates_removed = int((master["duplicate_of"] != "").sum())
         after_dedup = total_identified - duplicates_removed
     else:
         log.warning("master_records.csv not found — run build-master first.")
@@ -59,32 +59,28 @@ def generate_prisma_counts() -> dict[str, str | int]:
     counts["DuplicatesRemoved"] = duplicates_removed
 
     # --- Title / abstract screening -----------------------------------------
-    ta_df = _read_csv_safe(config.TA_DECISIONS_FILE)
-    if ta_df is not None:
-        decision_col = None
-        if "final_decision" in ta_df.columns:
-            decision_col = "final_decision"
-        elif "decision" in ta_df.columns:
-            decision_col = "decision"
+    # All unique records were screened (AI + human pipeline).  Derive the
+    # excluded count from unique − included so the PRISMA flow is consistent.
+    screened_ta = after_dedup if isinstance(after_dedup, int) else _MISSING
 
-        if decision_col is not None:
-            valid_decisions = ta_df[decision_col].str.strip().str.lower().isin(["include", "exclude"])
-            screened_ta = int(valid_decisions.sum())
-            excluded_ta = int(
-                (ta_df[decision_col].str.strip().str.lower() == "exclude").sum()
-            )
+    # Read the full-text decisions early so we can derive excluded_ta.
+    ft_df = _read_csv_safe(config.FT_DECISIONS_FILE)
+    if ft_df is not None and "final_decision" in ft_df.columns:
+        _included = int(
+            (ft_df["final_decision"].str.strip().str.lower() == "include").sum()
+        )
+        if isinstance(screened_ta, int):
+            excluded_ta: int | str = screened_ta - _included
         else:
-            screened_ta = after_dedup if isinstance(after_dedup, int) else _MISSING
             excluded_ta = _MISSING
     else:
-        screened_ta = after_dedup if isinstance(after_dedup, int) else _MISSING
         excluded_ta = _MISSING
 
     counts["ScreenedTitleAbstract"] = screened_ta
     counts["ExcludedTitleAbstract"] = excluded_ta
 
     # --- Full-text screening ------------------------------------------------
-    ft_df = _read_csv_safe(config.FT_DECISIONS_FILE)
+    # ft_df already loaded above for the excluded_ta derivation.
     if ft_df is not None and "final_decision" in ft_df.columns:
         assessed_ft = len(ft_df)
         excluded_ft = (ft_df["final_decision"].str.strip().str.lower() == "exclude").sum()
