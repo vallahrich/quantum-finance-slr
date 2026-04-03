@@ -1,6 +1,6 @@
-# Contributing and Reproducibility Guide
+# Reproducibility Guide
 
-This document explains how to reproduce the SLR pipeline from search through PRISMA reporting. It is written for thesis examiners, collaborators, and future maintainers.
+How to reproduce the SLR pipeline from search through synthesis. Written for thesis examiners, collaborators, and future maintainers.
 
 ## Environment Setup
 
@@ -12,92 +12,46 @@ python -m venv .venv
 pip install -e ".[dev]"
 ```
 
-Optional AI / ASReview dependencies for the legacy ASReview path:
+Python 3.11+ required.
 
-```bash
-pip install -e ".[ai]"
-```
+## Pipeline Steps
 
-## Running the Pipeline
-
-### Step 1: API Search
+### 1. API Search
 
 ```bash
 python -m tools.slr_toolkit.cli auto-search \
     --query '"quantum computing" AND "finance"' \
-    --from-year 2016 \
-    --max-results 500
+    --from-year 2016
 ```
 
 For Scopus, add `--sources scopus --api-key YOUR_KEY`.
 
-### Step 2: Build the Master Library
+### 2. Build Master Library
 
 ```bash
 python -m tools.slr_toolkit.cli build-master
 ```
 
-This produces `04_deduped_library/master_records.csv` and `04_deduped_library/master_library.bib`.
+Produces `04_deduped_library/master_records.csv` and `master_library.bib`.
 
-### Step 3: Human Screening
-
-Generate workbooks:
+### 3. Human Screening
 
 ```bash
 python -m tools.slr_toolkit.cli generate-screening --seed 42 --validation-size 100
-```
-
-Compute agreement:
-
-```bash
 python -m tools.slr_toolkit.cli compute-kappa
 ```
 
-Proceed once Cohen's kappa is at least `0.70`.
+Proceed once Cohen's κ ≥ 0.70.
 
-### Step 3b: AI-Assisted Screening
-
-The current production workflow uses Azure OpenAI LLM screening. The
-ASReview path remains in the repo as a legacy / experimental option.
-
-ASReview path:
+### 4. LLM-Assisted Screening
 
 ```bash
-python -m tools.slr_toolkit.cli export-asreview
-python -m tools.slr_toolkit.cli run-asreview
-```
-
-LLM path:
-
-```bash
-python -m tools.slr_toolkit.cli llm-screen --dry-run
 python -m tools.slr_toolkit.cli llm-screen
 ```
 
-Notes:
+Production run used `gpt-5-mini` via Azure OpenAI Responses API. Audit log: `05_screening/llm_screening_prompt_log.jsonl`.
 
-- `llm-screen` supports `--api-key` / `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
-- The repo's current screening cost assumptions are based on `gpt-5-mini`.
-- The completed repository screening run used `gpt-5-mini` via the OpenAI Responses API.
-- Models trialed during evaluation included `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini`, and `gpt-5-mini`.
-- `llm-screen` writes resumable state to `05_screening/llm_screening_checkpoint.json`.
-- `llm-screen` writes audit logs to `05_screening/llm_screening_prompt_log.jsonl`.
-
-Import AI decisions from an external tool:
-
-```bash
-python -m tools.slr_toolkit.cli import-ai-decisions --file <export.csv>
-```
-
-Supported imported label formats include:
-
-- `1` / `0`
-- `true` / `false`
-- `yes` / `no`
-- `include` / `exclude`
-- `relevant` / `irrelevant`
-
-After human screening, merge and review:
+### 5. Discrepancy Resolution
 
 ```bash
 python -m tools.slr_toolkit.cli merge-screening
@@ -106,24 +60,17 @@ python -m tools.slr_toolkit.cli ai-validation
 python -m tools.slr_toolkit.cli fn-audit
 ```
 
-### Step 4: Full-Text Decisions and Topic Coding
-
-Create and populate `05_screening/full_text_decisions.csv` from the template, then run:
+### 6. Topic Coding
 
 ```bash
 python -m tools.slr_toolkit.cli topic-code
 ```
 
-If you are still working from an interim include list, use:
-
-```bash
-python -m tools.slr_toolkit.cli topic-code --input-file 05_screening/included_for_coding.csv
-```
-
-### Step 5: PRISMA Counts
+### 7. PRISMA Counts & Figures
 
 ```bash
 python -m tools.slr_toolkit.cli prisma
+python generate_figures.py
 ```
 
 ## Tests
@@ -141,33 +88,27 @@ pytest tools/tests -v
 | Master library | `04_deduped_library/` | Yes |
 | PRISMA counts | `02_search_logs/prisma_counts.xlsx` | Yes |
 | Search log | `02_search_logs/search_log.xlsx` | Yes |
+| Figures | `07_figures/` | Yes |
 | Protocol and amendments | `01_protocol/` | No |
 | Screening decisions | `05_screening/` | Mixed |
 | Extraction outputs | `06_extraction/` | Mixed |
 
 ## Reproducibility Notes
 
-- Raw exports and screening artifacts are intentionally kept in the repository for auditability.
-- Generated AI logs and checkpoints are useful for traceability but may be regenerated if you restart a run.
-- Prefer non-destructive updates to screening and extraction outputs so the review trail remains inspectable.
+- Raw exports and screening artifacts are kept for auditability.
+- LLM prompt logs (`llm_screening_prompt_log.jsonl`, `topic_coding_prompt_log.jsonl`) provide full audit trails.
+- Earlier search iterations (v1–v4) are in `03_raw_exports/_deprecated_noisy/` for reference.
+- One-off utility scripts used during development are archived in `_archive/`.
 
 ## Azure OpenAI Configuration
 
-The toolkit uses the official `openai` SDK with the OpenAI Responses API.
+See [.env.example](.env.example) for required environment variables:
 
-**Required** (env vars or CLI flags):
-
-| Variable | CLI Flag | Example |
-|----------|----------|---------|
-| `AZURE_OPENAI_ENDPOINT` | `--endpoint` | `https://qfre-openai.openai.azure.com` |
-| `AZURE_OPENAI_DEPLOYMENT` | `--deployment` | `gpt-5-mini` |
-| `AZURE_OPENAI_API_KEY` | `--api-key` | *(or use `az login` for keyless auth)* |
-
-Smoke test:
-
-```bash
-python -m tools.slr_toolkit.smoke_test --endpoint https://qfre-openai.openai.azure.com --deployment gpt-5-mini
-```
+| Variable | Description |
+|----------|-------------|
+| `AZURE_OPENAI_ENDPOINT` | Azure resource URL |
+| `AZURE_OPENAI_DEPLOYMENT` | Deployment name (e.g. `gpt-5-mini`) |
+| `AZURE_OPENAI_API_KEY` | API key (or use `az login` for keyless auth) |
 
 See [.env.example](.env.example) for a template.
 

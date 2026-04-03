@@ -1,240 +1,34 @@
 # Quantum-Finance SLR Toolkit
 
-A reproducible, local-first toolkit for running a systematic literature review (SLR) on gate-based quantum computing in finance, with tiered extraction for evidence mapping and practical advantage assessment.
+A reproducible, local-first toolkit for running a systematic literature review (SLR) on **gate-based quantum computing in finance**, with tiered extraction for evidence mapping and practical advantage assessment.
 
-- Tier 1 extraction (all papers): evidence mapping across problem families, quantum methods, evaluation approaches, and maturity.
-- Tier 2 extraction (quantitative papers): practical advantage assessment using the Hoefler et al. (2023) framework.
+- **Tier 1** extraction (all included papers): evidence mapping across problem families, quantum methods, evaluation approaches, and maturity.
+- **Tier 2** extraction (quantitative subset): practical advantage assessment using the Hoefler et al. (2023) framework.
 
 ## Scope
 
 | Dimension | Value |
 |-----------|-------|
 | Domain | Gate-based quantum computing in finance |
-| Research context | Phase 1a — see [Project Overview](../PROJECT_OVERVIEW.md) |
 | Databases | Scopus, OpenAlex, arXiv, Semantic Scholar |
 | Includes | Preprints, NISQ, and fault-tolerant studies |
-| Time window | 2016-01-01 to present |
-| Advantage framework | Tier-1 crossover target plus Tier-2 finance SLA reality check |
-| Protocol registration | Pending OSF registration update |
+| Time window | 2016-01-01 – 2026-03-14 |
+| Advantage framework | Tier-1 evidence mapping + Tier-2 Hoefler advantage assessment |
 
-## Setup
+## Results Summary
 
-```bash
-cd quantum-finance-slr
-python -m venv .venv
-.venv\Scripts\activate
-pip install -e ".[dev]"
-```
+| Stage | Count |
+|-------|-------|
+| Records identified | 6,232 |
+| Duplicates removed | 3,239 |
+| Unique records screened (title/abstract) | 2,993 |
+| Included after screening | 858 (28.7%) |
+| Topic coding completed | 585 |
+| Tier classification completed | 585 |
 
-Python 3.11+ is required.
+**Calibration**: Cohen's κ = 0.849 (threshold ≥ 0.70). See [calibration_log.md](05_screening/calibration_log.md).
 
-## Quick Start
-
-### 1. Initialize the repo structure
-
-```bash
-python -m tools.slr_toolkit.cli init
-```
-
-Creates the numbered folders and template files. The command is idempotent and will not overwrite templates unless you pass `--force`.
-
-### 2. Create a search run
-
-```bash
-python -m tools.slr_toolkit.cli new-search-run --source scopus --date 2026-03-08
-```
-
-This creates `03_raw_exports/2026-03-08_scopus/` and appends a metadata row to `02_search_logs/search_log.xlsx`.
-
-### 3. Ingest exports
-
-```bash
-python -m tools.slr_toolkit.cli ingest --run-folder 03_raw_exports/2026-03-08_scopus
-```
-
-Reads all `.ris`, `.bib`, and `.csv` files in the folder, normalizes them into the project schema, and writes `normalized_records.csv`.
-
-### 4. Build the master library
-
-```bash
-python -m tools.slr_toolkit.cli build-master
-```
-
-Scans run folders, concatenates normalized records, deduplicates them, and writes:
-
-- `04_deduped_library/master_records.csv`
-- `04_deduped_library/master_library.bib`
-
-The dedup step also assigns `version_group_id` values to connect preprint and peer-reviewed versions of the same work.
-
-### 5. Run automated API search
-
-```bash
-python -m tools.slr_toolkit.cli auto-search \
-    --query '"quantum computing" AND "finance"' \
-    --from-year 2016 \
-    --max-results 500
-```
-
-This automatically:
-
-- queries each selected API
-- creates a dated run folder per source
-- saves raw JSON for provenance
-- saves normalized CSV for the ingest pipeline
-- logs each run in `02_search_logs/search_log.xlsx`
-
-Available sources:
-
-| Source | Auth | Notes |
-|--------|------|-------|
-| `openalex` | Free | Best general source, supports concept filters |
-| `arxiv` | Free | Preprints only |
-| `semantic_scholar` | Free | Good for citations and forward snowballing |
-| `scopus` | API key | Requires Elsevier access |
-
-### 6. Generate PRISMA counts
-
-```bash
-python -m tools.slr_toolkit.cli prisma
-```
-
-Outputs `02_search_logs/prisma_counts.xlsx` with flow counts, exclusion-reason breakdowns, and calibration metrics when available.
-
-## Folder Structure
-
-```text
-quantum-finance-slr/
-|-- 01_protocol/           # Study protocol, amendments, PRISMA checklists
-|-- 02_search_logs/         # PRISMA-S search log, benchmark check, snowball log
-|-- 03_raw_exports/         # Raw API search results per source
-|-- 04_deduped_library/     # Deduplicated master_records.csv + master_library.bib
-|-- 05_screening/           # Screening workbooks, AI decisions, calibration log
-|   |-- calibration_screening.xlsx
-|   |-- validation_screening.xlsx
-|   |-- screening_reviewer_A.xlsx
-|   |-- screening_reviewer_B.xlsx
-|   |-- ai_screening_decisions.csv
-|   |-- llm_screening_checkpoint.json
-|   `-- llm_screening_prompt_log.jsonl
-|-- 06_extraction/          # Data extraction, topic coding, codebook
-|   |-- extraction_template.xlsx
-|   |-- codebook.md
-|   |-- topic_taxonomy.md
-|   |-- topic_coding.csv
-|   `-- topic_coding_summary.md
-|-- 07_figures/             # Output figures
-|-- .env.example            # Environment variable template
-`-- tools/
-    |-- slr_toolkit/        # Core Python package
-    |   |-- azure_client.py # Azure OpenAI SDK client
-    |   |-- cli.py          # CLI entry point
-    |   |-- llm_screening.py
-    |   |-- topic_coding.py
-    |   `-- ...             # config, dedup, ingest, screening, etc.
-    `-- tests/              # pytest test suite
-```
-
-## Screening Workflow
-
-1. Generate screening workbooks:
-
-```bash
-python -m tools.slr_toolkit.cli generate-screening --seed 42 --validation-size 100
-```
-
-This produces calibration, validation, and split-reviewer Excel files.
-
-2. Compute calibration agreement:
-
-```bash
-python -m tools.slr_toolkit.cli compute-kappa
-```
-
-3. Complete split human screening.
-
-4. Optionally run the AI safety-net workflow:
-
-- Preferred current workflow: `llm-screen`
-- Legacy / experimental workflow: `export-asreview` then `run-asreview`
-- `merge-screening`
-- `ai-discrepancies`
-- `ai-validation`
-- `fn-audit`
-
-5. Create and complete `05_screening/full_text_decisions.csv` from the template with final decisions, exclusion reasons, and `tier2_applicable`.
-
-6. Run topic coding for included studies:
-
-```bash
-python -m tools.slr_toolkit.cli topic-code
-python -m tools.slr_toolkit.cli topic-code --dry-run
-python -m tools.slr_toolkit.cli topic-code --max-records 25
-python -m tools.slr_toolkit.cli topic-code --input-file 05_screening/included_for_coding.csv
-```
-
-Use `--input-file 05_screening/included_for_coding.csv` when you have an interim include list but have not finalized `05_screening/full_text_decisions.csv` yet.
-
-## AI / LLM Notes
-
-### Azure OpenAI Setup
-
-The toolkit connects to Azure OpenAI via the official `openai` SDK using the
-v1-compatible endpoint pattern (`/openai/v1/`).
-
-**Required environment variables** (or CLI flags):
-
-| Variable | CLI Flag | Description |
-|----------|----------|-------------|
-| `AZURE_OPENAI_ENDPOINT` | `--endpoint` | Azure resource URL, e.g. `https://myresource.openai.azure.com` |
-| `AZURE_OPENAI_DEPLOYMENT` | `--deployment` | Deployment name, e.g. `gpt-5-mini` |
-| `AZURE_OPENAI_API_KEY` | `--api-key` | API key *(or use `az login` for keyless auth)* |
-
-See [.env.example](.env.example) for a template.
-
-**Authentication options:**
-1. **API key**: set `AZURE_OPENAI_API_KEY` or pass `--api-key`
-2. **Azure AD (keyless)**: run `az login` — no API key needed
-
-**Smoke test** — verify your deployment works:
-
-```bash
-python -m tools.slr_toolkit.smoke_test \
-    --endpoint "https://myresource.openai.azure.com" \
-    --deployment gpt-5-mini
-```
-
-### Model Notes
-
-- `llm-screen` and `topic-code` support either `--api-key` / `AZURE_OPENAI_API_KEY` or keyless Azure AD auth via `az login`.
-- The toolkit uses the OpenAI **Responses API** (`/openai/v1/responses`) with structured JSON output for reliable results.
-- The toolkit's current screening cost assumptions in code are based on `gpt-5-mini`.
-- The completed repository screening run was performed with `gpt-5-mini`.
-- Models trialed during evaluation included `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini`, and `gpt-5-mini`.
-- `llm-screen` writes resumable progress to `05_screening/llm_screening_checkpoint.json`.
-- `llm-screen` writes a per-record audit log to `05_screening/llm_screening_prompt_log.jsonl`.
-- `import-ai-decisions` validates imported labels instead of silently treating unknown values as excludes.
-
-Accepted imported AI labels include:
-
-- `1` / `0`
-- `true` / `false`
-- `yes` / `no`
-- `include` / `exclude`
-- `relevant` / `irrelevant`
-
-## Current Screening Results (gpt-5-mini)
-
-| Metric | Count | % |
-|--------|-------|---|
-| Total unique records | 6,232 ingested, 3,239 duplicates removed | |
-| **Screened** | **2,993** | 100% |
-| Include | 858 | 28.7% |
-| Exclude | 2,136 | 71.3% |
-
-*17 preprint/published duplicate pairs merged on 2026-03-31.*
-
-**Top exclusion reasons:**
+### Exclusion Reasons (Title/Abstract)
 
 | Code | Count | Description |
 |------|-------|-------------|
@@ -244,44 +38,124 @@ Accepted imported AI labels include:
 | EX-PARADIGM | 284 | Annealing only / quantum-inspired |
 | EX-OTHER | 76 | Miscellaneous |
 | EX-NOTEN | 6 | Non-English |
-| duplicate | 17 | Preprint/published pairs merged post-screening |
 
-**Calibration**: Cohen's kappa = 0.849 (PASS, threshold 0.70). See [calibration_log.md](05_screening/calibration_log.md).
+### Figures
 
-## Full-Text Retrieval Status
+All figures are in [`07_figures/`](07_figures/) and can be regenerated via `python generate_figures.py`:
 
-| Metric | Count | % |
-|--------|-------|---|
-| Papers included for coding | 858 | |
-| PDF download — success | 483 | 56.3% |
-| PDF download — failed | 167 | 19.5% |
-| No open-access source found | 208 | 24.2% |
-| PDFs on disk | 499 | |
-| Still missing | 375 | 43.7% |
+| Figure | Description |
+|--------|-------------|
+| `fig1_prisma_flow` | PRISMA 2020 flow diagram |
+| `fig2_year_distribution` | Records by publication year (2016–2026) |
+| `fig3_source_distribution` | Records by source database |
+| `fig4_exclusion_reasons` | Screening exclusion reason breakdown |
+| `fig5_topic_distribution` | Primary application topics |
+| `fig6_method_families` | Quantum method families |
+| `fig7_evaluation_types` | Evaluation approach distribution |
+| `fig8_year_topic_heatmap` | Application topics × year heatmap |
 
-*Status as of 2026-03-31. Three recovery rounds applied: main 7-source cascade, Semantic Scholar title search (+21), arXiv API title search (+26), duplicate copy (+2), DOI HTML scraping (+1). Remaining 375 are behind publisher paywalls (IEEE, Springer, Wiley, Elsevier) or on bot-protected repositories (SSRN, MDPI). Use institutional proxy or Zotero to retrieve.*
+## Folder Structure
 
-## Extraction Status
+```text
+quantum-finance-slr/
+├── 01_protocol/           Protocol, amendments log, PRISMA checklists
+├── 02_search_logs/        PRISMA-S search log, benchmark check, snowball log
+├── 03_raw_exports/        Raw API search results per source (v5 = final run)
+│   └── _deprecated_noisy/ Earlier search iterations (v1–v4) retained for audit
+├── 04_deduped_library/    Deduplicated master_records.csv + master_library.bib
+├── 05_screening/          Screening workbooks, AI decisions, calibration
+├── 06_extraction/         Data extraction, topic coding, codebook, taxonomy
+├── 07_figures/            Generated figures (PNG + PDF)
+├── 08_full_texts/         PDF storage and download log
+├── _archive/              Archived one-off utility scripts
+├── tools/
+│   ├── slr_toolkit/       Core Python package (CLI, search, dedup, screening, LLM)
+│   └── tests/             pytest test suite
+├── generate_figures.py    Figure generation script
+├── run_search.py          Main search runner
+├── run_benchmark_check.py Benchmark sensitivity verification
+└── pyproject.toml         Package configuration
+```
 
-| Metric | Count |
-|--------|-------|
-| Topic coding completed | 585 / 858 |
-| Tier classification completed | 585 / 858 |
+## Setup
 
-## How PRISMA Counts Are Computed
+```bash
+cd quantum-finance-slr
+python -m venv .venv
+.venv\Scripts\activate        # Windows
+pip install -e ".[dev]"
+```
 
-| Metric | Source |
-|--------|--------|
-| `Identified` | Total rows in `master_records.csv` |
-| `DuplicatesRemoved` | Rows where `duplicate_of` is non-empty |
-| `ScreenedTitleAbstract` | Title/abstract decision file when a finalized screening-decision column is present |
-| `ExcludedTitleAbstract` | Finalized title/abstract exclusions when available |
-| `FullTextAssessed` | Rows in `full_text_decisions.csv` once that file has been created |
-| `ExcludedFullText` | Rows with `final_decision == 'exclude'` in `full_text_decisions.csv` |
-| `IncludedTotal` | Rows with `final_decision == 'include'` in `full_text_decisions.csv` |
-| `Tier2Applicable` | Included rows with `tier2_applicable == 'yes'` in `full_text_decisions.csv` |
+Python 3.11+ required.
 
-If required inputs are missing, counts are reported as `MISSING_INPUT`.
+## Pipeline
+
+### 1. Initialize repo structure
+
+```bash
+python -m tools.slr_toolkit.cli init
+```
+
+### 2. Automated API search
+
+```bash
+python -m tools.slr_toolkit.cli auto-search \
+    --query '"quantum computing" AND "finance"' \
+    --from-year 2016
+```
+
+Queries each API, creates dated run folders with raw JSON and normalized CSV, and logs runs in `02_search_logs/search_log.xlsx`.
+
+| Source | Auth | Notes |
+|--------|------|-------|
+| `openalex` | Free | Best general source, concept filters |
+| `arxiv` | Free | Preprints |
+| `semantic_scholar` | Free | Citations and forward snowballing |
+| `scopus` | API key | Requires Elsevier access |
+
+### 3. Build master library
+
+```bash
+python -m tools.slr_toolkit.cli build-master
+```
+
+Deduplicates records (DOI-exact → fuzzy-title matching) and writes `master_records.csv` + `master_library.bib`.
+
+### 4. Screen (title/abstract)
+
+```bash
+python -m tools.slr_toolkit.cli generate-screening --seed 42 --validation-size 100
+python -m tools.slr_toolkit.cli llm-screen
+python -m tools.slr_toolkit.cli prisma
+```
+
+### 5. Topic coding & extraction
+
+```bash
+python -m tools.slr_toolkit.cli topic-code
+```
+
+### 6. Generate figures
+
+```bash
+python generate_figures.py
+```
+
+## AI / LLM Configuration
+
+The toolkit uses Azure OpenAI via the `openai` SDK with structured JSON output (Responses API).
+
+**Required environment variables** (see [.env.example](.env.example)):
+
+| Variable | Description |
+|----------|-------------|
+| `AZURE_OPENAI_ENDPOINT` | Azure resource URL |
+| `AZURE_OPENAI_DEPLOYMENT` | Deployment name |
+| `AZURE_OPENAI_API_KEY` | API key (or use `az login` for keyless auth) |
+
+**Screening model**: `gpt-5-mini` (production run). Models evaluated: `gpt-4.1-mini`, `DeepSeek-V3.2`, `o4-mini`, `gpt-5-mini`.
+
+Audit trails: `llm_screening_prompt_log.jsonl` (screening) and `topic_coding_prompt_log.jsonl` (topic coding).
 
 ## Running Tests
 
@@ -289,34 +163,18 @@ If required inputs are missing, counts are reported as `MISSING_INPUT`.
 pytest tools/tests -v
 ```
 
-Coverage currently includes:
-
-- Azure OpenAI endpoint normalisation
-- DOI-exact deduplication
-- fuzzy-title deduplication
-- ingest parsing for RIS, BibTeX, and CSV
-- query-builder logic for all 4 APIs
-- LLM response parsing and structured output validation
-- AI-screening and topic-coding flows
-- shared utilities (hashing, kappa, safe I/O, atomic writes)
+Covers: Azure OpenAI endpoints, deduplication, ingestion (RIS/BibTeX/CSV), query builders, LLM screening, topic coding, shared utilities.
 
 ## Methodological Frameworks
 
-This review is guided by:
-
-- PRISMA 2020
-- PRISMA-S
-- Kitchenham and Charters (2007)
+- PRISMA 2020 · PRISMA-S
+- Kitchenham & Charters (2007)
 - Okoli (2015)
 - vom Brocke et al. (2015)
 - Hoefler et al. (2023)
 - Wohlin (2014)
-- Creswell and Creswell (2018)
+- Creswell & Creswell (2018)
 
-## Citing This Work
+## License
 
-Citation metadata is still being finalized for the thesis submission package.
-
-## Acknowledgements
-
-Acknowledgements are pending final thesis submission details.
+MIT — see [LICENSE](LICENSE).
