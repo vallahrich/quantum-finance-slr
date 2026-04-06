@@ -58,6 +58,7 @@ desktop.ini
 # Jupyter
 .ipynb_checkpoints/
 
-# PDFs (large, stored in Zotero)
-07_full_texts/pdfs/
+# PDFs (tracked via Git LFS)
+# 07_full_texts/pdfs/  — now tracked with LFS
 07_full_texts/_compressed/
+07_full_texts/downloadedpdf/
