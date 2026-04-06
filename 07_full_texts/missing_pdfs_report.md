@@ -1,18 +1,17 @@
 # Missing PDFs Report
-Generated: 2026-04-06 16:56
+Generated: 2026-04-06 17:48
 
 ## Summary
 - Included papers: **842**
-- PDFs acquired: **765**
-- Still missing: **77**
+- PDFs on disk: **766**
+- Still missing: **76**
 
 ### Missing by status
 - `download_failed`: 66
 - `mismatch`: 2
-- `never_attempted`: 1
 - `no_oa_source`: 8
 
-## Missing Papers (77)
+## Missing Papers (76)
 
 | paper_id | year | title | doi | status |
 |----------|------|-------|-----|--------|
@@ -29,7 +28,6 @@ Generated: 2026-04-06 16:56
 | 1312e9d3c55e | 2025 | Hybrid Quantum-Classical Machine Learning with PennyLane: A Comprehensive Guide  |  | download_failed |
 | 13544c1e7414 | 2025 | Quantum Machine Learning for Stock Price Movement Prediction | 10.1007/978-981-95-2429-7_7 | download_failed |
 | 135bf0e19b10 | 2025 | Performance evaluation of post quantum digital signature algorithms over WDM opt | 10.1515/joc-2025-0104 | download_failed |
-| 14777484b99d | 2023 | Quantum Algorithm for Unsupervised Anomaly Detection | 10.2139/ssrn.4435630 | never_attempted |
 | 157054b518f8 | 2025 | Quantum computing research: An in-depth exploration | 10.1016/bs.adcom.2025.02.005 | download_failed |
 | 1d16f793a68b | 2022 | Quantum neural network for continuous variable prediction |  | download_failed |
 | 1dc251ce8c53 | 2026 | Extrapolation method to optimize linear-ramp quantum approximate optimization al | 10.5281/zenodo.18302993 | download_failed |
