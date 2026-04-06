@@ -1,18 +1,18 @@
 # Missing PDFs Report
-Generated: 2026-04-06 16:52
+Generated: 2026-04-06 16:56
 
 ## Summary
 - Included papers: **842**
-- PDFs acquired (status=success): **765**
-- Missing: **77**
+- PDFs acquired: **765**
+- Still missing: **77**
 
-### Missing by last-attempted status
-- `download_failed`: 65
+### Missing by status
+- `download_failed`: 66
 - `mismatch`: 2
 - `never_attempted`: 1
-- `no_oa_source`: 9
+- `no_oa_source`: 8
 
-## Missing Papers (77 total)
+## Missing Papers (77)
 
 | paper_id | year | title | doi | status |
 |----------|------|-------|-----|--------|
@@ -51,6 +51,7 @@ Generated: 2026-04-06 16:52
 | 5f0d1c12d9b5 | 2025 | The Prospects for Applications of Quantum Computing in the Financial Sector | 10.4324/9781003501947-7 | download_failed |
 | 62e5c8b6b617 | 2026 | Integration of Hybrid Quantum?Neuromorphic AI With Cloud, Edge, and High-Perform | 10.4018/979-8-3373-7779-7.ch007 | download_failed |
 | 63af985e2b4e | 2025 | Quantum-enhanced stock market prediction: Integrating AI, sentiment analysis, an | 10.1201/9781003685876-7 | download_failed |
+| 6bbc4a2d4a89 | 2025 | Quantum Computing Applications | 10.1201/9781003499459-3 | download_failed |
 | 6fe2aeb67e66 | 2022 | Quantum Computing | 10.1002/9781119777465.ch4 | download_failed |
 | 7301808f6d01 | 2025 | Emerging Technologies in Financial Process Optimization and Risk Management | 10.4018/979-8-3693-4369-2.ch002 | download_failed |
 | 778a06edc7f8 | 2025 | Quantum Interference Effects in Social Decision-Making | 10.6914/qss.010102 | download_failed |
@@ -88,7 +89,6 @@ Generated: 2026-04-06 16:52
 | dc93502cbe99 | 2023 | Contribution of Disruptive Technologies in Computational Finance | 10.4018/979-8-3693-1746-4.ch009 | download_failed |
 | e505ff143d95 | 2024 | Quantum Machine Learning and Optimisation in Finance: Drive financial innovation |  | no_oa_source |
 | e9b892fcd6fc | 2025 | Toward Efficient Credit Card Fraud Detection: Leveraging Quantum Neural Networks | 10.53759/7669/jmc202505024 | download_failed |
-| ef99551dab0f | 2021 | NExt ApplicationS of Quantum Computing D5.1: Review of state-of-the-art for Pric |  | no_oa_source |
 | f0cfc9685e15 | 2024 | Optimizing Feature Selection for Predictive Analytics With Quantum Algorithms | 10.4018/979-8-3693-7673-7.ch009 | no_oa_source |
 | f5adfe23aa3d | 2025 | Quantum optimization techniques and applications | 10.1016/bs.adcom.2025.06.001 | download_failed |
 | f67b13b40931 | 2025 | Integration of innovative business models using quantum computing and generative | 10.1201/9781003597414-23 | no_oa_source |
