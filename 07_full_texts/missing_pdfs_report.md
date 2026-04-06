@@ -3,8 +3,8 @@
 **Generated:** 2026-04-06  
 **Included papers (post-screening):** 842  
 **Excluded at full-text stage:** 33  
-**PDFs on disk:** 709 (of 842 included papers)  
-**Missing PDFs:** 133
+**PDFs on disk:** 710 (of 842 included papers)  
+**Missing PDFs:** 132
 
 ## Summary
 
@@ -13,9 +13,9 @@
 | File lost | 2 | Logged as success but file missing |
 | Download failed | 113 | Failed download — try manual retrieval |
 | No OA source | 12 | No open-access URL found |
-| Mismatch | 5 | File on disk but log shows failure — verify content |
+| Mismatch | 4 | File on disk but log shows failure — verify content |
 | Never attempted | 1 | Not in download log |
-| **Total** | **133** | |
+| **Total** | **132** | |
 
 ---
 
@@ -770,9 +770,9 @@ No open-access URL was found. Institutional access required.
 
 ---
 
-## Mismatch (File Present but Log Shows Failure) (5)
+## Mismatch (File Present but Log Shows Failure) (4)
 
-A file exists on disk for these IDs but the download log shows a failure. Verify the content is correct.
+A file exists on disk for these IDs but the download log shows a failure. Verify the content.
 
 
 ### 1. Quantum neural network for continuous variable prediction
@@ -795,12 +795,6 @@ A file exists on disk for these IDs but the download log shows a failure. Verify
 - **ID:** `a143717759af`
 - **DOI:** [10.1515/9783110647907](https://doi.org/10.1515/9783110647907)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1515/9783110647907
-- **Source:** institutional
-
-### 5. Quantum synergy in peptide folding: A comparative study of CVaR-variational quantum eigensolver and molecular dynamics simulation
-- **ID:** `c8c709dc67c3`
-- **DOI:** [10.1016/j.ijbiomac.2024.133033](https://doi.org/10.1016/j.ijbiomac.2024.133033)
-- **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1016/j.ijbiomac.2024.133033
 - **Source:** institutional
 
 ---
