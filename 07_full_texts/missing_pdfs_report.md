@@ -1,18 +1,18 @@
 # Missing PDFs Report
-Generated: 2026-04-06 16:45
+Generated: 2026-04-06 16:52
 
 ## Summary
 - Included papers: **842**
-- PDFs acquired (download_log status=success): **761**
-- Missing: **81**
+- PDFs acquired (status=success): **765**
+- Missing: **77**
 
 ### Missing by last-attempted status
-- `download_failed`: 66
+- `download_failed`: 65
 - `mismatch`: 2
 - `never_attempted`: 1
-- `no_oa_source`: 12
+- `no_oa_source`: 9
 
-## Missing Papers (81 total)
+## Missing Papers (77 total)
 
 | paper_id | year | title | doi | status |
 |----------|------|-------|-----|--------|
@@ -35,7 +35,6 @@ Generated: 2026-04-06 16:45
 | 1dc251ce8c53 | 2026 | Extrapolation method to optimize linear-ramp quantum approximate optimization al | 10.5281/zenodo.18302993 | download_failed |
 | 250a9d44ef66 | 2024 | Quantum Computing: Algorithms and Applications in Optimization Problems | 10.36676/jqst.v1.i2.11 | download_failed |
 | 251a3166cf94 | 2026 | hgribeirogeo/qaoa-carbon-cerrado: v1.0 - Initial Release for Quantum Journal Sub | 10.5281/zenodo.18418054 | download_failed |
-| 292400fdfae6 | 2025 | Quantum algorithms for differential equations in finance and physics |  | no_oa_source |
 | 30582038a7ba | 2025 | Periodic Unitary Encoding for Quantum Anomaly Detection of Temporal Series | 10.5220/0013537800004525 | download_failed |
 | 32f23740c07f | 2026 | hgribeirogeo/qaoa-carbon-cerrado: v2.0 - Seven-Run Validation Study | 10.5281/zenodo.18507119 | download_failed |
 | 3453ddc0d7db | 2025 | Numerical solution of boundary value problems using quantum computing system | 10.1504/ijsse.2025.151321 | download_failed |
@@ -83,15 +82,12 @@ Generated: 2026-04-06 16:45
 | c759041ceebc | 2024 | Research on Financial Market Prediction Model Based on Big Data and Quantum Comp | 10.1142/s2010324724400101 | download_failed |
 | cde1c896dc3c | 2021 | Quantum Machine Learning for Finance |  | no_oa_source |
 | cded9dd64213 | 2024 | Variational Quantum Algorithms in?Anomaly Detection, Fraud Indicator Identificat | 10.1007/978-981-97-3302-6_39 | download_failed |
-| d18096ef8f4c | 2023 | Financial Portfolio Optimization: a QUBO Formulation for Sharpe Ratio Maximizati |  | no_oa_source |
 | d1d94604a9f6 | 2026 | Quantum Monte Carlo simulations | 10.1016/bs.adcom.2025.07.008 | download_failed |
 | d7449b1ba0c5 | 2026 | Improving credit card transaction fraud detection using CVQBoosting |  | download_failed |
 | da5f74409827 | 2025 | Integrating Emerging Technologies for Organizational Agility | 10.4018/979-8-3373-6207-6.ch003 | download_failed |
 | dc93502cbe99 | 2023 | Contribution of Disruptive Technologies in Computational Finance | 10.4018/979-8-3693-1746-4.ch009 | download_failed |
 | e505ff143d95 | 2024 | Quantum Machine Learning and Optimisation in Finance: Drive financial innovation |  | no_oa_source |
-| e513378d8c92 | 2022 | AI, Data Science, and Quantum Neural Networks in E?Commerce: Methods, Applicatio | 10.64206/pp5nd013 | download_failed |
 | e9b892fcd6fc | 2025 | Toward Efficient Credit Card Fraud Detection: Leveraging Quantum Neural Networks | 10.53759/7669/jmc202505024 | download_failed |
-| ee8331fcdc90 | 2018 | Designing PSS and SVC Parameters simultaneously through the Improved Quantum Alg |  | no_oa_source |
 | ef99551dab0f | 2021 | NExt ApplicationS of Quantum Computing D5.1: Review of state-of-the-art for Pric |  | no_oa_source |
 | f0cfc9685e15 | 2024 | Optimizing Feature Selection for Predictive Analytics With Quantum Algorithms | 10.4018/979-8-3693-7673-7.ch009 | no_oa_source |
 | f5adfe23aa3d | 2025 | Quantum optimization techniques and applications | 10.1016/bs.adcom.2025.06.001 | download_failed |
