@@ -928,9 +928,9 @@ for AI-flagged records per the PRISMA-trAIce flow diagram template.
 | Phase | Target |
 |-------|--------|
 | Protocol finalisation | Complete |
-| Database searches | Complete for the current active runs (6,232 raw records in the 2026-03-14-v5 source exports; current master library contains 3,010 canonical records and 3,222 duplicates) |
-| Screening (title/abstract) | — |
-| Screening (full-text) | — |
+| Database searches | Complete (6,232 raw records in the 2026-03-14-v5 source exports; master library: 3,010 canonical records, 3,222 duplicates) |
+| Screening (title/abstract) | Complete (3,010 screened; 2,135 excluded; 875 to full-text) |
+| Screening (full-text) | Complete (875 assessed; 33 excluded EX-NOPAPER; 842 included) |
 | Data extraction | — |
 | Quality appraisal | — |
 | Synthesis and writing | — |
