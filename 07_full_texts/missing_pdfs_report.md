@@ -3,19 +3,19 @@
 **Generated:** 2026-04-06  
 **Included papers (post-screening):** 842  
 **Excluded at full-text stage:** 33  
-**PDFs on disk:** 705 (of 842 included papers)  
-**Missing PDFs:** 137
+**PDFs on disk:** 709 (of 842 included papers)  
+**Missing PDFs:** 133
 
 ## Summary
 
 | Category | Count | Description |
 |---|---|---|
-| File lost | 2 | Logged as success but file missing — re-download needed |
+| File lost | 2 | Logged as success but file missing |
 | Download failed | 113 | Failed download — try manual retrieval |
-| No OA source | 12 | No open-access URL found — institutional access needed |
-| Mismatch | 9 | File on disk but log shows failure — verify content |
+| No OA source | 12 | No open-access URL found |
+| Mismatch | 5 | File on disk but log shows failure — verify content |
 | Never attempted | 1 | Not in download log |
-| **Total** | **137** | |
+| **Total** | **133** | |
 
 ---
 
@@ -540,83 +540,82 @@ Download was attempted but failed. Try manual retrieval or institutional access.
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.4018/979-8-3373-2893-5.ch012
 - **Source:** institutional
 
-### 85. A quantum neural network with built-in self-attention mechanism
-- **ID:** `b7810a7c699b`
-- **DOI:** [10.1016/j.neucom.2026.132862](https://doi.org/10.1016/j.neucom.2026.132862)
-- **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1016/j.neucom.2026.132862
-- **Source:** institutional
-
-### 86. Integrated Photonic Computing Chip For Unary-Based Option Pricing
+### 85. Integrated Photonic Computing Chip For Unary-Based Option Pricing
 - **ID:** `b9793b3d8619`
 - **DOI:** [10.1364/ofc.2024.w1f.3](https://doi.org/10.1364/ofc.2024.w1f.3)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1364/ofc.2024.w1f.3
 - **Source:** institutional
 
-### 87. Empirical Evaluation of Quantum Kernel Learning for Sector Rotation Prediction: Using Fama–French 10 Industry Portfolios
+### 86. Empirical Evaluation of Quantum Kernel Learning for Sector Rotation Prediction: Using Fama–French 10 Industry Portfolios
 - **ID:** `b9898808569b`
 - **DOI:** [10.20944/preprints202602.0745.v1](https://doi.org/10.20944/preprints202602.0745.v1)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.20944/preprints202602.0745.v1
 - **Source:** institutional
 
-### 88. Quantum Binomial Tree, An Effective Method for Probability Distribution Loading for Derivative Pricing
+### 87. Quantum Binomial Tree, An Effective Method for Probability Distribution Loading for Derivative Pricing
 - **ID:** `b9bbd2d099f0`
 - **DOI:** [10.54946/wilm.12175](https://doi.org/10.54946/wilm.12175)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.54946/wilm.12175
 - **Source:** institutional
 
-### 89. Quantum Machine Learning and Optimisation in Finance
+### 88. Quantum Machine Learning and Optimisation in Finance
 - **ID:** `ba5afbcce6b8`
 - **DOI:** [10.1080/14697688.2024.2375260](https://doi.org/10.1080/14697688.2024.2375260)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1080/14697688.2024.2375260
 - **Source:** institutional
 
-### 90. Quantum Finance Unleashed
+### 89. Quantum Finance Unleashed
 - **ID:** `bb6213c444b0`
 - **DOI:** [10.4018/979-8-3373-2893-5.ch001](https://doi.org/10.4018/979-8-3373-2893-5.ch001)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.4018/979-8-3373-2893-5.ch001
 - **Source:** institutional
 
-### 91. Adaptive Quantum Entanglement Networks for Real-Time Financial Fraud Detection: A Novel Framework with Temporal Correlation Analysis
+### 90. Adaptive Quantum Entanglement Networks for Real-Time Financial Fraud Detection: A Novel Framework with Temporal Correlation Analysis
 - **ID:** `bcfb2bcd887f`
 - **DOI:** [10.36227/techrxiv.175750771.12895702/v1](https://doi.org/10.36227/techrxiv.175750771.12895702/v1)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.36227/techrxiv.175750771.12895702/v1
 - **Source:** institutional
 
-### 92. Quantum advantage of Monte Carlo option pricing
+### 91. Quantum advantage of Monte Carlo option pricing
 - **ID:** `bf1f4204b1e6`
 - **DOI:** [10.1088/2399-6528/acd2a4](https://doi.org/10.1088/2399-6528/acd2a4)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1088/2399-6528/acd2a4
 - **Source:** institutional
 
-### 93. Applications of Quantum Machine Learning in Financial Services
+### 92. Applications of Quantum Machine Learning in Financial Services
 - **ID:** `c43d47985bee`
 - **DOI:** [10.1201/9781003558279-8](https://doi.org/10.1201/9781003558279-8)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1201/9781003558279-8
 - **Source:** institutional
 
-### 94. Evaluating Quantum Computing's Potential for Financial Engineering Optimisation
+### 93. Evaluating Quantum Computing's Potential for Financial Engineering Optimisation
 - **ID:** `c459e5fdfbdc`
 - **DOI:** [10.1201/9781003596721-10](https://doi.org/10.1201/9781003596721-10)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1201/9781003596721-10
 - **Source:** institutional
 
-### 95. Research on Financial Market Prediction Model Based on Big Data and Quantum Computing
+### 94. Research on Financial Market Prediction Model Based on Big Data and Quantum Computing
 - **ID:** `c759041ceebc`
 - **DOI:** [10.1142/s2010324724400101](https://doi.org/10.1142/s2010324724400101)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1142/s2010324724400101
 - **Source:** institutional
 
-### 96. Variational Quantum Algorithms in Anomaly Detection, Fraud Indicator Identification, Credit Scoring, and Stock Price Prediction
+### 95. Variational Quantum Algorithms in Anomaly Detection, Fraud Indicator Identification, Credit Scoring, and Stock Price Prediction
 - **ID:** `cded9dd64213`
 - **DOI:** [10.1007/978-981-97-3302-6_39](https://doi.org/10.1007/978-981-97-3302-6_39)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1007/978-981-97-3302-6_39
 - **Source:** institutional
 
-### 97. Quantum-Enhanced Graph Analytics: A Hybrid AI Framework for Seller Fraud Detection in Online Marketplaces
+### 96. Quantum-Enhanced Graph Analytics: A Hybrid AI Framework for Seller Fraud Detection in Online Marketplaces
 - **ID:** `cf9049abcad1`
 - **DOI:** [10.64206/99ssyx46](https://doi.org/10.64206/99ssyx46)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.64206/99ssyx46
 - **Source:** institutional
+
+### 97. Quantum Monte Carlo simulations
+- **ID:** `d1d94604a9f6`
+- **DOI:** [10.1016/bs.adcom.2025.07.008](https://doi.org/10.1016/bs.adcom.2025.07.008)
+- **Source:** manual_import_reverted
 
 ### 98. Quantum Computing in Option Pricing
 - **ID:** `d429e0713a3d`
@@ -716,7 +715,7 @@ Download was attempted but failed. Try manual retrieval or institutional access.
 
 ## No Open-Access Source Found (12)
 
-No open-access URL was found for these papers. Institutional access required.
+No open-access URL was found. Institutional access required.
 
 
 ### 1. Pricing ﬁnancial derivatives with exponential quantum speedup
@@ -771,7 +770,7 @@ No open-access URL was found for these papers. Institutional access required.
 
 ---
 
-## Mismatch (File Present but Log Shows Failure) (9)
+## Mismatch (File Present but Log Shows Failure) (5)
 
 A file exists on disk for these IDs but the download log shows a failure. Verify the content is correct.
 
@@ -792,36 +791,13 @@ A file exists on disk for these IDs but the download log shows a failure. Verify
 - **Last URL tried:** https://arxiv.org/abs/1906.08108
 - **Source:** openalex
 
-### 4. Hybrid Quantum-Classical Portfolio Optimization Leveraging Counterdiabatic Annealing and Quantum Risk Factors
-- **ID:** `615067f0066c`
-- **DOI:** [10.36227/techrxiv.175795525.59311374/v1](https://doi.org/10.36227/techrxiv.175795525.59311374/v1)
-- **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.36227/techrxiv.175795525.59311374/v1
-- **Source:** institutional
-
-### 5. Hybrid quantum–cloud framework for nonlinear clustering optimization and intelligent resource management
-- **ID:** `90c55cffbb52`
-- **DOI:** [10.31838/rna/2025.08.03.007](https://doi.org/10.31838/rna/2025.08.03.007)
-- **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.31838/rna/2025.08.03.007
-- **Source:** institutional
-
-### 6. Quantum Risk Modeling: Theoretical Frameworks for Financial Uncertainty Quantification
-- **ID:** `9ecabb9df454`
-- **DOI:** [10.26434/chemrxiv-2025-52tpl](https://doi.org/10.26434/chemrxiv-2025-52tpl)
-- **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.26434/chemrxiv-2025-52tpl
-- **Source:** institutional
-
-### 7. Reverse Stress Testing in Banking
+### 4. Reverse Stress Testing in Banking
 - **ID:** `a143717759af`
 - **DOI:** [10.1515/9783110647907](https://doi.org/10.1515/9783110647907)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1515/9783110647907
 - **Source:** institutional
 
-### 8. Quantum propensity in economics
-- **ID:** `a4cb146201fc`
-- **Last URL tried:** https://doi.org/10.3389/frai.2021.772294
-- **Source:** openalex
-
-### 9. Quantum synergy in peptide folding: A comparative study of CVaR-variational quantum eigensolver and molecular dynamics simulation
+### 5. Quantum synergy in peptide folding: A comparative study of CVaR-variational quantum eigensolver and molecular dynamics simulation
 - **ID:** `c8c709dc67c3`
 - **DOI:** [10.1016/j.ijbiomac.2024.133033](https://doi.org/10.1016/j.ijbiomac.2024.133033)
 - **Last URL tried:** http://esc-web.lib.cbs.dk/login?url=https://doi.org/10.1016/j.ijbiomac.2024.133033
