@@ -11,11 +11,10 @@ paper_id,final_decision
 026a7b6919fc,include
 02db829631f9,include
 04326473e1bb,include
-043b5343fb3d,exclude
 045306ad1a16,include
 0525be4c60fb,include
 05a01a257cc7,include
-06019399445b,exclude
+06019399445b,include
 0608ad48d5b8,include
 060ebc7a91c0,include
 06c5f405d529,include
@@ -25,7 +24,7 @@ paper_id,final_decision
 075a4a34de90,include
 076cb93860b0,include
 0801deffcfa4,include
-081132e62980,exclude
+081132e62980,include
 081dbc9360d1,include
 082f292f8c48,include
 090ce79070cb,include
@@ -46,7 +45,6 @@ paper_id,final_decision
 0e9ded454de6,include
 0eb7690657f2,include
 0f3a64e9e3ed,include
-0f5c4894ccb6,include
 0fb65bb44954,include
 0fb8e2505865,include
 10832c99e683,include
@@ -57,7 +55,6 @@ paper_id,final_decision
 115e509ec529,include
 11807719b419,include
 119578338c9e,include
-11aa443287c0,exclude
 11ff02556b47,include
 1292782ed153,include
 12a26364b038,include
@@ -66,8 +63,7 @@ paper_id,final_decision
 13544c1e7414,include
 135bf0e19b10,include
 136790c5fbc5,include
-146a99b9b311,exclude
-14777484b99d,exclude
+14777484b99d,include
 148be08400da,include
 14b3e6b32874,include
 14ceb7e36df7,include
@@ -103,7 +99,6 @@ paper_id,final_decision
 1caec67a4a64,include
 1d16f793a68b,include
 1d44742c9e15,include
-1d49f2843829,include
 1d715e0cd1aa,include
 1dc251ce8c53,include
 1de0ca5e8cf2,include
@@ -154,7 +149,6 @@ paper_id,final_decision
 2a9cd8a96604,include
 2abf80ef91e3,include
 2ae3455aa47b,include
-2b18608f6860,include
 2b34eb642f89,include
 2b48b0e90efa,include
 2b4dc3c2ba75,include
@@ -176,9 +170,7 @@ paper_id,final_decision
 311bac170c43,include
 313a1d740d27,include
 317e6bb03bfa,include
-320ac2390210,include
 323683ff9874,include
-32be27773fc7,include
 32f23740c07f,include
 32f6aa86e556,include
 3318d42b7459,include
@@ -225,7 +217,6 @@ paper_id,final_decision
 3f8ab7317ca4,include
 3fb78ea9b31b,include
 3fe2b056b181,include
-3fe31dea1f88,exclude
 40ca827d69b9,include
 40e4c7fdd4ac,include
 412a4331b358,include
@@ -236,9 +227,8 @@ paper_id,final_decision
 4244a7279692,include
 4255cabe0f56,include
 439a750eda8c,include
-44997e238c7a,exclude
+44997e238c7a,include
 455f0fa41521,include
-45bb659a6bb7,include
 45e4cb39dba8,include
 464916b2b572,include
 468c3327bdef,include
@@ -246,7 +236,6 @@ paper_id,final_decision
 46e6281cc0ea,include
 470b798927ef,include
 4715aa3cb8e4,include
-47412220e1bb,include
 479092dfcc1c,include
 4798a3b70dd2,include
 47f4148f90dd,include
@@ -267,13 +256,10 @@ paper_id,final_decision
 4de005c12725,include
 4e492b86e6c7,include
 4eb84ca51d29,include
-4ee4d5f63858,include
 5081ec6b6068,include
 5087f7c0e2a3,include
 50989fdc9ad1,include
-51c76454c0ce,exclude
 52b1d7c50b82,include
-52b948ec890d,exclude
 5308fd4d7e17,include
 53a6837ae00d,include
 53a718c11ea8,include
@@ -285,7 +271,6 @@ paper_id,final_decision
 55496bcdeaa7,include
 559b94bd12c0,include
 55cbe84d64e7,include
-56176dc5f8a2,include
 567b25a75e80,include
 57294220386e,include
 5761d4b2accf,include
@@ -307,7 +292,7 @@ paper_id,final_decision
 5b3485ced673,include
 5b6f77b75bb0,include
 5bb38201b7ae,include
-5bd5a79bc18a,exclude
+5bd5a79bc18a,include
 5beb1712456c,include
 5c9fef8c2825,include
 5cd21914c8a3,include
@@ -365,7 +350,6 @@ paper_id,final_decision
 6ac0d0a3c55a,include
 6b2b4f6ba298,include
 6bbc4a2d4a89,include
-6cb040f251ff,include
 6cb502a2896a,include
 6ce12ea7c2bf,include
 6d5768682408,include
@@ -378,8 +362,6 @@ paper_id,final_decision
 6f139839ae4c,include
 6fe2aeb67e66,include
 7012f13a70a3,include
-70217d6e8f7f,exclude
-7055fc9f6caf,include
 71966c8a9dc7,include
 71dc25d5ac6a,include
 71e349feba65,include
@@ -387,9 +369,7 @@ paper_id,final_decision
 7301808f6d01,include
 732f54a585cf,include
 73f3adac41d9,include
-740ccc3ae6f8,include
 74c6ac2ca350,include
-7540346e79ad,include
 75a7b04fa681,include
 75c40280653d,include
 75cd91455541,include
@@ -461,7 +441,6 @@ paper_id,final_decision
 881dd9b94148,include
 885002fa235e,include
 88e005f67ca2,include
-88e1fac438e9,include
 88e7d870aeb0,include
 8908fea924fc,include
 89a54b4268bd,include
@@ -530,7 +509,6 @@ paper_id,final_decision
 9c8acfa3bc72,include
 9d21f2dbc900,include
 9e79a3ba95a4,include
-9ea18a0e8bfd,include
 9eb296f23a10,include
 9ecabb9df454,include
 9ece39a58632,include
@@ -609,9 +587,7 @@ b5820c538b42,include
 b58f4a78e015,include
 b62275ba4e8f,include
 b660e6ffe7f2,include
-b6835993edd2,include
 b69e5fca1ee6,include
-b6a55230434d,exclude
 b7810a7c699b,include
 b7b5ffbce8ec,include
 b7c9696b8ffc,include
@@ -638,7 +614,6 @@ bbd82caa4d1f,include
 bbf0e3662d3c,include
 bc172c83a778,include
 bc7abe57bcdd,include
-bc8d838c7545,include
 bcd1adfba1e5,include
 bcec4aa1183a,include
 bcfb2bcd887f,include
@@ -696,7 +671,7 @@ cad7df42e483,include
 cb19eb039ea0,include
 cb2b33577b51,include
 cb7047eb4b01,include
-cb8d976cb90c,exclude
+cb8d976cb90c,include
 cbc953d2f213,include
 cc3196e053ee,include
 cd5dc35d5f39,include
@@ -705,7 +680,6 @@ cd9329dc38ef,include
 cde1c896dc3c,include
 cded9dd64213,include
 ce2db00aac7a,include
-ced20dbb381f,include
 cf0d84ba3b6a,include
 cf15566d165b,include
 cf30c27e711a,include
@@ -723,9 +697,7 @@ d186493da11a,include
 d1d94604a9f6,include
 d1e6a91e7f11,include
 d21bf4bb49f1,include
-d255ff5edaae,include
 d28e11e1f8b0,include
-d2987e36ebc7,include
 d349fc59251c,include
 d3580aed27bb,include
 d37354bd1037,include
@@ -759,7 +731,7 @@ ddd77f0637f4,include
 de580e8c085e,include
 de7c20d08bbe,include
 dea554bac8c5,include
-deb2ea7baca5,exclude
+deb2ea7baca5,include
 df5489e3b780,include
 df5b91d07411,include
 df75588a0f00,include
@@ -792,7 +764,6 @@ e52f3f130a75,include
 e53a9047880e,include
 e667225d4f3c,include
 e6692a4012cb,include
-e69606eda4d4,include
 e6d5993eabdd,include
 e6ece474516c,include
 e71143fc75ea,include
@@ -808,12 +779,9 @@ e9e49c657667,include
 ea3050e19cb2,include
 ea4504852540,include
 ea4b39301625,include
-eb49db8c70eb,include
-eb9b2edee442,exclude
 ebbdd376073e,include
 ebc26d3b1089,include
 ebc4087b5ca1,include
-ebc427ff9eca,include
 ec46c4209f52,include
 ecd17525083d,include
 ed02e34c2236,include
@@ -831,7 +799,7 @@ f0cfc9685e15,include
 f123e5ead03b,include
 f190da5cb928,include
 f1cdc4d681b5,include
-f20042024dc6,exclude
+f20042024dc6,include
 f2dee5528891,include
 f35eb73554d8,include
 f362fd204c2b,include
@@ -854,7 +822,6 @@ f92cf78ba56a,include
 f93112e0b03a,include
 f94276561f48,include
 f96f14134a21,include
-f9a4ea0df88e,include
 f9e5b6ee139d,include
 f9f0249a4f6d,include
 fa9e2c7101b8,include

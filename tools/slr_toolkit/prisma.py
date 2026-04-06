@@ -66,11 +66,9 @@ def generate_prisma_counts() -> dict[str, str | int]:
     # Read the full-text decisions early so we can derive excluded_ta.
     ft_df = _read_csv_safe(config.FT_DECISIONS_FILE)
     if ft_df is not None and "final_decision" in ft_df.columns:
-        _included = int(
-            (ft_df["final_decision"].str.strip().str.lower() == "include").sum()
-        )
+        _assessed_ft = len(ft_df)
         if isinstance(screened_ta, int):
-            excluded_ta: int | str = screened_ta - _included
+            excluded_ta: int | str = screened_ta - _assessed_ft
         else:
             excluded_ta = _MISSING
     else:

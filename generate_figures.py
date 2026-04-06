@@ -51,15 +51,24 @@ def fig_prisma_flow():
     n_duplicates = int((master_full["duplicate_of"] != "").sum())
     n_screened = n_identified - n_duplicates
 
-    # Full-text from included_for_coding
-    inc_path = REPO / "05_screening" / "included_for_coding.csv"
-    if inc_path.exists():
-        inc = pd.read_csv(inc_path, dtype=str)
-        n_included_ft = len(inc)
+    # Full-text decisions (includes both included and excluded at full-text)
+    ft_path = REPO / "05_screening" / "full_text_decisions.csv"
+    if ft_path.exists():
+        ft = pd.read_csv(ft_path, dtype=str).fillna("")
+        n_assessed_ft = len(ft)
+        n_excluded_ft = int((ft["final_decision"].str.strip().str.lower() == "exclude").sum())
+        n_included_ft = int((ft["final_decision"].str.strip().str.lower() == "include").sum())
     else:
-        n_included_ft = 0
+        inc_path = REPO / "05_screening" / "included_for_coding.csv"
+        if inc_path.exists():
+            inc = pd.read_csv(inc_path, dtype=str)
+            n_included_ft = len(inc)
+        else:
+            n_included_ft = 0
+        n_assessed_ft = n_included_ft
+        n_excluded_ft = 0
 
-    n_excluded_ta = n_screened - n_included_ft
+    n_excluded_ta = n_screened - n_assessed_ft
 
     fig, ax = plt.subplots(figsize=(10, 12))
     ax.set_xlim(0, 10)
@@ -102,8 +111,14 @@ def fig_prisma_flow():
 
     # Eligibility
     ax.text(5, 6.2, "Eligibility", fontsize=14, fontweight="bold", ha="center")
-    ax.text(5, 5.5, f"Full-text articles assessed\nfor eligibility\n(n = {n_included_ft:,})",
+    ax.text(5, 5.5, f"Full-text articles assessed\nfor eligibility\n(n = {n_assessed_ft:,})",
             ha="center", va="center", fontsize=10, bbox=box_style)
+
+    # Excluded at full-text
+    if n_excluded_ft > 0:
+        ax.text(8, 5.5, f"Full-text articles excluded\n(n = {n_excluded_ft:,})\nReason: no paper found",
+                ha="center", va="center", fontsize=10, bbox=excl_style)
+        ax.annotate("", xy=(6.5, 5.5), xytext=(5.5, 5.5), arrowprops=dict(arrowstyle="->", lw=1))
 
     ax.annotate("", xy=(5, 4.7), xytext=(5, 5.0), arrowprops=dict(arrowstyle="->", lw=1.5))
 

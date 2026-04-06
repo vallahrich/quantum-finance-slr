@@ -11,7 +11,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 026a7b6919fc,include,include,no,include,,,
 02db829631f9,include,include,no,include,,,
 04326473e1bb,include,include,no,include,,,
-043b5343fb3d,include,include,no,include,,,
+043b5343fb3d,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 045306ad1a16,include,include,no,include,,,
 0525be4c60fb,include,include,no,include,,,
 05a01a257cc7,include,include,no,include,,,
@@ -46,7 +46,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 0e9ded454de6,include,include,no,include,,,
 0eb7690657f2,include,include,no,include,,,
 0f3a64e9e3ed,include,include,no,include,,,
-0f5c4894ccb6,include,include,no,include,,,
+0f5c4894ccb6,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 0fb65bb44954,include,include,no,include,,,
 0fb8e2505865,include,include,no,include,,,
 10832c99e683,include,include,no,include,,,
@@ -57,7 +57,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 115e509ec529,include,include,no,include,,,
 11807719b419,include,include,no,include,,,
 119578338c9e,include,include,no,include,,,
-11aa443287c0,include,include,no,include,,,
+11aa443287c0,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 11ff02556b47,include,include,no,include,,,
 1292782ed153,include,include,no,include,,,
 12a26364b038,include,include,no,include,,,
@@ -66,7 +66,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 13544c1e7414,include,include,no,include,,,
 135bf0e19b10,include,include,no,include,,,
 136790c5fbc5,include,include,no,include,,,
-146a99b9b311,include,include,no,include,,,
+146a99b9b311,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 14777484b99d,include,include,no,include,,,
 148be08400da,include,include,no,include,,,
 14b3e6b32874,include,include,no,include,,,
@@ -103,7 +103,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 1caec67a4a64,include,include,no,include,,,
 1d16f793a68b,include,include,no,include,,,
 1d44742c9e15,include,include,no,include,,,
-1d49f2843829,include,include,no,include,,,
+1d49f2843829,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 1d715e0cd1aa,include,include,no,include,,,
 1dc251ce8c53,include,include,no,include,,,
 1de0ca5e8cf2,include,include,no,include,,,
@@ -154,7 +154,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 2a9cd8a96604,include,include,no,include,,,
 2abf80ef91e3,include,include,no,include,,,
 2ae3455aa47b,include,include,no,include,,,
-2b18608f6860,include,include,no,include,,,
+2b18608f6860,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 2b34eb642f89,include,include,no,include,,,
 2b48b0e90efa,include,include,no,include,,,
 2b4dc3c2ba75,include,include,no,include,,,
@@ -176,9 +176,9 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 311bac170c43,include,include,no,include,,,
 313a1d740d27,include,include,no,include,,,
 317e6bb03bfa,include,include,no,include,,,
-320ac2390210,include,include,no,include,,,
+320ac2390210,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 323683ff9874,include,include,no,include,,,
-32be27773fc7,include,include,no,include,,,
+32be27773fc7,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 32f23740c07f,include,include,no,include,,,
 32f6aa86e556,include,include,no,include,,,
 3318d42b7459,include,include,no,include,,,
@@ -225,7 +225,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 3f8ab7317ca4,include,include,no,include,,,
 3fb78ea9b31b,include,include,no,include,,,
 3fe2b056b181,include,include,no,include,,,
-3fe31dea1f88,include,include,no,include,,,
+3fe31dea1f88,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 40ca827d69b9,include,include,no,include,,,
 40e4c7fdd4ac,include,include,no,include,,,
 412a4331b358,include,include,no,include,,,
@@ -238,7 +238,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 439a750eda8c,include,include,no,include,,,
 44997e238c7a,include,include,no,include,,,
 455f0fa41521,include,include,no,include,,,
-45bb659a6bb7,include,include,no,include,,,
+45bb659a6bb7,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 45e4cb39dba8,include,include,no,include,,,
 464916b2b572,include,include,no,include,,,
 468c3327bdef,include,include,no,include,,,
@@ -246,7 +246,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 46e6281cc0ea,include,include,no,include,,,
 470b798927ef,include,include,no,include,,,
 4715aa3cb8e4,include,include,no,include,,,
-47412220e1bb,include,include,no,include,,,
+47412220e1bb,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 479092dfcc1c,include,include,no,include,,,
 4798a3b70dd2,include,include,no,include,,,
 47f4148f90dd,include,include,no,include,,,
@@ -267,13 +267,13 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 4de005c12725,include,include,no,include,,,
 4e492b86e6c7,include,include,no,include,,,
 4eb84ca51d29,include,include,no,include,,,
-4ee4d5f63858,include,include,no,include,,,
+4ee4d5f63858,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 5081ec6b6068,include,include,no,include,,,
 5087f7c0e2a3,include,include,no,include,,,
 50989fdc9ad1,include,include,no,include,,,
-51c76454c0ce,include,include,no,include,,,
+51c76454c0ce,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 52b1d7c50b82,include,include,no,include,,,
-52b948ec890d,include,include,no,include,,,
+52b948ec890d,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 5308fd4d7e17,include,include,no,include,,,
 53a6837ae00d,include,include,no,include,,,
 53a718c11ea8,include,include,no,include,,,
@@ -285,7 +285,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 55496bcdeaa7,include,include,no,include,,,
 559b94bd12c0,include,include,no,include,,,
 55cbe84d64e7,include,include,no,include,,,
-56176dc5f8a2,include,include,no,include,,,
+56176dc5f8a2,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 567b25a75e80,include,include,no,include,,,
 57294220386e,include,include,no,include,,,
 5761d4b2accf,include,include,no,include,,,
@@ -365,7 +365,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 6ac0d0a3c55a,include,include,no,include,,,
 6b2b4f6ba298,include,include,no,include,,,
 6bbc4a2d4a89,include,include,no,include,,,
-6cb040f251ff,include,include,no,include,,,
+6cb040f251ff,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 6cb502a2896a,include,include,no,include,,,
 6ce12ea7c2bf,include,include,no,include,,,
 6d5768682408,include,include,no,include,,,
@@ -378,8 +378,8 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 6f139839ae4c,include,include,no,include,,,
 6fe2aeb67e66,include,include,no,include,,,
 7012f13a70a3,include,include,no,include,,,
-70217d6e8f7f,include,include,no,include,,,
-7055fc9f6caf,include,include,no,include,,,
+70217d6e8f7f,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
+7055fc9f6caf,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 71966c8a9dc7,include,include,no,include,,,
 71dc25d5ac6a,include,include,no,include,,,
 71e349feba65,include,include,no,include,,,
@@ -387,9 +387,9 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 7301808f6d01,include,include,no,include,,,
 732f54a585cf,include,include,no,include,,,
 73f3adac41d9,include,include,no,include,,,
-740ccc3ae6f8,include,include,no,include,,,
+740ccc3ae6f8,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 74c6ac2ca350,include,include,no,include,,,
-7540346e79ad,include,include,no,include,,,
+7540346e79ad,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 75a7b04fa681,include,include,no,include,,,
 75c40280653d,include,include,no,include,,,
 75cd91455541,include,include,no,include,,,
@@ -461,7 +461,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 881dd9b94148,include,include,no,include,,,
 885002fa235e,include,include,no,include,,,
 88e005f67ca2,include,include,no,include,,,
-88e1fac438e9,include,include,no,include,,,
+88e1fac438e9,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 88e7d870aeb0,include,include,no,include,,,
 8908fea924fc,include,include,no,include,,,
 89a54b4268bd,include,include,no,include,,,
@@ -530,7 +530,7 @@ paper_id,decision_reviewer_A,decision_reviewer_B,conflict,final_decision,exclusi
 9c8acfa3bc72,include,include,no,include,,,
 9d21f2dbc900,include,include,no,include,,,
 9e79a3ba95a4,include,include,no,include,,,
-9ea18a0e8bfd,include,include,no,include,,,
+9ea18a0e8bfd,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 9eb296f23a10,include,include,no,include,,,
 9ecabb9df454,include,include,no,include,,,
 9ece39a58632,include,include,no,include,,,
@@ -609,9 +609,9 @@ b5820c538b42,include,include,no,include,,,
 b58f4a78e015,include,include,no,include,,,
 b62275ba4e8f,include,include,no,include,,,
 b660e6ffe7f2,include,include,no,include,,,
-b6835993edd2,include,include,no,include,,,
+b6835993edd2,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 b69e5fca1ee6,include,include,no,include,,,
-b6a55230434d,include,include,no,include,,,
+b6a55230434d,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 b7810a7c699b,include,include,no,include,,,
 b7b5ffbce8ec,include,include,no,include,,,
 b7c9696b8ffc,include,include,no,include,,,
@@ -638,7 +638,7 @@ bbd82caa4d1f,include,include,no,include,,,
 bbf0e3662d3c,include,include,no,include,,,
 bc172c83a778,include,include,no,include,,,
 bc7abe57bcdd,include,include,no,include,,,
-bc8d838c7545,include,include,no,include,,,
+bc8d838c7545,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 bcd1adfba1e5,include,include,no,include,,,
 bcec4aa1183a,include,include,no,include,,,
 bcfb2bcd887f,include,include,no,include,,,
@@ -705,7 +705,7 @@ cd9329dc38ef,include,include,no,include,,,
 cde1c896dc3c,include,include,no,include,,,
 cded9dd64213,include,include,no,include,,,
 ce2db00aac7a,include,include,no,include,,,
-ced20dbb381f,include,include,no,include,,,
+ced20dbb381f,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 cf0d84ba3b6a,include,include,no,include,,,
 cf15566d165b,include,include,no,include,,,
 cf30c27e711a,include,include,no,include,,,
@@ -723,9 +723,9 @@ d186493da11a,include,include,no,include,,,
 d1d94604a9f6,include,include,no,include,,,
 d1e6a91e7f11,include,include,no,include,,,
 d21bf4bb49f1,include,include,no,include,,,
-d255ff5edaae,include,include,no,include,,,
+d255ff5edaae,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 d28e11e1f8b0,include,include,no,include,,,
-d2987e36ebc7,include,include,no,include,,,
+d2987e36ebc7,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 d349fc59251c,include,include,no,include,,,
 d3580aed27bb,include,include,no,include,,,
 d37354bd1037,include,include,no,include,,,
@@ -792,7 +792,7 @@ e52f3f130a75,include,include,no,include,,,
 e53a9047880e,include,include,no,include,,,
 e667225d4f3c,include,include,no,include,,,
 e6692a4012cb,include,include,no,include,,,
-e69606eda4d4,include,include,no,include,,,
+e69606eda4d4,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 e6d5993eabdd,include,include,no,include,,,
 e6ece474516c,include,include,no,include,,,
 e71143fc75ea,include,include,no,include,,,
@@ -808,12 +808,12 @@ e9e49c657667,include,include,no,include,,,
 ea3050e19cb2,include,include,no,include,,,
 ea4504852540,include,include,no,include,,,
 ea4b39301625,include,include,no,include,,,
-eb49db8c70eb,include,include,no,include,,,
-eb9b2edee442,include,include,no,include,,,
+eb49db8c70eb,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
+eb9b2edee442,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 ebbdd376073e,include,include,no,include,,,
 ebc26d3b1089,include,include,no,include,,,
 ebc4087b5ca1,include,include,no,include,,,
-ebc427ff9eca,include,include,no,include,,,
+ebc427ff9eca,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 ec46c4209f52,include,include,no,include,,,
 ecd17525083d,include,include,no,include,,,
 ed02e34c2236,include,include,no,include,,,
@@ -854,7 +854,7 @@ f92cf78ba56a,include,include,no,include,,,
 f93112e0b03a,include,include,no,include,,,
 f94276561f48,include,include,no,include,,,
 f96f14134a21,include,include,no,include,,,
-f9a4ea0df88e,include,include,no,include,,,
+f9a4ea0df88e,include,include,no,exclude,EX-NOPAPER,,manually excluded - not in Zotero SLR Results collection
 f9e5b6ee139d,include,include,no,include,,,
 f9f0249a4f6d,include,include,no,include,,,
 fa9e2c7101b8,include,include,no,include,,,

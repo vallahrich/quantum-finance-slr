@@ -20,9 +20,9 @@ Reproducible, local-first toolkit for conducting a **systematic literature revie
 | Duplicates removed | 3,222 |
 | Unique records screened (title/abstract) | 3,010 |
 | Excluded at title/abstract | 2,135 |
-| **Included after screening** | **875** |
-| Full-text PDFs retrieved | 713 (81.5%) |
-| PDFs still missing | 162 (18.5%) |
+| Full-text articles assessed | 875 |
+| Excluded at full-text (no paper found) | 33 |
+| **Included in systematic review** | **842** |
 
 **Calibration**: Cohen’s κ = 0.849 (threshold ≥ 0.70). See [calibration_log.md](05_screening/calibration_log.md).
 
