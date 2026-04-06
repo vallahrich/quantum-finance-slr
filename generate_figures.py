@@ -44,14 +44,13 @@ def _load_ai_screening() -> pd.DataFrame:
 
 # ── Figure 1: PRISMA flow diagram ─────────────────────────────────────────
 def fig_prisma_flow():
-    """Generate a PRISMA 2020 flow diagram."""
+    """Generate a PRISMA 2020 flow diagram (thesis-quality)."""
     master_full = pd.read_csv(REPO / "04_deduped_library" / "master_records.csv", dtype=str).fillna("")
 
     n_identified = len(master_full)
     n_duplicates = int((master_full["duplicate_of"] != "").sum())
     n_screened = n_identified - n_duplicates
 
-    # Full-text decisions (includes both included and excluded at full-text)
     ft_path = REPO / "05_screening" / "full_text_decisions.csv"
     if ft_path.exists():
         ft = pd.read_csv(ft_path, dtype=str).fillna("")
@@ -70,69 +69,156 @@ def fig_prisma_flow():
 
     n_excluded_ta = n_screened - n_assessed_ft
 
-    fig, ax = plt.subplots(figsize=(10, 12))
-    ax.set_xlim(0, 10)
-    ax.set_ylim(0, 12)
+    # Source breakdown
+    sources = master_full["source_db"].value_counts()
+
+    # ── Layout constants ──────────────────────────────────────────────────
+    fig_w, fig_h = 11, 11.5
+    fig, ax = plt.subplots(figsize=(fig_w, fig_h))
+    ax.set_xlim(0, fig_w)
+    ax.set_ylim(0, fig_h)
     ax.axis("off")
 
-    box_style = dict(boxstyle="round,pad=0.4", facecolor="#e8f0fe", edgecolor="#2171b5", linewidth=1.5)
-    excl_style = dict(boxstyle="round,pad=0.4", facecolor="#fce4e4", edgecolor="#d94801", linewidth=1.5)
-    final_style = dict(boxstyle="round,pad=0.4", facecolor="#e6f4ea", edgecolor="#238b45", linewidth=1.5)
+    # Coordinates
+    cx = 4.2            # centre of main flow boxes
+    rx = 8.5            # centre of right-side exclusion boxes
+    bw_main = 3.2       # main box width
+    bw_excl = 3.0       # exclusion box width
+    bh = 0.85           # box height
+    sidebar_w = 1.3     # phase sidebar width
 
-    # Identification
-    ax.text(5, 11.2, "Identification", fontsize=14, fontweight="bold", ha="center")
-    ax.text(5, 10.5, f"Records identified through\ndatabase searching\n(n = {n_identified:,})",
-            ha="center", va="center", fontsize=10, bbox=box_style)
+    # Phase y-bands (top of band, bottom of band)
+    y_id_top, y_id_bot = 11.0, 8.3
+    y_sc_top, y_sc_bot = 8.3, 5.8
+    y_el_top, y_el_bot = 5.8, 3.4
+    y_in_top, y_in_bot = 3.4, 0.8
 
-    # Sources breakdown
-    sources = master_full["source_db"].value_counts()
-    src_text = "  ".join(f"{s}: {c:,}" for s, c in sources.items())
-    ax.text(5, 9.6, src_text, ha="center", va="center", fontsize=8, style="italic", color="#555")
+    # Box y-centres
+    y_ident = 10.2
+    y_src = 9.35
+    y_dup = 9.35
+    y_screen = 7.2
+    y_excl_ta = 7.2
+    y_assess = 4.8
+    y_excl_ft = 4.8
+    y_incl = 2.2
 
-    # Arrow
-    ax.annotate("", xy=(5, 9.1), xytext=(5, 9.4), arrowprops=dict(arrowstyle="->", lw=1.5))
+    # ── Colours (PRISMA 2020 standard: muted, professional) ───────────────
+    c_sidebar = "#e8e8e8"
+    c_sidebar_text = "#444444"
+    c_box_fill = "#ffffff"
+    c_box_edge = "#333333"
+    c_excl_fill = "#fafafa"
+    c_excl_edge = "#888888"
+    c_incl_fill = "#f0f7f0"
+    c_incl_edge = "#333333"
+    c_arrow = "#333333"
+    lw_box = 1.2
+    lw_arrow = 1.0
+    fs_box = 9.5
+    fs_phase = 11
 
-    # Duplicates removed
-    ax.text(8, 9.1, f"Duplicates removed\n(n = {n_duplicates:,})", ha="center", va="center",
-            fontsize=10, bbox=excl_style)
-    ax.annotate("", xy=(6.5, 9.1), xytext=(5.3, 8.8), arrowprops=dict(arrowstyle="->", lw=1))
+    # ── Helper: draw a box with centred text ──────────────────────────────
+    def _box(x, y, w, h, text, fill, edge, lw=lw_box, fontsize=fs_box,
+             fontweight="normal"):
+        rect = mpatches.FancyBboxPatch(
+            (x - w / 2, y - h / 2), w, h,
+            boxstyle="round,pad=0.08",
+            facecolor=fill, edgecolor=edge, linewidth=lw,
+        )
+        ax.add_patch(rect)
+        ax.text(x, y, text, ha="center", va="center", fontsize=fontsize,
+                fontweight=fontweight, linespacing=1.35)
 
-    # Screening
-    ax.text(5, 8.5, "Screening", fontsize=14, fontweight="bold", ha="center")
-    ax.text(5, 7.8, f"Records screened\n(title/abstract)\n(n = {n_screened:,})",
-            ha="center", va="center", fontsize=10, bbox=box_style)
+    def _arrow_down(x, y_from, y_to):
+        ax.annotate("", xy=(x, y_to), xytext=(x, y_from),
+                    arrowprops=dict(arrowstyle="-|>", color=c_arrow,
+                                    lw=lw_arrow, mutation_scale=12))
 
-    ax.annotate("", xy=(5, 7.1), xytext=(5, 7.4), arrowprops=dict(arrowstyle="->", lw=1.5))
+    def _arrow_right(x_from, x_to, y):
+        ax.annotate("", xy=(x_to, y), xytext=(x_from, y),
+                    arrowprops=dict(arrowstyle="-|>", color=c_arrow,
+                                    lw=lw_arrow, mutation_scale=12))
 
-    # Excluded at T/A
-    ax.text(8, 7.1, f"Records excluded\n(n = {n_excluded_ta:,})", ha="center", va="center",
-            fontsize=10, bbox=excl_style)
-    ax.annotate("", xy=(6.5, 7.1), xytext=(5.5, 7.1), arrowprops=dict(arrowstyle="->", lw=1))
+    # ── Phase sidebar bands ───────────────────────────────────────────────
+    for top, bot, label in [
+        (y_id_top, y_id_bot, "Identification"),
+        (y_sc_top, y_sc_bot, "Screening"),
+        (y_el_top, y_el_bot, "Eligibility"),
+        (y_in_top, y_in_bot, "Included"),
+    ]:
+        rect = mpatches.FancyBboxPatch(
+            (0.15, bot), sidebar_w, top - bot,
+            boxstyle="round,pad=0.06",
+            facecolor=c_sidebar, edgecolor="#cccccc", linewidth=0.8,
+        )
+        ax.add_patch(rect)
+        ax.text(0.15 + sidebar_w / 2, (top + bot) / 2, label,
+                ha="center", va="center", fontsize=fs_phase,
+                fontweight="bold", color=c_sidebar_text, rotation=90)
 
-    # Eligibility
-    ax.text(5, 6.2, "Eligibility", fontsize=14, fontweight="bold", ha="center")
-    ax.text(5, 5.5, f"Full-text articles assessed\nfor eligibility\n(n = {n_assessed_ft:,})",
-            ha="center", va="center", fontsize=10, bbox=box_style)
+    # ── Identification ────────────────────────────────────────────────────
+    # Source breakdown embedded in the box
+    src_parts = [f"{s.replace('_', ' ').title()}: {c:,}" for s, c in sources.items()]
+    src_line = "  \u2022  ".join(src_parts)
 
-    # Excluded at full-text
+    id_box_h = 1.15
+    _box(cx, y_ident, bw_main + 0.4, id_box_h,
+         f"Records identified through\ndatabase searching\n(n = {n_identified:,})",
+         c_box_fill, c_box_edge)
+    ax.text(cx, y_ident - 0.45, src_line,
+            ha="center", va="center", fontsize=6.5, color="#666666")
+
+    # Duplicates removed (right side) — positioned between ident and screening
+    y_junct = y_ident - id_box_h / 2 - 0.45  # junction point on the vertical line
+    _box(rx, y_junct, bw_excl, 0.65,
+         f"Duplicates removed\n(n = {n_duplicates:,})",
+         c_excl_fill, c_excl_edge)
+
+    # Vertical arrow: ident box → junction → screening box
+    # Segment 1: ident bottom to junction
+    ax.plot([cx, cx], [y_ident - id_box_h / 2, y_junct], color=c_arrow, lw=lw_arrow,
+            solid_capstyle="butt")
+    # Horizontal arrow: junction → duplicates box
+    _arrow_right(cx, rx - bw_excl / 2, y_junct)
+    # Segment 2: junction to screening box (with arrowhead)
+    _arrow_down(cx, y_junct, y_screen + bh / 2)
+
+    # ── Screening ─────────────────────────────────────────────────────────
+    _box(cx, y_screen, bw_main, bh,
+         f"Records screened\n(title/abstract)\n(n = {n_screened:,})",
+         c_box_fill, c_box_edge)
+
+    # Records excluded at T/A (right side)
+    _box(rx, y_excl_ta, bw_excl, 0.65,
+         f"Records excluded\n(n = {n_excluded_ta:,})",
+         c_excl_fill, c_excl_edge)
+
+    # Arrow down to eligibility
+    _arrow_down(cx, y_screen - bh / 2, y_assess + bh / 2)
+    # Arrow right to exclusion
+    _arrow_right(cx + bw_main / 2, rx - bw_excl / 2, y_excl_ta)
+
+    # ── Eligibility ───────────────────────────────────────────────────────
+    _box(cx, y_assess, bw_main, bh,
+         f"Full-text articles assessed\nfor eligibility\n(n = {n_assessed_ft:,})",
+         c_box_fill, c_box_edge)
+
+    # Full-text exclusion (right side)
     if n_excluded_ft > 0:
-        ax.text(8, 5.5, f"Full-text articles excluded\n(n = {n_excluded_ft:,})\nReason: no paper found",
-                ha="center", va="center", fontsize=10, bbox=excl_style)
-        ax.annotate("", xy=(6.5, 5.5), xytext=(5.5, 5.5), arrowprops=dict(arrowstyle="->", lw=1))
+        _box(rx, y_excl_ft, bw_excl, 0.85,
+             f"Full-text articles excluded\n(n = {n_excluded_ft})\n"
+             f"Reason: no paper found",
+             c_excl_fill, c_excl_edge)
+        _arrow_right(cx + bw_main / 2, rx - bw_excl / 2, y_excl_ft)
 
-    ax.annotate("", xy=(5, 4.7), xytext=(5, 5.0), arrowprops=dict(arrowstyle="->", lw=1.5))
+    # Arrow down to included
+    _arrow_down(cx, y_assess - bh / 2, y_incl + bh / 2)
 
-    # Included
-    ax.text(5, 3.8, "Included", fontsize=14, fontweight="bold", ha="center")
-    ax.text(5, 3.1, f"Studies included in\nsystematic review\n(n = {n_included_ft:,})",
-            ha="center", va="center", fontsize=10, bbox=final_style)
-
-    # Note about PDFs
-    import os
-    n_pdfs = len([f for f in os.listdir(REPO / "07_full_texts" / "pdfs") if f.endswith(".pdf")])
-    ax.text(5, 2.2,
-            f"Full-text PDFs retrieved: {n_pdfs:,} / {n_included_ft:,}",
-            ha="center", va="center", fontsize=9, style="italic", color="#555")
+    # ── Included ──────────────────────────────────────────────────────────
+    _box(cx, y_incl, bw_main, bh,
+         f"Studies included in\nsystematic review\n(n = {n_included_ft:,})",
+         c_incl_fill, c_incl_edge, fontweight="bold")
 
     fig.savefig(FIGURES / "fig1_prisma_flow.png")
     fig.savefig(FIGURES / "fig1_prisma_flow.pdf")
