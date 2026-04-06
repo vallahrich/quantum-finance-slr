@@ -134,7 +134,7 @@ python generate_figures.py
 This repository delivers Step 1 of the thesis workflow. The handoff to Step 2 includes:
 
 - **842 included papers** in `05_screening/included_for_coding.csv`
-- **646 full-text PDFs** in `07_full_texts/pdfs/` (tracked via Git LFS) and Zotero
+- **714 full-text PDFs** (of 842) in `07_full_texts/pdfs/` (tracked via Git LFS) and Zotero
 - **Master library** in `04_deduped_library/master_records.csv` with metadata
 - **Screening audit trail** — AI decisions, discrepancy review, calibration log, prompt logs
 
