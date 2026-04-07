@@ -1,11 +1,11 @@
 # Missing PDFs Report
-Generated: 2026-04-07 10:53
+Generated: 2026-04-07 10:56
 
 ## Summary
 - Included papers: **842**
-- PDFs on disk: **766**
+- PDFs on disk: **774**
 - Zenodo code/data records excluded (not scientific papers): **9**
-- Still missing: **67**
+- Still missing: **59**
 
 ### Missing by publisher
 
@@ -21,7 +21,6 @@ Generated: 2026-04-07 10:53
 | Springer | 3 | Paywalled |
 | De Gruyter | 3 | Paywalled |
 | Elsevier | 3 | Paywalled |
-| APS (Phys Rev) | 2 | Paywalled |
 | World Scientific | 2 | Paywalled |
 | SCITEPRESS | 1 | Paywalled |
 | Inderscience | 1 | Paywalled |
@@ -36,7 +35,7 @@ Generated: 2026-04-07 10:53
 | Wilmott | 1 | Paywalled |
 | Taylor & Francis | 1 | Paywalled |
 | TowardsAI | 1 | Paywalled |
-| No DOI / Preprint | 11 | Unknown |
+| No DOI / Preprint | 5 | Unknown |
 
 ---
 
@@ -294,22 +293,6 @@ Generated: 2026-04-07 10:53
 - **status:** `download_failed`
 - **link:** [10.1016/bs.adcom.2025.07.008](https://doi.org/10.1016/bs.adcom.2025.07.008)
 
-## APS (Phys Rev) (2) — Paywalled
-
-### Quantum unary approach to option pricing
-- **paper_id:** `3f4c5ad6749d`
-- **year:** 2019
-- **status:** `download_failed`
-- **link:** [10.1103/PhysRevA.103.032414](https://doi.org/10.1103/PhysRevA.103.032414)
-- **alternatives:** [arXiv:1912.01618](https://arxiv.org/abs/1912.01618)
-
-### Quantum machine learning on near-term quantum devices: Current state of supervised and unsupervised techniques for real-world applications
-- **paper_id:** `86891f250a78`
-- **year:** 2024
-- **status:** `download_failed`
-- **link:** [10.1103/physrevapplied.21.067001](https://doi.org/10.1103/physrevapplied.21.067001)
-- **alternatives:** [arXiv:2307.00908](https://arxiv.org/abs/2307.00908)
-
 ## World Scientific (2) — Paywalled
 
 ### Quantum Computations and Option Pricing
@@ -428,63 +411,27 @@ Generated: 2026-04-07 10:53
 - **status:** `download_failed`
 - **link:** [10.53759/7669/jmc202505024](https://doi.org/10.53759/7669/jmc202505024)
 
-## No DOI / Preprint (11) — 
-
-### Uncertainty and symmetry bound for the total detection probability of quantum walks
-- **paper_id:** `4dc6746d80a2`
-- **year:** 2019
-- **status:** `download_failed`
-- **alternatives:** [arXiv:1906.08108](https://arxiv.org/abs/1906.08108)
+## No DOI / Preprint (5) — 
 
 ### Quantum computing: Challenges and opportunities
 - **paper_id:** `8bb680c2fb8b`
 - **year:** 2020
 - **status:** `download_failed`
 
-### Quantum algorithm for stochastic optimal stopping problems
-- **paper_id:** `0067a26ce270`
-- **year:** 2021
-- **status:** `download_failed`
-- **alternatives:** [arXiv:2111.15332](https://arxiv.org/abs/2111.15332)
-
-### Pricing ?nancial derivatives with exponential quantum speedup
-- **paper_id:** `0608ad48d5b8`
-- **year:** 2021
-- **status:** `no_oa_source`
-- **alternatives:** [arXiv:2101.04023](https://arxiv.org/abs/2101.04023)
-
 ### QAOA Applications in Finance
 - **paper_id:** `fa9e2c7101b8`
 - **year:** 2021
 - **status:** `no_oa_source`
-
-### Quantum neural network for continuous variable prediction
-- **paper_id:** `1d16f793a68b`
-- **year:** 2022
-- **status:** `download_failed`
-- **alternatives:** [arXiv:2212.04209](https://arxiv.org/abs/2212.04209)
 
 ### QAOA applied to the portfolio optimization problem
 - **paper_id:** `3a3ba897009d`
 - **year:** 2023
 - **status:** `download_failed`
 
-### Automated Function Implementation via Conditional Parameterized Quantum Circuits with Applications to Finance
-- **paper_id:** `4de005c12725`
-- **year:** 2023
-- **status:** `no_oa_source`
-- **alternatives:** [arXiv:2304.08793](https://arxiv.org/abs/2304.08793)
-
 ### Quantum Machine Learning and Optimisation in Finance: Drive financial innovation with quantum-powered algorithms and optimisation strategies
 - **paper_id:** `e505ff143d95`
 - **year:** 2024
 - **status:** `no_oa_source`
-
-### Hybrid Quantum-Classical Machine Learning with PennyLane: A Comprehensive Guide for Computational Research
-- **paper_id:** `1312e9d3c55e`
-- **year:** 2025
-- **status:** `download_failed`
-- **alternatives:** [arXiv:2511.14786](https://arxiv.org/abs/2511.14786)
 
 ### Improving credit card transaction fraud detection using CVQBoosting
 - **paper_id:** `d7449b1ba0c5`
