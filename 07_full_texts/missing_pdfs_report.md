@@ -1,11 +1,11 @@
 # Missing PDFs Report
-Generated: 2026-04-07 11:09
+Generated: 2026-04-07 (updated)
 
 ## Summary
 - Included papers: **842**
-- PDFs on disk: **779**
+- PDFs on disk: **785**
 - Zenodo code/data records excluded (not scientific papers): **9**
-- Still missing: **54**
+- Still missing: **48**
 
 ### Missing by publisher
 
@@ -19,20 +19,16 @@ Generated: 2026-04-07 11:09
 | Wiley | 3 | Paywalled |
 | De Gruyter | 2 | Paywalled |
 | World Scientific | 2 | Paywalled |
-| SCITEPRESS | 1 | Paywalled |
 | Inderscience | 1 | Paywalled |
 | PUC-Rio | 1 | Paywalled |
-| IEIE | 1 | Paywalled |
 | IOP Publishing | 1 | Paywalled |
 | Routledge | 1 | Paywalled |
-| QSS | 1 | Paywalled |
 | SPE/IPTC | 1 | Paywalled |
 | SPIE | 1 | Paywalled |
 | Optica/OSA | 1 | Paywalled |
 | Wilmott | 1 | Paywalled |
 | Taylor & Francis | 1 | Paywalled |
-| TowardsAI | 1 | Paywalled |
-| No DOI / Preprint | 5 | Unknown |
+| No DOI / Preprint | 3 | Unknown/Paywalled |
 
 ---
 
@@ -268,14 +264,6 @@ Generated: 2026-04-07 11:09
 - **status:** `download_failed`
 - **link:** [10.1142/s2010324724400101](https://doi.org/10.1142/s2010324724400101)
 
-## SCITEPRESS (1) — Paywalled
-
-### Periodic Unitary Encoding for Quantum Anomaly Detection of Temporal Series
-- **paper_id:** `30582038a7ba`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [10.5220/0013537800004525](https://doi.org/10.5220/0013537800004525)
-
 ## Inderscience (1) — Paywalled
 
 ### Numerical solution of boundary value problems using quantum computing system
@@ -292,14 +280,6 @@ Generated: 2026-04-07 11:09
 - **status:** `download_failed`
 - **link:** [10.17771/pucrio.acad.73105](https://doi.org/10.17771/pucrio.acad.73105)
 
-## IEIE (1) — Paywalled
-
-### Research on the Design of Financial Data Analysis Platform with Joint PSO-HQCNN and RPA Robot Visualization Technology
-- **paper_id:** `455f0fa41521`
-- **year:** 2024
-- **status:** `download_failed`
-- **link:** [10.5573/ieiespc.2024.13.5.472](https://doi.org/10.5573/ieiespc.2024.13.5.472)
-
 ## IOP Publishing (1) — Paywalled
 
 ### A quantum feature selection framework via ground state preparation
@@ -315,14 +295,6 @@ Generated: 2026-04-07 11:09
 - **year:** 2025
 - **status:** `download_failed`
 - **link:** [10.4324/9781003501947-7](https://doi.org/10.4324/9781003501947-7)
-
-## QSS (1) — Paywalled
-
-### Quantum Interference Effects in Social Decision-Making
-- **paper_id:** `778a06edc7f8`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [10.6914/qss.010102](https://doi.org/10.6914/qss.010102)
 
 ## SPE/IPTC (1) — Paywalled
 
@@ -364,15 +336,7 @@ Generated: 2026-04-07 11:09
 - **status:** `download_failed`
 - **link:** [10.1080/14697688.2024.2375260](https://doi.org/10.1080/14697688.2024.2375260)
 
-## TowardsAI (1) — Paywalled
-
-### Toward Efficient Credit Card Fraud Detection: Leveraging Quantum Neural Networks and Modified Feature Selection Techniques
-- **paper_id:** `e9b892fcd6fc`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [10.53759/7669/jmc202505024](https://doi.org/10.53759/7669/jmc202505024)
-
-## No DOI / Preprint (5) — 
+## No DOI / Preprint (3) —
 
 ### Quantum computing: Challenges and opportunities
 - **paper_id:** `8bb680c2fb8b`
@@ -384,18 +348,8 @@ Generated: 2026-04-07 11:09
 - **year:** 2021
 - **status:** `no_oa_source`
 
-### QAOA applied to the portfolio optimization problem
-- **paper_id:** `3a3ba897009d`
-- **year:** 2023
-- **status:** `download_failed`
-
 ### Quantum Machine Learning and Optimisation in Finance: Drive financial innovation with quantum-powered algorithms and optimisation strategies
 - **paper_id:** `e505ff143d95`
 - **year:** 2024
 - **status:** `no_oa_source`
-
-### Improving credit card transaction fraud detection using CVQBoosting
-- **paper_id:** `d7449b1ba0c5`
-- **year:** 2026
-- **status:** `download_failed`
 
