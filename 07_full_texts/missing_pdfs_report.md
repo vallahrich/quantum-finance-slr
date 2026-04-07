@@ -1,5 +1,5 @@
 # Missing PDFs Report
-Generated: 2026-04-07 10:50
+Generated: 2026-04-07 10:51
 
 ## Summary
 - Included papers: **842**
@@ -364,14 +364,14 @@ Generated: 2026-04-07 10:50
 - **year:** 2019
 - **status:** `download_failed`
 - **link:** [10.1103/PhysRevA.103.032414](https://doi.org/10.1103/PhysRevA.103.032414)
-- **alternatives:** [arXiv:2012.10356](https://arxiv.org/abs/2012.10356)
+- **alternatives:** [arXiv:1912.01618](https://arxiv.org/abs/1912.01618)
 
 ### Quantum machine learning on near-term quantum devices: Current state of supervised and unsupervised techniques for real-world applications
 - **paper_id:** `86891f250a78`
 - **year:** 2024
 - **status:** `download_failed`
 - **link:** [10.1103/physrevapplied.21.067001](https://doi.org/10.1103/physrevapplied.21.067001)
-- **alternatives:** [arXiv:2201.09782](https://arxiv.org/abs/2201.09782)
+- **alternatives:** [arXiv:2307.00908](https://arxiv.org/abs/2307.00908)
 
 ## World Scientific (2) — Paywalled
 
@@ -482,7 +482,6 @@ Generated: 2026-04-07 10:50
 - **year:** 2024
 - **status:** `download_failed`
 - **link:** [10.1080/14697688.2024.2375260](https://doi.org/10.1080/14697688.2024.2375260)
-- **alternatives:** [arXiv:2312.09149](https://arxiv.org/abs/2312.09149)
 
 ## TowardsAI (1) — Paywalled
 
@@ -498,25 +497,24 @@ Generated: 2026-04-07 10:50
 - **paper_id:** `4dc6746d80a2`
 - **year:** 2019
 - **status:** `download_failed`
-- **alternatives:** [arXiv:1906.07791](https://arxiv.org/abs/1906.07791)
+- **alternatives:** [arXiv:1906.08108](https://arxiv.org/abs/1906.08108)
 
 ### Quantum computing: Challenges and opportunities
 - **paper_id:** `8bb680c2fb8b`
 - **year:** 2020
 - **status:** `download_failed`
-- **alternatives:** [arXiv:2001.05172](https://arxiv.org/abs/2001.05172)
 
 ### Quantum algorithm for stochastic optimal stopping problems
 - **paper_id:** `0067a26ce270`
 - **year:** 2021
 - **status:** `download_failed`
-- **alternatives:** [arXiv:2111.04487](https://arxiv.org/abs/2111.04487)
+- **alternatives:** [arXiv:2111.15332](https://arxiv.org/abs/2111.15332)
 
 ### Pricing ?nancial derivatives with exponential quantum speedup
 - **paper_id:** `0608ad48d5b8`
 - **year:** 2021
 - **status:** `no_oa_source`
-- **alternatives:** [arXiv:2011.10075](https://arxiv.org/abs/2011.10075)
+- **alternatives:** [arXiv:2101.04023](https://arxiv.org/abs/2101.04023)
 
 ### QAOA Applications in Finance
 - **paper_id:** `fa9e2c7101b8`
@@ -527,13 +525,12 @@ Generated: 2026-04-07 10:50
 - **paper_id:** `1d16f793a68b`
 - **year:** 2022
 - **status:** `download_failed`
-- **alternatives:** [arXiv:2012.06074](https://arxiv.org/abs/2012.06074)
+- **alternatives:** [arXiv:2212.04209](https://arxiv.org/abs/2212.04209)
 
 ### QAOA applied to the portfolio optimization problem
 - **paper_id:** `3a3ba897009d`
 - **year:** 2023
 - **status:** `download_failed`
-- **alternatives:** [arXiv:2106.02369](https://arxiv.org/abs/2106.02369)
 
 ### Automated Function Implementation via Conditional Parameterized Quantum Circuits with Applications to Finance
 - **paper_id:** `4de005c12725`
@@ -550,7 +547,7 @@ Generated: 2026-04-07 10:50
 - **paper_id:** `1312e9d3c55e`
 - **year:** 2025
 - **status:** `download_failed`
-- **alternatives:** [arXiv:2502.02890](https://arxiv.org/abs/2502.02890)
+- **alternatives:** [arXiv:2511.14786](https://arxiv.org/abs/2511.14786)
 
 ### Improving credit card transaction fraud detection using CVQBoosting
 - **paper_id:** `d7449b1ba0c5`

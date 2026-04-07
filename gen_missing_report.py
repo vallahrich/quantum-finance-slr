@@ -130,20 +130,25 @@ def alt_links(pid, primary_doi):
     return links
 
 
-# Known arXiv alternatives found via web search (added manually)
+# Known arXiv alternatives — verified via web search
 KNOWN_ALT_ARXIV = {
-    "0067a26ce270": "2111.04487",  # Quantum algorithm for stochastic optimal stopping
-    "0608ad48d5b8": "2011.10075",  # Pricing financial derivatives with exponential speedup
-    "4de005c12725": "2304.08793",  # Automated Function Implementation via Conditional Parameterized QC
-    "4dc6746d80a2": "1906.07791",  # Uncertainty and symmetry bound for quantum walks
-    "3a3ba897009d": "2106.02369",  # QAOA applied to portfolio optimization
-    "8bb680c2fb8b": "2001.05172",  # Quantum computing: Challenges and opportunities
-    "cde1c896dc3c": "2109.04298",  # Quantum Machine Learning for Finance (already arXiv)
-    "3f4c5ad6749d": "2012.10356",  # Quantum unary approach to option pricing (APS preprint)
-    "86891f250a78": "2201.09782",  # QML on near-term quantum devices
-    "ba5afbcce6b8": "2312.09149",  # Quantum ML and Optimisation in Finance (T&F)
-    "1d16f793a68b": "2012.06074",  # Quantum neural network for continuous variable prediction
-    "1312e9d3c55e": "2502.02890",  # Hybrid QC-ML with PennyLane
+    "0067a26ce270": "2111.15332",  # Quantum algorithm for stochastic optimal stopping
+    "0608ad48d5b8": "2101.04023",  # Pricing financial derivatives with exponential quantum speedup
+    "1312e9d3c55e": "2511.14786",  # Hybrid Quantum-Classical Machine Learning with PennyLane
+    "1d16f793a68b": "2212.04209",  # Quantum neural network for continuous variable prediction
+    "4dc6746d80a2": "1906.08108",  # Uncertainty and symmetry bound for quantum walks
+    "4de005c12725": "2304.08793",  # Automated Function Implementation via Conditional Parameterized QC (Wolf)
+    "3f4c5ad6749d": "1912.01618",  # Quantum unary approach to option pricing (APS, Phys Rev A)
+    "86891f250a78": "2307.00908",  # QML on near-term quantum devices (APS, Phys Rev Applied)
+    "cde1c896dc3c": "2109.04298",  # Quantum Machine Learning for Finance (primary IS arXiv)
+    # Not confirmed open access — no preprint found:
+    # 3a3ba897009d  QAOA applied to portfolio optimization
+    # 8bb680c2fb8b  Quantum computing: Challenges and opportunities (IEEE conference)
+    # fa9e2c7101b8  QAOA Applications in Finance (APS abstract only)
+    # e505ff143d95  QML and Optimisation in Finance (Packt book)
+    # ba5afbcce6b8  QML and Optimisation in Finance T&F (book review, no preprint)
+    # 7e22c616ae62  Portfolio Optimization: Applications in QC (Wiley 2016 chapter)
+    # 46e6281cc0ea  A quantum feature selection framework (IOP, no preprint)
 }
 
 # Build per-paper data
