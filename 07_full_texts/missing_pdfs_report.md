@@ -1,16 +1,16 @@
 # Missing PDFs Report
-Generated: 2026-04-07 10:51
+Generated: 2026-04-07 10:53
 
 ## Summary
 - Included papers: **842**
 - PDFs on disk: **766**
-- Still missing: **76**
+- Zenodo code/data records excluded (not scientific papers): **9**
+- Still missing: **67**
 
 ### Missing by publisher
 
 | Publisher | Count | Access |
 |-----------|-------|--------|
-| Zenodo | 9 | Open Access |
 | Open Access (DOI) | 2 | Open Access |
 | WJARR/WJAETS | 1 | Open Access |
 | ResearchGate | 1 | Open Access |
@@ -39,69 +39,6 @@ Generated: 2026-04-07 10:51
 | No DOI / Preprint | 11 | Unknown |
 
 ---
-
-## Zenodo (9) — Open Access
-
-### Hybrid Quantum Market State Inference for Ultra-Short-Horizon Financial Prediction
-- **paper_id:** `115e509ec529`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [Zenodo:17924888](https://zenodo.org/record/17924888)
-
-### qaoa_portfolio_optimization.py ? QAOA Benchmark for Cardinality-Constrained Portfolio Selection
-- **paper_id:** `89a54b4268bd`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [Zenodo:18079637](https://zenodo.org/record/18079637)
-- **alternatives:** [Zenodo:18079636](https://zenodo.org/record/18079636)
-
-### portfolio_optimizer.py ? Disruptive Quantum-Inspired Portfolio Optimizer
-- **paper_id:** `8d58112a9617`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [Zenodo:18013469](https://zenodo.org/record/18013469)
-- **alternatives:** [Zenodo:18013468](https://zenodo.org/record/18013468)
-
-### Quantum Approaches to NP-Hard Combinatorial Optimization Problems: A Review
-- **paper_id:** `9a4ba980a229`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [Zenodo:18194157](https://zenodo.org/record/18194157)
-- **alternatives:** [Zenodo:18194156](https://zenodo.org/record/18194156)
-
-### QCC Echo: Redacted Results-Only Verification and Hardware Match Summary
-- **paper_id:** `b2cc85a6587a`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [Zenodo:17527846](https://zenodo.org/record/17527846)
-- **alternatives:** [Zenodo:17527845](https://zenodo.org/record/17527845)
-
-### Extrapolation method to optimize linear-ramp quantum approximate optimization algorithm parameters: dataset
-- **paper_id:** `1dc251ce8c53`
-- **year:** 2026
-- **status:** `download_failed`
-- **link:** [Zenodo:18302993](https://zenodo.org/record/18302993)
-- **alternatives:** [Zenodo:18302992](https://zenodo.org/record/18302992)
-
-### hgribeirogeo/qaoa-carbon-cerrado: v1.0 - Initial Release for Quantum Journal Submission
-- **paper_id:** `251a3166cf94`
-- **year:** 2026
-- **status:** `download_failed`
-- **link:** [Zenodo:18418054](https://zenodo.org/record/18418054)
-
-### hgribeirogeo/qaoa-carbon-cerrado: v2.0 - Seven-Run Validation Study
-- **paper_id:** `32f23740c07f`
-- **year:** 2026
-- **status:** `download_failed`
-- **link:** [Zenodo:18507119](https://zenodo.org/record/18507119)
-- **alternatives:** [Zenodo:18418053](https://zenodo.org/record/18418053)
-
-### PREreview of "The Inverse Born Rule Fallacy: On the Informational Limits of Phase-Locked Amplitude Encoding"
-- **paper_id:** `3bd0da5c69ac`
-- **year:** 2026
-- **status:** `download_failed`
-- **link:** [Zenodo:18793266](https://zenodo.org/record/18793266)
-- **alternatives:** [Zenodo:18793265](https://zenodo.org/record/18793265)
 
 ## Open Access (DOI) (2) — Open Access
 

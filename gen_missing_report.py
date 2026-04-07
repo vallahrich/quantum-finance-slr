@@ -38,7 +38,24 @@ have_on_disk = {
     pid for pid, row in download_log.items()
     if row.get("status") == "success" and pid in included_ids and file_exists(row)
 }
-missing_pids = sorted(pid for pid in included_ids if pid not in have_on_disk)
+
+# Zenodo records are code repos / datasets / PREreviews — not scientific papers needing a PDF
+ZENODO_EXCLUDE = {
+    "115e509ec529",  # Hybrid Quantum Market State Inference (Zenodo code/data)
+    "89a54b4268bd",  # qaoa_portfolio_optimization.py — QAOA Benchmark code
+    "8d58112a9617",  # portfolio_optimizer.py — Disruptive Quantum-Inspired Portfolio Optimizer code
+    "251a3166cf94",  # hgribeirogeo/qaoa-carbon-cerrado v1.0 — code repo
+    "32f23740c07f",  # hgribeirogeo/qaoa-carbon-cerrado v2.0 — code repo
+    "3bd0da5c69ac",  # PREreview of "The Inverse Born Rule Fallacy" — review note
+    "9a4ba980a229",  # Quantum Approaches to NP-Hard Combinatorial Optimization — Zenodo preprint
+    "b2cc85a6587a",  # QCC Echo: Redacted Results-Only Verification — Zenodo report
+    "1dc251ce8c53",  # Extrapolation method to optimize linear-ramp QAOA (Zenodo)
+}
+
+missing_pids = sorted(
+    pid for pid in included_ids
+    if pid not in have_on_disk and pid not in ZENODO_EXCLUDE
+)
 
 
 def classify_publisher(doi):
@@ -209,6 +226,7 @@ lines.append("")
 lines.append("## Summary")
 lines.append(f"- Included papers: **{len(included_ids)}**")
 lines.append(f"- PDFs on disk: **{len(have_on_disk)}**")
+lines.append(f"- Zenodo code/data records excluded (not scientific papers): **{len(ZENODO_EXCLUDE)}**")
 lines.append(f"- Still missing: **{len(missing_pids)}**")
 lines.append("")
 lines.append("### Missing by publisher")
