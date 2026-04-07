@@ -1,93 +1,559 @@
 # Missing PDFs Report
-Generated: 2026-04-06 17:48
+Generated: 2026-04-07 10:50
 
 ## Summary
 - Included papers: **842**
 - PDFs on disk: **766**
 - Still missing: **76**
 
-### Missing by status
-- `download_failed`: 66
-- `mismatch`: 2
-- `no_oa_source`: 8
+### Missing by publisher
 
-## Missing Papers (76)
+| Publisher | Count | Access |
+|-----------|-------|--------|
+| Zenodo | 9 | Open Access |
+| Open Access (DOI) | 2 | Open Access |
+| WJARR/WJAETS | 1 | Open Access |
+| ResearchGate | 1 | Open Access |
+| arXiv | 1 | Open Access |
+| IGI Global | 12 | Paywalled |
+| CRC Press | 9 | Paywalled |
+| Wiley | 4 | Paywalled |
+| Springer | 3 | Paywalled |
+| De Gruyter | 3 | Paywalled |
+| Elsevier | 3 | Paywalled |
+| APS (Phys Rev) | 2 | Paywalled |
+| World Scientific | 2 | Paywalled |
+| SCITEPRESS | 1 | Paywalled |
+| Inderscience | 1 | Paywalled |
+| PUC-Rio | 1 | Paywalled |
+| IEIE | 1 | Paywalled |
+| IOP Publishing | 1 | Paywalled |
+| Routledge | 1 | Paywalled |
+| QSS | 1 | Paywalled |
+| SPE/IPTC | 1 | Paywalled |
+| SPIE | 1 | Paywalled |
+| Optica/OSA | 1 | Paywalled |
+| Wilmott | 1 | Paywalled |
+| Taylor & Francis | 1 | Paywalled |
+| TowardsAI | 1 | Paywalled |
+| No DOI / Preprint | 11 | Unknown |
 
-| paper_id | year | title | doi | status |
-|----------|------|-------|-----|--------|
-| 0067a26ce270 | 2021 | Quantum algorithm for stochastic optimal stopping problems |  | download_failed |
-| 00e181896bba | 2025 | Pioneering Quantum Computing in Financial Services | 10.4018/979-8-3373-2893-5.ch013 | download_failed |
-| 0525be4c60fb | 2025 | Application of quantum computing in healthcare billing - USA | 10.30574/ijsra.2025.14.1.0102 | mismatch |
-| 0608ad48d5b8 | 2021 | Pricing ?nancial derivatives with exponential quantum speedup |  | no_oa_source |
-| 06db2582a06a | 2026 | Introduction to Quantum Computing | 10.1201/9781003674566-1 | download_failed |
-| 0801deffcfa4 | 2026 | Harnessing Quantum Computing for Predictive Analysis | 10.1201/9781003587835-4 | download_failed |
-| 0f3a64e9e3ed | 2022 | Quantitative Analysis and Forecasting Techniques in Financial Markets: A 2022 Re | 10.70088/wfwcn555 | download_failed |
-| 10832c99e683 | 2026 | Cost Savings Through Quantum AI-Driven Optimizations | 10.4018/979-8-3373-4347-1.ch004 | download_failed |
-| 115e509ec529 | 2025 | Hybrid Quantum Market State Inference for Ultra-Short-Horizon Financial Predicti | 10.5281/zenodo.17924888 | download_failed |
-| 119578338c9e | 2025 | Quantum Finance: Revolutionizing Financial Markets with Quantum Computing | 10.1201/9781003482154-6 | download_failed |
-| 1312e9d3c55e | 2025 | Hybrid Quantum-Classical Machine Learning with PennyLane: A Comprehensive Guide  |  | download_failed |
-| 13544c1e7414 | 2025 | Quantum Machine Learning for Stock Price Movement Prediction | 10.1007/978-981-95-2429-7_7 | download_failed |
-| 135bf0e19b10 | 2025 | Performance evaluation of post quantum digital signature algorithms over WDM opt | 10.1515/joc-2025-0104 | download_failed |
-| 157054b518f8 | 2025 | Quantum computing research: An in-depth exploration | 10.1016/bs.adcom.2025.02.005 | download_failed |
-| 1d16f793a68b | 2022 | Quantum neural network for continuous variable prediction |  | download_failed |
-| 1dc251ce8c53 | 2026 | Extrapolation method to optimize linear-ramp quantum approximate optimization al | 10.5281/zenodo.18302993 | download_failed |
-| 250a9d44ef66 | 2024 | Quantum Computing: Algorithms and Applications in Optimization Problems | 10.36676/jqst.v1.i2.11 | download_failed |
-| 251a3166cf94 | 2026 | hgribeirogeo/qaoa-carbon-cerrado: v1.0 - Initial Release for Quantum Journal Sub | 10.5281/zenodo.18418054 | download_failed |
-| 30582038a7ba | 2025 | Periodic Unitary Encoding for Quantum Anomaly Detection of Temporal Series | 10.5220/0013537800004525 | download_failed |
-| 32f23740c07f | 2026 | hgribeirogeo/qaoa-carbon-cerrado: v2.0 - Seven-Run Validation Study | 10.5281/zenodo.18507119 | download_failed |
-| 3453ddc0d7db | 2025 | Numerical solution of boundary value problems using quantum computing system | 10.1504/ijsse.2025.151321 | download_failed |
-| 3a3ba897009d | 2023 | QAOA applied to the portfolio optimization problem |  | download_failed |
-| 3bd0da5c69ac | 2026 | PREreview of "The Inverse Born Rule Fallacy: On the Informational Limits of Phas | 10.5281/zenodo.18793266 | download_failed |
-| 3f4c5ad6749d | 2019 | Quantum unary approach to option pricing | 10.1103/PhysRevA.103.032414 | download_failed |
-| 40ca827d69b9 | 2025 | FRAUD DETECTION USING RESTRICTED BOLTZMANN MACHINES ASSISTED BY QUANTUM COMPUTIN | 10.17771/pucrio.acad.73105 | download_failed |
-| 4255cabe0f56 | 2023 | Quantum Algorithm for?Option Pricing | 10.1007/978-981-19-7517-2_14 | download_failed |
-| 455f0fa41521 | 2024 | Research on the Design of Financial Data Analysis Platform with Joint PSO-HQCNN  | 10.5573/ieiespc.2024.13.5.472 | download_failed |
-| 46e6281cc0ea | 2023 | A quantum feature selection framework via ground state preparation | 10.1088/1402-4896/ad0184 | download_failed |
-| 4dc6746d80a2 | 2019 | Uncertainty and symmetry bound for the total detection probability of quantum wa |  | download_failed |
-| 4de005c12725 | 2023 | Automated Function Implementation via Conditional Parameterized Quantum Circuits |  | no_oa_source |
-| 53d70155ce82 | 2023 | Chapter 5 From evolution to revolution: the contemporary development of quantum  | 10.1515/9783110791402-005 | download_failed |
-| 5f0d1c12d9b5 | 2025 | The Prospects for Applications of Quantum Computing in the Financial Sector | 10.4324/9781003501947-7 | download_failed |
-| 62e5c8b6b617 | 2026 | Integration of Hybrid Quantum?Neuromorphic AI With Cloud, Edge, and High-Perform | 10.4018/979-8-3373-7779-7.ch007 | download_failed |
-| 63af985e2b4e | 2025 | Quantum-enhanced stock market prediction: Integrating AI, sentiment analysis, an | 10.1201/9781003685876-7 | download_failed |
-| 6bbc4a2d4a89 | 2025 | Quantum Computing Applications | 10.1201/9781003499459-3 | download_failed |
-| 6fe2aeb67e66 | 2022 | Quantum Computing | 10.1002/9781119777465.ch4 | download_failed |
-| 7301808f6d01 | 2025 | Emerging Technologies in Financial Process Optimization and Risk Management | 10.4018/979-8-3693-4369-2.ch002 | download_failed |
-| 778a06edc7f8 | 2025 | Quantum Interference Effects in Social Decision-Making | 10.6914/qss.010102 | download_failed |
-| 7b4855a804c1 | 2022 | Quantum Computations and Option Pricing | 10.1142/9789811263699_0027 | download_failed |
-| 7e22c616ae62 | 2016 | Portfolio Optimization: Applications in Quantum Computing | 10.1002/9781118593486.ch4 | mismatch |
-| 81146d2c9f2a | 2025 | Quantum-Enhanced Smart Computing Framework for Sustainable Credit Risk Decision  | 10.4018/979-8-3373-3541-4.ch013 | download_failed |
-| 86891f250a78 | 2024 | Quantum machine learning on near-term quantum devices: Current state of supervis | 10.1103/physrevapplied.21.067001 | download_failed |
-| 885002fa235e | 2025 | Exploring Quantum Challenges and Opportunities of Quantum Machine Learning Adopt | 10.4018/979-8-3693-8186-1.ch017 | download_failed |
-| 89a54b4268bd | 2025 | qaoa_portfolio_optimization.py ? QAOA Benchmark for Cardinality-Constrained Port | 10.5281/zenodo.18079637 | download_failed |
-| 8bb680c2fb8b | 2020 | Quantum computing: Challenges and opportunities |  | download_failed |
-| 8d58112a9617 | 2025 | portfolio_optimizer.py ? Disruptive Quantum-Inspired Portfolio Optimizer | 10.5281/zenodo.18013469 | download_failed |
-| 91e1bc2b1a72 | 2026 | Quantum Computing for Refinery Feedstock Optimization and Beyond | 10.2523/iptc-25262-ms | download_failed |
-| 9a4ba980a229 | 2025 | Quantum Approaches to NP-Hard Combinatorial Optimization Problems: A Review | 10.5281/zenodo.18194157 | download_failed |
-| 9f2d4ce48167 | 2025 | Financial fraud detection with entropy quantum optimization versus classical mac | 10.1117/12.3066304 | download_failed |
-| a143717759af | 2021 | Reverse Stress Testing in Banking | 10.1515/9783110647907 | download_failed |
-| a603e283e0cf | 2025 | Empowering Sustainable Finance Through Education and Awareness: Fostering Respon | 10.1002/9781394389070.ch16 | download_failed |
-| aa6714606396 | 2026 | Quantum Computing and Industry Transformation | 10.1201/9781003587835-12 | download_failed |
-| ae4cc7b70669 | 2024 | Artificial Intelligence and Quantum Computing Techniques for Stock Market Predic | 10.1002/9781394214334.ch5 | download_failed |
-| ae6ef4dd0465 | 2025 | Quantum Computing and Algorithms in Financial Applications | 10.4018/979-8-3373-2893-5.ch008 | download_failed |
-| b2cc85a6587a | 2025 | QCC Echo: Redacted Results-Only Verification and Hardware Match Summary | 10.5281/zenodo.17527846 | download_failed |
-| b4c593efacfa | 2025 | Quantum Strategies in Finance | 10.4018/979-8-3373-2893-5.ch012 | download_failed |
-| b9793b3d8619 | 2024 | Integrated Photonic Computing Chip For Unary-Based Option Pricing | 10.1364/ofc.2024.w1f.3 | download_failed |
-| b9bbd2d099f0 | 2025 | Quantum Binomial Tree, An Effective Method for Probability Distribution Loading  | 10.54946/wilm.12175 | download_failed |
-| ba5afbcce6b8 | 2024 | Quantum Machine Learning and Optimisation in Finance | 10.1080/14697688.2024.2375260 | download_failed |
-| bb6213c444b0 | 2025 | Quantum Finance Unleashed | 10.4018/979-8-3373-2893-5.ch001 | download_failed |
-| c43d47985bee | 2025 | Applications of Quantum Machine Learning in Financial Services | 10.1201/9781003558279-8 | download_failed |
-| c459e5fdfbdc | 2024 | Evaluating Quantum Computing's Potential for Financial Engineering Optimisation | 10.1201/9781003596721-10 | download_failed |
-| c7451962353b | 2025 | QUANTUM COMPUTING IN FINANCIAL RISK MANAGEMENT AND PORTFOLIO OPTIMIZATION | 10.13140/rg.2.2.13116.91527 | no_oa_source |
-| c759041ceebc | 2024 | Research on Financial Market Prediction Model Based on Big Data and Quantum Comp | 10.1142/s2010324724400101 | download_failed |
-| cde1c896dc3c | 2021 | Quantum Machine Learning for Finance |  | no_oa_source |
-| cded9dd64213 | 2024 | Variational Quantum Algorithms in?Anomaly Detection, Fraud Indicator Identificat | 10.1007/978-981-97-3302-6_39 | download_failed |
-| d1d94604a9f6 | 2026 | Quantum Monte Carlo simulations | 10.1016/bs.adcom.2025.07.008 | download_failed |
-| d7449b1ba0c5 | 2026 | Improving credit card transaction fraud detection using CVQBoosting |  | download_failed |
-| da5f74409827 | 2025 | Integrating Emerging Technologies for Organizational Agility | 10.4018/979-8-3373-6207-6.ch003 | download_failed |
-| dc93502cbe99 | 2023 | Contribution of Disruptive Technologies in Computational Finance | 10.4018/979-8-3693-1746-4.ch009 | download_failed |
-| e505ff143d95 | 2024 | Quantum Machine Learning and Optimisation in Finance: Drive financial innovation |  | no_oa_source |
-| e9b892fcd6fc | 2025 | Toward Efficient Credit Card Fraud Detection: Leveraging Quantum Neural Networks | 10.53759/7669/jmc202505024 | download_failed |
-| f0cfc9685e15 | 2024 | Optimizing Feature Selection for Predictive Analytics With Quantum Algorithms | 10.4018/979-8-3693-7673-7.ch009 | no_oa_source |
-| f5adfe23aa3d | 2025 | Quantum optimization techniques and applications | 10.1016/bs.adcom.2025.06.001 | download_failed |
-| f67b13b40931 | 2025 | Integration of innovative business models using quantum computing and generative | 10.1201/9781003597414-23 | no_oa_source |
-| fa9e2c7101b8 | 2021 | QAOA Applications in Finance |  | no_oa_source |
+---
+
+## Zenodo (9) — Open Access
+
+### Hybrid Quantum Market State Inference for Ultra-Short-Horizon Financial Prediction
+- **paper_id:** `115e509ec529`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [Zenodo:17924888](https://zenodo.org/record/17924888)
+
+### qaoa_portfolio_optimization.py ? QAOA Benchmark for Cardinality-Constrained Portfolio Selection
+- **paper_id:** `89a54b4268bd`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [Zenodo:18079637](https://zenodo.org/record/18079637)
+- **alternatives:** [Zenodo:18079636](https://zenodo.org/record/18079636)
+
+### portfolio_optimizer.py ? Disruptive Quantum-Inspired Portfolio Optimizer
+- **paper_id:** `8d58112a9617`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [Zenodo:18013469](https://zenodo.org/record/18013469)
+- **alternatives:** [Zenodo:18013468](https://zenodo.org/record/18013468)
+
+### Quantum Approaches to NP-Hard Combinatorial Optimization Problems: A Review
+- **paper_id:** `9a4ba980a229`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [Zenodo:18194157](https://zenodo.org/record/18194157)
+- **alternatives:** [Zenodo:18194156](https://zenodo.org/record/18194156)
+
+### QCC Echo: Redacted Results-Only Verification and Hardware Match Summary
+- **paper_id:** `b2cc85a6587a`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [Zenodo:17527846](https://zenodo.org/record/17527846)
+- **alternatives:** [Zenodo:17527845](https://zenodo.org/record/17527845)
+
+### Extrapolation method to optimize linear-ramp quantum approximate optimization algorithm parameters: dataset
+- **paper_id:** `1dc251ce8c53`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [Zenodo:18302993](https://zenodo.org/record/18302993)
+- **alternatives:** [Zenodo:18302992](https://zenodo.org/record/18302992)
+
+### hgribeirogeo/qaoa-carbon-cerrado: v1.0 - Initial Release for Quantum Journal Submission
+- **paper_id:** `251a3166cf94`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [Zenodo:18418054](https://zenodo.org/record/18418054)
+
+### hgribeirogeo/qaoa-carbon-cerrado: v2.0 - Seven-Run Validation Study
+- **paper_id:** `32f23740c07f`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [Zenodo:18507119](https://zenodo.org/record/18507119)
+- **alternatives:** [Zenodo:18418053](https://zenodo.org/record/18418053)
+
+### PREreview of "The Inverse Born Rule Fallacy: On the Informational Limits of Phase-Locked Amplitude Encoding"
+- **paper_id:** `3bd0da5c69ac`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [Zenodo:18793266](https://zenodo.org/record/18793266)
+- **alternatives:** [Zenodo:18793265](https://zenodo.org/record/18793265)
+
+## Open Access (DOI) (2) — Open Access
+
+### Quantitative Analysis and Forecasting Techniques in Financial Markets: A 2022 Review
+- **paper_id:** `0f3a64e9e3ed`
+- **year:** 2022
+- **status:** `download_failed`
+- **link:** [10.70088/wfwcn555](https://doi.org/10.70088/wfwcn555)
+
+### Quantum Computing: Algorithms and Applications in Optimization Problems
+- **paper_id:** `250a9d44ef66`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.36676/jqst.v1.i2.11](https://doi.org/10.36676/jqst.v1.i2.11)
+
+## WJARR/WJAETS (1) — Open Access
+
+### Application of quantum computing in healthcare billing - USA
+- **paper_id:** `0525be4c60fb`
+- **year:** 2025
+- **status:** `mismatch`
+- **link:** [10.30574/ijsra.2025.14.1.0102](https://doi.org/10.30574/ijsra.2025.14.1.0102)
+
+## ResearchGate (1) — Open Access
+
+### QUANTUM COMPUTING IN FINANCIAL RISK MANAGEMENT AND PORTFOLIO OPTIMIZATION
+- **paper_id:** `c7451962353b`
+- **year:** 2025
+- **status:** `no_oa_source`
+- **link:** [10.13140/rg.2.2.13116.91527](https://doi.org/10.13140/rg.2.2.13116.91527)
+
+## arXiv (1) — Open Access
+
+### Quantum Machine Learning for Finance
+- **paper_id:** `cde1c896dc3c`
+- **year:** 2021
+- **status:** `no_oa_source`
+- **link:** [arXiv:2109.04298](https://arxiv.org/abs/2109.04298)
+
+## IGI Global (12) — Paywalled
+
+### Contribution of Disruptive Technologies in Computational Finance
+- **paper_id:** `dc93502cbe99`
+- **year:** 2023
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3693-1746-4.ch009](https://doi.org/10.4018/979-8-3693-1746-4.ch009)
+
+### Optimizing Feature Selection for Predictive Analytics With Quantum Algorithms
+- **paper_id:** `f0cfc9685e15`
+- **year:** 2024
+- **status:** `no_oa_source`
+- **link:** [10.4018/979-8-3693-7673-7.ch009](https://doi.org/10.4018/979-8-3693-7673-7.ch009)
+
+### Pioneering Quantum Computing in Financial Services
+- **paper_id:** `00e181896bba`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-2893-5.ch013](https://doi.org/10.4018/979-8-3373-2893-5.ch013)
+
+### Emerging Technologies in Financial Process Optimization and Risk Management
+- **paper_id:** `7301808f6d01`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3693-4369-2.ch002](https://doi.org/10.4018/979-8-3693-4369-2.ch002)
+
+### Quantum-Enhanced Smart Computing Framework for Sustainable Credit Risk Decision Communication
+- **paper_id:** `81146d2c9f2a`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-3541-4.ch013](https://doi.org/10.4018/979-8-3373-3541-4.ch013)
+
+### Exploring Quantum Challenges and Opportunities of Quantum Machine Learning Adoption in Finance
+- **paper_id:** `885002fa235e`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3693-8186-1.ch017](https://doi.org/10.4018/979-8-3693-8186-1.ch017)
+
+### Quantum Computing and Algorithms in Financial Applications
+- **paper_id:** `ae6ef4dd0465`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-2893-5.ch008](https://doi.org/10.4018/979-8-3373-2893-5.ch008)
+
+### Quantum Strategies in Finance
+- **paper_id:** `b4c593efacfa`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-2893-5.ch012](https://doi.org/10.4018/979-8-3373-2893-5.ch012)
+
+### Quantum Finance Unleashed
+- **paper_id:** `bb6213c444b0`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-2893-5.ch001](https://doi.org/10.4018/979-8-3373-2893-5.ch001)
+
+### Integrating Emerging Technologies for Organizational Agility
+- **paper_id:** `da5f74409827`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-6207-6.ch003](https://doi.org/10.4018/979-8-3373-6207-6.ch003)
+
+### Cost Savings Through Quantum AI-Driven Optimizations
+- **paper_id:** `10832c99e683`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-4347-1.ch004](https://doi.org/10.4018/979-8-3373-4347-1.ch004)
+
+### Integration of Hybrid Quantum?Neuromorphic AI With Cloud, Edge, and High-Performance Computing Environments
+- **paper_id:** `62e5c8b6b617`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [10.4018/979-8-3373-7779-7.ch007](https://doi.org/10.4018/979-8-3373-7779-7.ch007)
+
+## CRC Press (9) — Paywalled
+
+### Evaluating Quantum Computing's Potential for Financial Engineering Optimisation
+- **paper_id:** `c459e5fdfbdc`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1201/9781003596721-10](https://doi.org/10.1201/9781003596721-10)
+
+### Quantum Finance: Revolutionizing Financial Markets with Quantum Computing
+- **paper_id:** `119578338c9e`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1201/9781003482154-6](https://doi.org/10.1201/9781003482154-6)
+
+### Quantum-enhanced stock market prediction: Integrating AI, sentiment analysis, and multimodal data fusion
+- **paper_id:** `63af985e2b4e`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1201/9781003685876-7](https://doi.org/10.1201/9781003685876-7)
+
+### Quantum Computing Applications
+- **paper_id:** `6bbc4a2d4a89`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1201/9781003499459-3](https://doi.org/10.1201/9781003499459-3)
+
+### Applications of Quantum Machine Learning in Financial Services
+- **paper_id:** `c43d47985bee`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1201/9781003558279-8](https://doi.org/10.1201/9781003558279-8)
+
+### Integration of innovative business models using quantum computing and generative AI
+- **paper_id:** `f67b13b40931`
+- **year:** 2025
+- **status:** `no_oa_source`
+- **link:** [10.1201/9781003597414-23](https://doi.org/10.1201/9781003597414-23)
+
+### Introduction to Quantum Computing
+- **paper_id:** `06db2582a06a`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [10.1201/9781003674566-1](https://doi.org/10.1201/9781003674566-1)
+
+### Harnessing Quantum Computing for Predictive Analysis
+- **paper_id:** `0801deffcfa4`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [10.1201/9781003587835-4](https://doi.org/10.1201/9781003587835-4)
+
+### Quantum Computing and Industry Transformation
+- **paper_id:** `aa6714606396`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [10.1201/9781003587835-12](https://doi.org/10.1201/9781003587835-12)
+
+## Wiley (4) — Paywalled
+
+### Portfolio Optimization: Applications in Quantum Computing
+- **paper_id:** `7e22c616ae62`
+- **year:** 2016
+- **status:** `mismatch`
+- **link:** [10.1002/9781118593486.ch4](https://doi.org/10.1002/9781118593486.ch4)
+
+### Quantum Computing
+- **paper_id:** `6fe2aeb67e66`
+- **year:** 2022
+- **status:** `download_failed`
+- **link:** [10.1002/9781119777465.ch4](https://doi.org/10.1002/9781119777465.ch4)
+
+### Artificial Intelligence and Quantum Computing Techniques for Stock Market Predictions
+- **paper_id:** `ae4cc7b70669`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1002/9781394214334.ch5](https://doi.org/10.1002/9781394214334.ch5)
+
+### Empowering Sustainable Finance Through Education and Awareness: Fostering Responsible AI and Quantum Computing Usage for Enhanced ESG Analysis
+- **paper_id:** `a603e283e0cf`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1002/9781394389070.ch16](https://doi.org/10.1002/9781394389070.ch16)
+
+## Springer (3) — Paywalled
+
+### Quantum Algorithm for?Option Pricing
+- **paper_id:** `4255cabe0f56`
+- **year:** 2023
+- **status:** `download_failed`
+- **link:** [10.1007/978-981-19-7517-2_14](https://doi.org/10.1007/978-981-19-7517-2_14)
+
+### Variational Quantum Algorithms in?Anomaly Detection, Fraud Indicator Identification, Credit Scoring, and?Stock Price Prediction
+- **paper_id:** `cded9dd64213`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1007/978-981-97-3302-6_39](https://doi.org/10.1007/978-981-97-3302-6_39)
+
+### Quantum Machine Learning for Stock Price Movement Prediction
+- **paper_id:** `13544c1e7414`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1007/978-981-95-2429-7_7](https://doi.org/10.1007/978-981-95-2429-7_7)
+
+## De Gruyter (3) — Paywalled
+
+### Reverse Stress Testing in Banking
+- **paper_id:** `a143717759af`
+- **year:** 2021
+- **status:** `download_failed`
+- **link:** [10.1515/9783110647907](https://doi.org/10.1515/9783110647907)
+
+### Chapter 5 From evolution to revolution: the contemporary development of quantum computing
+- **paper_id:** `53d70155ce82`
+- **year:** 2023
+- **status:** `download_failed`
+- **link:** [10.1515/9783110791402-005](https://doi.org/10.1515/9783110791402-005)
+
+### Performance evaluation of post quantum digital signature algorithms over WDM optical communication system
+- **paper_id:** `135bf0e19b10`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1515/joc-2025-0104](https://doi.org/10.1515/joc-2025-0104)
+
+## Elsevier (3) — Paywalled
+
+### Quantum computing research: An in-depth exploration
+- **paper_id:** `157054b518f8`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1016/bs.adcom.2025.02.005](https://doi.org/10.1016/bs.adcom.2025.02.005)
+
+### Quantum optimization techniques and applications
+- **paper_id:** `f5adfe23aa3d`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1016/bs.adcom.2025.06.001](https://doi.org/10.1016/bs.adcom.2025.06.001)
+
+### Quantum Monte Carlo simulations
+- **paper_id:** `d1d94604a9f6`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [10.1016/bs.adcom.2025.07.008](https://doi.org/10.1016/bs.adcom.2025.07.008)
+
+## APS (Phys Rev) (2) — Paywalled
+
+### Quantum unary approach to option pricing
+- **paper_id:** `3f4c5ad6749d`
+- **year:** 2019
+- **status:** `download_failed`
+- **link:** [10.1103/PhysRevA.103.032414](https://doi.org/10.1103/PhysRevA.103.032414)
+- **alternatives:** [arXiv:2012.10356](https://arxiv.org/abs/2012.10356)
+
+### Quantum machine learning on near-term quantum devices: Current state of supervised and unsupervised techniques for real-world applications
+- **paper_id:** `86891f250a78`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1103/physrevapplied.21.067001](https://doi.org/10.1103/physrevapplied.21.067001)
+- **alternatives:** [arXiv:2201.09782](https://arxiv.org/abs/2201.09782)
+
+## World Scientific (2) — Paywalled
+
+### Quantum Computations and Option Pricing
+- **paper_id:** `7b4855a804c1`
+- **year:** 2022
+- **status:** `download_failed`
+- **link:** [10.1142/9789811263699_0027](https://doi.org/10.1142/9789811263699_0027)
+
+### Research on Financial Market Prediction Model Based on Big Data and Quantum Computing
+- **paper_id:** `c759041ceebc`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1142/s2010324724400101](https://doi.org/10.1142/s2010324724400101)
+
+## SCITEPRESS (1) — Paywalled
+
+### Periodic Unitary Encoding for Quantum Anomaly Detection of Temporal Series
+- **paper_id:** `30582038a7ba`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.5220/0013537800004525](https://doi.org/10.5220/0013537800004525)
+
+## Inderscience (1) — Paywalled
+
+### Numerical solution of boundary value problems using quantum computing system
+- **paper_id:** `3453ddc0d7db`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1504/ijsse.2025.151321](https://doi.org/10.1504/ijsse.2025.151321)
+
+## PUC-Rio (1) — Paywalled
+
+### FRAUD DETECTION USING RESTRICTED BOLTZMANN MACHINES ASSISTED BY QUANTUM COMPUTING
+- **paper_id:** `40ca827d69b9`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.17771/pucrio.acad.73105](https://doi.org/10.17771/pucrio.acad.73105)
+
+## IEIE (1) — Paywalled
+
+### Research on the Design of Financial Data Analysis Platform with Joint PSO-HQCNN and RPA Robot Visualization Technology
+- **paper_id:** `455f0fa41521`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.5573/ieiespc.2024.13.5.472](https://doi.org/10.5573/ieiespc.2024.13.5.472)
+
+## IOP Publishing (1) — Paywalled
+
+### A quantum feature selection framework via ground state preparation
+- **paper_id:** `46e6281cc0ea`
+- **year:** 2023
+- **status:** `download_failed`
+- **link:** [10.1088/1402-4896/ad0184](https://doi.org/10.1088/1402-4896/ad0184)
+
+## Routledge (1) — Paywalled
+
+### The Prospects for Applications of Quantum Computing in the Financial Sector
+- **paper_id:** `5f0d1c12d9b5`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.4324/9781003501947-7](https://doi.org/10.4324/9781003501947-7)
+
+## QSS (1) — Paywalled
+
+### Quantum Interference Effects in Social Decision-Making
+- **paper_id:** `778a06edc7f8`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.6914/qss.010102](https://doi.org/10.6914/qss.010102)
+
+## SPE/IPTC (1) — Paywalled
+
+### Quantum Computing for Refinery Feedstock Optimization and Beyond
+- **paper_id:** `91e1bc2b1a72`
+- **year:** 2026
+- **status:** `download_failed`
+- **link:** [10.2523/iptc-25262-ms](https://doi.org/10.2523/iptc-25262-ms)
+
+## SPIE (1) — Paywalled
+
+### Financial fraud detection with entropy quantum optimization versus classical machine learning
+- **paper_id:** `9f2d4ce48167`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1117/12.3066304](https://doi.org/10.1117/12.3066304)
+
+## Optica/OSA (1) — Paywalled
+
+### Integrated Photonic Computing Chip For Unary-Based Option Pricing
+- **paper_id:** `b9793b3d8619`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1364/ofc.2024.w1f.3](https://doi.org/10.1364/ofc.2024.w1f.3)
+
+## Wilmott (1) — Paywalled
+
+### Quantum Binomial Tree, An Effective Method for Probability Distribution Loading for Derivative Pricing
+- **paper_id:** `b9bbd2d099f0`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.54946/wilm.12175](https://doi.org/10.54946/wilm.12175)
+
+## Taylor & Francis (1) — Paywalled
+
+### Quantum Machine Learning and Optimisation in Finance
+- **paper_id:** `ba5afbcce6b8`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1080/14697688.2024.2375260](https://doi.org/10.1080/14697688.2024.2375260)
+- **alternatives:** [arXiv:2312.09149](https://arxiv.org/abs/2312.09149)
+
+## TowardsAI (1) — Paywalled
+
+### Toward Efficient Credit Card Fraud Detection: Leveraging Quantum Neural Networks and Modified Feature Selection Techniques
+- **paper_id:** `e9b892fcd6fc`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.53759/7669/jmc202505024](https://doi.org/10.53759/7669/jmc202505024)
+
+## No DOI / Preprint (11) — 
+
+### Uncertainty and symmetry bound for the total detection probability of quantum walks
+- **paper_id:** `4dc6746d80a2`
+- **year:** 2019
+- **status:** `download_failed`
+- **alternatives:** [arXiv:1906.07791](https://arxiv.org/abs/1906.07791)
+
+### Quantum computing: Challenges and opportunities
+- **paper_id:** `8bb680c2fb8b`
+- **year:** 2020
+- **status:** `download_failed`
+- **alternatives:** [arXiv:2001.05172](https://arxiv.org/abs/2001.05172)
+
+### Quantum algorithm for stochastic optimal stopping problems
+- **paper_id:** `0067a26ce270`
+- **year:** 2021
+- **status:** `download_failed`
+- **alternatives:** [arXiv:2111.04487](https://arxiv.org/abs/2111.04487)
+
+### Pricing ?nancial derivatives with exponential quantum speedup
+- **paper_id:** `0608ad48d5b8`
+- **year:** 2021
+- **status:** `no_oa_source`
+- **alternatives:** [arXiv:2011.10075](https://arxiv.org/abs/2011.10075)
+
+### QAOA Applications in Finance
+- **paper_id:** `fa9e2c7101b8`
+- **year:** 2021
+- **status:** `no_oa_source`
+
+### Quantum neural network for continuous variable prediction
+- **paper_id:** `1d16f793a68b`
+- **year:** 2022
+- **status:** `download_failed`
+- **alternatives:** [arXiv:2012.06074](https://arxiv.org/abs/2012.06074)
+
+### QAOA applied to the portfolio optimization problem
+- **paper_id:** `3a3ba897009d`
+- **year:** 2023
+- **status:** `download_failed`
+- **alternatives:** [arXiv:2106.02369](https://arxiv.org/abs/2106.02369)
+
+### Automated Function Implementation via Conditional Parameterized Quantum Circuits with Applications to Finance
+- **paper_id:** `4de005c12725`
+- **year:** 2023
+- **status:** `no_oa_source`
+- **alternatives:** [arXiv:2304.08793](https://arxiv.org/abs/2304.08793)
+
+### Quantum Machine Learning and Optimisation in Finance: Drive financial innovation with quantum-powered algorithms and optimisation strategies
+- **paper_id:** `e505ff143d95`
+- **year:** 2024
+- **status:** `no_oa_source`
+
+### Hybrid Quantum-Classical Machine Learning with PennyLane: A Comprehensive Guide for Computational Research
+- **paper_id:** `1312e9d3c55e`
+- **year:** 2025
+- **status:** `download_failed`
+- **alternatives:** [arXiv:2502.02890](https://arxiv.org/abs/2502.02890)
+
+### Improving credit card transaction fraud detection using CVQBoosting
+- **paper_id:** `d7449b1ba0c5`
+- **year:** 2026
+- **status:** `download_failed`
+
