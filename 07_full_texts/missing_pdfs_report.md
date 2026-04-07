@@ -1,26 +1,23 @@
 # Missing PDFs Report
-Generated: 2026-04-07 10:56
+Generated: 2026-04-07 11:09
 
 ## Summary
 - Included papers: **842**
-- PDFs on disk: **774**
+- PDFs on disk: **779**
 - Zenodo code/data records excluded (not scientific papers): **9**
-- Still missing: **59**
+- Still missing: **54**
 
 ### Missing by publisher
 
 | Publisher | Count | Access |
 |-----------|-------|--------|
 | Open Access (DOI) | 2 | Open Access |
-| WJARR/WJAETS | 1 | Open Access |
-| ResearchGate | 1 | Open Access |
-| arXiv | 1 | Open Access |
 | IGI Global | 12 | Paywalled |
 | CRC Press | 9 | Paywalled |
-| Wiley | 4 | Paywalled |
 | Springer | 3 | Paywalled |
-| De Gruyter | 3 | Paywalled |
 | Elsevier | 3 | Paywalled |
+| Wiley | 3 | Paywalled |
+| De Gruyter | 2 | Paywalled |
 | World Scientific | 2 | Paywalled |
 | SCITEPRESS | 1 | Paywalled |
 | Inderscience | 1 | Paywalled |
@@ -52,30 +49,6 @@ Generated: 2026-04-07 10:56
 - **year:** 2024
 - **status:** `download_failed`
 - **link:** [10.36676/jqst.v1.i2.11](https://doi.org/10.36676/jqst.v1.i2.11)
-
-## WJARR/WJAETS (1) — Open Access
-
-### Application of quantum computing in healthcare billing - USA
-- **paper_id:** `0525be4c60fb`
-- **year:** 2025
-- **status:** `mismatch`
-- **link:** [10.30574/ijsra.2025.14.1.0102](https://doi.org/10.30574/ijsra.2025.14.1.0102)
-
-## ResearchGate (1) — Open Access
-
-### QUANTUM COMPUTING IN FINANCIAL RISK MANAGEMENT AND PORTFOLIO OPTIMIZATION
-- **paper_id:** `c7451962353b`
-- **year:** 2025
-- **status:** `no_oa_source`
-- **link:** [10.13140/rg.2.2.13116.91527](https://doi.org/10.13140/rg.2.2.13116.91527)
-
-## arXiv (1) — Open Access
-
-### Quantum Machine Learning for Finance
-- **paper_id:** `cde1c896dc3c`
-- **year:** 2021
-- **status:** `no_oa_source`
-- **link:** [arXiv:2109.04298](https://arxiv.org/abs/2109.04298)
 
 ## IGI Global (12) — Paywalled
 
@@ -207,32 +180,6 @@ Generated: 2026-04-07 10:56
 - **status:** `download_failed`
 - **link:** [10.1201/9781003587835-12](https://doi.org/10.1201/9781003587835-12)
 
-## Wiley (4) — Paywalled
-
-### Portfolio Optimization: Applications in Quantum Computing
-- **paper_id:** `7e22c616ae62`
-- **year:** 2016
-- **status:** `mismatch`
-- **link:** [10.1002/9781118593486.ch4](https://doi.org/10.1002/9781118593486.ch4)
-
-### Quantum Computing
-- **paper_id:** `6fe2aeb67e66`
-- **year:** 2022
-- **status:** `download_failed`
-- **link:** [10.1002/9781119777465.ch4](https://doi.org/10.1002/9781119777465.ch4)
-
-### Artificial Intelligence and Quantum Computing Techniques for Stock Market Predictions
-- **paper_id:** `ae4cc7b70669`
-- **year:** 2024
-- **status:** `download_failed`
-- **link:** [10.1002/9781394214334.ch5](https://doi.org/10.1002/9781394214334.ch5)
-
-### Empowering Sustainable Finance Through Education and Awareness: Fostering Responsible AI and Quantum Computing Usage for Enhanced ESG Analysis
-- **paper_id:** `a603e283e0cf`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [10.1002/9781394389070.ch16](https://doi.org/10.1002/9781394389070.ch16)
-
 ## Springer (3) — Paywalled
 
 ### Quantum Algorithm for?Option Pricing
@@ -253,26 +200,6 @@ Generated: 2026-04-07 10:56
 - **status:** `download_failed`
 - **link:** [10.1007/978-981-95-2429-7_7](https://doi.org/10.1007/978-981-95-2429-7_7)
 
-## De Gruyter (3) — Paywalled
-
-### Reverse Stress Testing in Banking
-- **paper_id:** `a143717759af`
-- **year:** 2021
-- **status:** `download_failed`
-- **link:** [10.1515/9783110647907](https://doi.org/10.1515/9783110647907)
-
-### Chapter 5 From evolution to revolution: the contemporary development of quantum computing
-- **paper_id:** `53d70155ce82`
-- **year:** 2023
-- **status:** `download_failed`
-- **link:** [10.1515/9783110791402-005](https://doi.org/10.1515/9783110791402-005)
-
-### Performance evaluation of post quantum digital signature algorithms over WDM optical communication system
-- **paper_id:** `135bf0e19b10`
-- **year:** 2025
-- **status:** `download_failed`
-- **link:** [10.1515/joc-2025-0104](https://doi.org/10.1515/joc-2025-0104)
-
 ## Elsevier (3) — Paywalled
 
 ### Quantum computing research: An in-depth exploration
@@ -292,6 +219,40 @@ Generated: 2026-04-07 10:56
 - **year:** 2026
 - **status:** `download_failed`
 - **link:** [10.1016/bs.adcom.2025.07.008](https://doi.org/10.1016/bs.adcom.2025.07.008)
+
+## Wiley (3) — Paywalled
+
+### Portfolio Optimization: Applications in Quantum Computing
+- **paper_id:** `7e22c616ae62`
+- **year:** 2016
+- **status:** `mismatch`
+- **link:** [10.1002/9781118593486.ch4](https://doi.org/10.1002/9781118593486.ch4)
+
+### Artificial Intelligence and Quantum Computing Techniques for Stock Market Predictions
+- **paper_id:** `ae4cc7b70669`
+- **year:** 2024
+- **status:** `download_failed`
+- **link:** [10.1002/9781394214334.ch5](https://doi.org/10.1002/9781394214334.ch5)
+
+### Empowering Sustainable Finance Through Education and Awareness: Fostering Responsible AI and Quantum Computing Usage for Enhanced ESG Analysis
+- **paper_id:** `a603e283e0cf`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1002/9781394389070.ch16](https://doi.org/10.1002/9781394389070.ch16)
+
+## De Gruyter (2) — Paywalled
+
+### Chapter 5 From evolution to revolution: the contemporary development of quantum computing
+- **paper_id:** `53d70155ce82`
+- **year:** 2023
+- **status:** `download_failed`
+- **link:** [10.1515/9783110791402-005](https://doi.org/10.1515/9783110791402-005)
+
+### Performance evaluation of post quantum digital signature algorithms over WDM optical communication system
+- **paper_id:** `135bf0e19b10`
+- **year:** 2025
+- **status:** `download_failed`
+- **link:** [10.1515/joc-2025-0104](https://doi.org/10.1515/joc-2025-0104)
 
 ## World Scientific (2) — Paywalled
 

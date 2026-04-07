@@ -38,6 +38,12 @@ have_on_disk = {
     pid for pid, row in download_log.items()
     if row.get("status") == "success" and pid in included_ids and file_exists(row)
 }
+# Also count PDFs on disk whose paper_id matches an included paper
+# (covers manually added PDFs not in download_log)
+for pdf_path in PDF_DIR.glob("*.pdf"):
+    pid = pdf_path.name.split("_")[0]
+    if pid in included_ids:
+        have_on_disk.add(pid)
 
 # Zenodo records are code repos / datasets / PREreviews — not scientific papers needing a PDF
 ZENODO_EXCLUDE = {
