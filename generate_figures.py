@@ -160,14 +160,15 @@ def fig_prisma_flow():
     # ── Identification ────────────────────────────────────────────────────
     # Source breakdown embedded in the box
     src_parts = [f"{s.replace('_', ' ').title()}: {c:,}" for s, c in sources.items()]
-    src_line = "  \u2022  ".join(src_parts)
+    src_line = "\n".join(src_parts)
 
-    id_box_h = 1.15
-    _box(cx, y_ident, bw_main + 0.4, id_box_h,
+    id_box_h = 1.8
+    _box(cx, y_ident, bw_main, id_box_h,
          f"Records identified through\ndatabase searching\n(n = {n_identified:,})",
          c_box_fill, c_box_edge)
-    ax.text(cx, y_ident - 0.45, src_line,
-            ha="center", va="center", fontsize=6.5, color="#666666")
+    ax.text(cx, y_ident - 0.55, src_line,
+            ha="center", va="center", fontsize=5.5, color="#666666",
+            linespacing=1.3)
 
     # Duplicates removed (right side) — positioned between ident and screening
     y_junct = y_ident - id_box_h / 2 - 0.45  # junction point on the vertical line
@@ -204,12 +205,22 @@ def fig_prisma_flow():
          f"Full-text articles assessed\nfor eligibility\n(n = {n_assessed_ft:,})",
          c_box_fill, c_box_edge)
 
-    # Full-text exclusion (right side)
-    if n_excluded_ft > 0:
-        _box(rx, y_excl_ft, bw_excl, 0.85,
-             f"Full-text articles excluded\n(n = {n_excluded_ft})\n"
-             f"Reason: no paper found",
-             c_excl_fill, c_excl_edge)
+    # Full-text exclusion (right side) — count from actual PDFs on disk
+    pdf_dir = REPO / "07_full_texts" / "pdfs"
+    n_pdfs_on_disk = len(list(pdf_dir.glob("*.pdf"))) if pdf_dir.exists() else 0
+    n_zenodo = 9  # Zenodo code/data records (not scientific papers)
+    n_not_retrieved = n_included_ft - n_pdfs_on_disk - n_zenodo
+    n_ft_excluded_total = n_excluded_ft + n_zenodo + max(n_not_retrieved, 0)
+    n_final_included = n_assessed_ft - n_ft_excluded_total
+
+    if n_ft_excluded_total > 0:
+        n_no_paper = n_excluded_ft + max(n_not_retrieved, 0)
+        excl_text = f"Full-text articles excluded\n(n = {n_ft_excluded_total})"
+        excl_text += f"\nNo paper found / no access: {n_no_paper}"
+        excl_text += f"\nNot a paper (Zenodo records): {n_zenodo}"
+        _box(rx, y_excl_ft, bw_excl, 1.25,
+             excl_text,
+             c_excl_fill, c_excl_edge, fontsize=8.5)
         _arrow_right(cx + bw_main / 2, rx - bw_excl / 2, y_excl_ft)
 
     # Arrow down to included
@@ -217,7 +228,7 @@ def fig_prisma_flow():
 
     # ── Included ──────────────────────────────────────────────────────────
     _box(cx, y_incl, bw_main, bh,
-         f"Studies included in\nsystematic review\n(n = {n_included_ft:,})",
+         f"Studies included in\nsystematic review\n(n = {n_final_included:,})",
          c_incl_fill, c_incl_edge, fontweight="bold")
 
     fig.savefig(FIGURES / "fig1_prisma_flow.png")
